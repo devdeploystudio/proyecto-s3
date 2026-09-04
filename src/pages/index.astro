@@ -1,0 +1,590 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProyectoCard from "../components/ProyectoCard.astro";
+import { Image } from "astro:assets";
+import { PROYECTOS } from "../data/proyectos";
+import { TEXTO_NOSOTROS } from "../data/equipo";
+import { SITE, linkWhatsapp, withBase } from "../data/site";
+import heroImg from "../assets/proyectos/ns235/01-06.jpg";
+import ctaImg from "../assets/proyectos/n366/01-06.jpg";
+import objetoCubo from "../assets/brand/objeto-cubo.png";
+import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
+---
+
+<Layout
+  title={SITE.nombre}
+  description="Estudio familiar de arquitectura y construcción. Reformas, remodelación, interiorismo y obra."
+>
+  <section class="hero">
+    <Image class="hero__bg" src={heroImg} alt="" width={1920} height={1280} loading="eager" fetchpriority="high" />
+    <div class="hero__overlay"></div>
+    <div class="wrap hero__inner">
+      <p class="eyebrow eyebrow--light">Arquitectura + construcción, de padre a hijo</p>
+      <h1 class="hero__title">
+        Transformamos espacios con una mirada que combina diseño y oficio.
+      </h1>
+      <p class="hero__lead">{TEXTO_NOSOTROS[0]}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href={withBase("/proyectos/")}>Ver proyectos →</a>
+        <a class="btn btn--ghost btn--on-photo" href={withBase("/estudio/")}>Conocer el estudio</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section nosotros-teaser">
+    <Image class="nosotros-teaser__icon" src={proyectoCubo} alt="" width={200} height={200} aria-hidden="true" />
+    <a class="wrap nosotros-teaser__inner" href={withBase("/estudio/")} data-reveal>
+      <div class="nosotros-teaser__media">
+        <p>Foto de familia, próximamente</p>
+      </div>
+      <div class="nosotros-teaser__text">
+        <p class="eyebrow">El estudio</p>
+        <h2>Un laburo de familia, atravesado por la arquitectura.</h2>
+        <p>Santino, Marcelo y Lautaro Schembari: tres generaciones ligadas al oficio de construir.</p>
+      </div>
+      <span class="nosotros-teaser__cta">Conocer el estudio →</span>
+    </a>
+  </section>
+
+  <section class="section proyectos-destacados">
+    <div class="wrap">
+      <div class="section__head section__head--row" data-reveal>
+        <div>
+          <p class="eyebrow">Proyectos</p>
+          <h2>Reformas y obras con identidad propia</h2>
+        </div>
+        <a class="btn btn--ghost proyectos-destacados__ver-todos" href={withBase("/proyectos/")}>Ver todos →</a>
+      </div>
+      <div class="carousel-proyectos">
+        <div class="carousel-proyectos__track" data-reveal-group>
+          <div class="carousel-proyectos__marquee">
+            {Array.from({ length: 8 }).map((_, setIndex) => (
+              <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
+                {PROYECTOS.map((p) => (
+                  <div class="carousel-proyectos__item">
+                    <ProyectoCard proyecto={p} />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--prev" aria-label="Proyecto anterior">‹</button>
+        <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--next" aria-label="Proyecto siguiente">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section objeto-salida">
+    <Image class="objeto-salida__icon" src={objetoCubo} alt="" width={200} height={200} aria-hidden="true" />
+    <div class="wrap objeto-salida__inner" data-reveal>
+      <div>
+        <p class="eyebrow eyebrow--sage">Objeto</p>
+        <h2>También hacemos muebles a medida.</h2>
+        <p>Es otro proyecto del estudio, con su propia identidad.</p>
+      </div>
+      <a class="btn btn--sage" href={withBase("/objeto/")}>Conocer Objeto →</a>
+    </div>
+  </section>
+
+  <section class="section cta-final">
+    <Image class="cta-final__bg" src={ctaImg} alt="" width={1920} height={1280} loading="lazy" />
+    <div class="cta-final__overlay"></div>
+    <div class="wrap cta-final__inner" data-reveal>
+      <h2>¿Tenés un proyecto en mente?</h2>
+      <p>Contanos en qué estás pensando y lo charlamos por WhatsApp.</p>
+      <a class="btn btn--primary" href={linkWhatsapp("Hola! Quería consultar por un proyecto.")} target="_blank" rel="noopener noreferrer">
+        Escribinos por WhatsApp →
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(5rem, 16vw, 10rem) clamp(3rem, 8vw, 5rem);
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  .hero :global(.hero__bg) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(20, 12, 8, 0.75), rgba(20, 12, 8, 0.35) 55%, rgba(20, 12, 8, 0.85));
+  }
+
+  .hero__inner {
+    max-width: 780px;
+  }
+
+  .eyebrow--light {
+    color: var(--blush-soft);
+  }
+
+  .hero__title {
+    margin-top: 0.75rem;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    color: var(--paper);
+  }
+
+  .hero__lead {
+    margin-top: 1.5rem;
+    font-size: 1.15rem;
+    color: var(--paper);
+    max-width: 60ch;
+  }
+
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn--on-photo {
+    border-color: var(--paper);
+    color: var(--paper);
+  }
+
+  .btn--on-photo:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .section__head h2 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    max-width: 40ch;
+  }
+
+  .section__head--row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .proyectos-destacados__ver-todos {
+    flex-shrink: 0;
+  }
+
+  .carousel-proyectos {
+    position: relative;
+    margin-top: 2.5rem;
+  }
+
+  .carousel-proyectos__track {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+  }
+
+  .carousel-proyectos__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-proyectos__marquee {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+  }
+
+  .carousel-proyectos__track.is-autoplay .carousel-proyectos__marquee {
+    animation: carousel-marquee linear infinite;
+    animation-duration: var(--carousel-duration, 40s);
+  }
+
+  .carousel-proyectos__marquee.is-paused {
+    animation-play-state: paused;
+  }
+
+  @keyframes carousel-marquee {
+    to {
+      transform: translateX(calc(-1 * var(--carousel-set-width, 0px)));
+    }
+  }
+
+  .carousel-proyectos__set {
+    display: flex;
+    flex-shrink: 0;
+    gap: 1.5rem;
+  }
+
+  .carousel-proyectos__item {
+    flex: 0 0 min(320px, 85vw);
+    scroll-snap-align: start;
+  }
+
+  .carousel-proyectos__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--ink);
+    font-size: 1.4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(35, 21, 15, 0.12);
+    transition: background-color 0.15s ease;
+  }
+
+  .carousel-proyectos__nav:hover {
+    background: var(--blush-soft);
+  }
+
+  .carousel-proyectos__nav--prev {
+    left: -0.75rem;
+  }
+
+  .carousel-proyectos__nav--next {
+    right: -0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .carousel-proyectos__nav {
+      display: none;
+    }
+  }
+
+  .nosotros-teaser {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding-block: clamp(1.75rem, 4vw, 2.75rem);
+    background: linear-gradient(135deg, var(--blush-soft), var(--paper) 130%);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nosotros-teaser :global(.nosotros-teaser__icon) {
+    position: absolute;
+    right: clamp(-1.5rem, 6vw, 2rem);
+    top: 50%;
+    z-index: -1;
+    width: clamp(80px, 12vw, 140px);
+    height: auto;
+    opacity: 0.3;
+    animation: objeto-float 7s ease-in-out infinite;
+  }
+
+  .nosotros-teaser__inner {
+    display: grid;
+    grid-template-columns: minmax(140px, 200px) 1fr auto;
+    gap: clamp(1.5rem, 4vw, 2.75rem);
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nosotros-teaser__media {
+    aspect-ratio: 1 / 1;
+    border: 1px dashed var(--stone);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--stone);
+    background: var(--paper-alt);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.75rem;
+  }
+
+  .nosotros-teaser__inner:hover .nosotros-teaser__cta {
+    transform: translateX(4px);
+  }
+
+  .nosotros-teaser__text h2 {
+    margin-top: 0.35rem;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    max-width: 20ch;
+  }
+
+  .nosotros-teaser__text p {
+    margin-top: 0.5rem;
+    color: var(--stone);
+    max-width: 46ch;
+  }
+
+  .nosotros-teaser__cta {
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--terracota);
+    transition: transform 0.2s ease;
+  }
+
+  @media (max-width: 640px) {
+    .nosotros-teaser__inner {
+      grid-template-columns: minmax(120px, 160px) 1fr;
+    }
+
+    .nosotros-teaser__cta {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .nosotros-teaser__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .nosotros-teaser__media {
+      max-width: 160px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .nosotros-teaser :global(.nosotros-teaser__icon),
+    .objeto-salida :global(.objeto-salida__icon) {
+      display: none;
+    }
+  }
+
+  .objeto-salida {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg, var(--sage) -30%, var(--sage-soft));
+    border-top: 1px solid var(--sage);
+    border-bottom: 1px solid var(--sage);
+  }
+
+  .objeto-salida :global(.objeto-salida__icon) {
+    position: absolute;
+    left: clamp(-1.5rem, 6vw, 3rem);
+    top: 50%;
+    z-index: -1;
+    width: clamp(90px, 14vw, 160px);
+    height: auto;
+    opacity: 0.4;
+    animation: objeto-float 7s ease-in-out infinite;
+  }
+
+  @keyframes objeto-float {
+    0%, 100% {
+      transform: translateY(-56%) rotate(-4deg);
+    }
+    50% {
+      transform: translateY(-44%) rotate(4deg);
+    }
+  }
+
+  .objeto-salida__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .objeto-salida__inner h2 {
+    margin-top: 0.35rem;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+  }
+
+  .objeto-salida__inner p {
+    margin-top: 0.5rem;
+    color: var(--sage-ink);
+  }
+
+  .cta-final {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .cta-final :global(.cta-final__bg) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cta-final__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(20, 12, 8, 0.82), rgba(20, 12, 8, 0.72));
+  }
+
+  .cta-final__inner {
+    text-align: center;
+    max-width: 640px;
+  }
+
+  .cta-final__inner h2 {
+    color: var(--paper);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .cta-final__inner p {
+    margin-top: 1rem;
+    color: var(--blush-soft);
+    font-size: 1.05rem;
+  }
+
+  .cta-final__inner .btn {
+    margin-top: 1.75rem;
+  }
+</style>
+
+<script>
+  function initCarouselProyectos() {
+    const track = document.querySelector<HTMLElement>(".carousel-proyectos__track");
+    const container = document.querySelector<HTMLElement>(".carousel-proyectos");
+    const marquee = document.querySelector<HTMLElement>(".carousel-proyectos__marquee");
+    if (!track || !container || !marquee) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const firstSet = marquee.querySelector<HTMLElement>(".carousel-proyectos__set");
+    const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
+    if (!firstSet || items.length <= 1) return;
+
+    const speedPerSec = 24; // px/s, misma velocidad que antes
+    let cachedSetWidth = 0;
+    let durationSeconds = 40;
+
+    function measure() {
+      cachedSetWidth = firstSet!.getBoundingClientRect().width + 24;
+      durationSeconds = cachedSetWidth / speedPerSec;
+      marquee!.style.setProperty("--carousel-set-width", `${cachedSetWidth}px`);
+      marquee!.style.setProperty("--carousel-duration", `${durationSeconds}s`);
+    }
+
+    measure();
+    // En un celular real las imágenes de las cards todavía no terminaron de
+    // cargar cuando corre esta primera medición, así que cachedSetWidth queda
+    // corto y se desincroniza del ancho real → eso es lo que hacía que el
+    // salto a autoplay (o el recentrado) no cayera exactamente en la
+    // siguiente card. Volvemos a medir cuando termina de cargar la página y,
+    // por las dudas, también justo antes de cada interacción.
+    window.addEventListener("load", measure);
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measure, 200);
+    });
+
+    // El auto-scroll corre como animación CSS (hilo de composición), así que
+    // no se frena si el mouse se mueve y el hilo principal está ocupado.
+    function enterAutoplay() {
+      if (reduceMotion) return;
+      measure();
+      const cycle = ((track!.scrollLeft % cachedSetWidth) + cachedSetWidth) % cachedSetWidth;
+      const progress = cachedSetWidth ? cycle / cachedSetWidth : 0;
+      marquee!.style.animationDelay = `-${(progress * durationSeconds).toFixed(3)}s`;
+      track!.scrollLeft = 0;
+      track!.classList.add("is-autoplay");
+    }
+
+    function exitAutoplay() {
+      if (!track!.classList.contains("is-autoplay")) return;
+      const cs = getComputedStyle(marquee!);
+      let currentX = 0;
+      if (cs.transform && cs.transform !== "none") {
+        const m = new DOMMatrixReadOnly(cs.transform);
+        currentX = -m.m41;
+      }
+      track!.classList.remove("is-autoplay");
+      track!.scrollLeft = ((currentX % cachedSetWidth) + cachedSetWidth) % cachedSetWidth;
+    }
+
+    function step(dir: 1 | -1) {
+      exitAutoplay();
+      if (dir === -1 && track!.scrollLeft <= 4) {
+        track!.scrollLeft += cachedSetWidth;
+      }
+      const amount = items[0].getBoundingClientRect().width + 24;
+      track!.scrollBy({ left: dir * amount, behavior: "smooth" });
+    }
+
+    let resumeTimer: ReturnType<typeof setTimeout> | undefined;
+    function restartAutoplay(delay: number) {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(enterAutoplay, delay);
+    }
+
+    container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => {
+      step(-1);
+      restartAutoplay(600);
+    });
+    container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => {
+      step(1);
+      restartAutoplay(600);
+    });
+
+    // El recentrado es solo una red de seguridad para no quedarnos sin
+    // buffer en una sesión de swipes larguísima: con 8 copias del set, un
+    // usuario real nunca lo llega a notar (tendría que deslizar sin pausa
+    // por más de 6 vueltas completas al carrusel). Lo dejamos disparar
+    // recién muy tarde (6x) y bien lejos del final real (8x) para que,
+    // aunque corra en medio de un momentum de iOS, no se note.
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    function recenterIfNeeded() {
+      if (track!.classList.contains("is-autoplay")) return;
+      if (track!.scrollLeft >= 6 * cachedSetWidth) {
+        track!.scrollLeft -= 3 * cachedSetWidth;
+      }
+    }
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (track!.classList.contains("is-autoplay")) return;
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(recenterIfNeeded, 300);
+      },
+      { passive: true }
+    );
+    track.addEventListener("scrollend", recenterIfNeeded, { passive: true });
+
+    items.forEach((item) => {
+      item.addEventListener("mouseenter", () => marquee!.classList.add("is-paused"));
+      item.addEventListener("mouseleave", () => marquee!.classList.remove("is-paused"));
+    });
+
+    // Una vez que el usuario toca el carrusel, el autoplay no vuelve a
+    // arrancar solo. Retomarlo significaba reescribir scrollLeft a mano
+    // (con el truco de animationDelay) y eso compite con el scroll táctil
+    // nativo: en iOS el navegador puede tomar la posición vieja como punto
+    // de partida del siguiente swipe antes de que el JS la corrija, y el
+    // carrusel queda pegado. Más simple y confiable: touch una vez, control
+    // manual el resto de la visita a la página.
+    container.addEventListener(
+      "touchstart",
+      () => {
+        clearTimeout(resumeTimer);
+        measure();
+        exitAutoplay();
+      },
+      { passive: true }
+    );
+
+    enterAutoplay();
+  }
+
+  initCarouselProyectos();
+  document.addEventListener("astro:page-load", initCarouselProyectos);
+</script>

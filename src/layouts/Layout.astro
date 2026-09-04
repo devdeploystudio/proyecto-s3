@@ -1,0 +1,142 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import WhatsappFloat from "../components/WhatsappFloat.astro";
+import LoadingScreen from "../components/LoadingScreen.astro";
+import "../styles/global.css";
+import { SITE, withBase } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  brand?: "proyecto" | "objeto";
+}
+
+const { title, description, noindex = true, brand = "proyecto" } = Astro.props;
+const pageTitle = title === SITE.nombre ? title : `${title}, ${SITE.nombre}`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" href={withBase("/favicon.png")} type="image/png" />
+    <link rel="apple-touch-icon" href={withBase("/apple-touch-icon.png")} />
+
+    <noscript>
+      <style>
+        [data-reveal],
+        [data-reveal-group] > * {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body data-brand={brand}>
+    <LoadingScreen brand={brand} />
+    <a href="#contenido" class="skip-link">Saltar al contenido</a>
+    <Header brand={brand} />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer brand={brand} />
+    <WhatsappFloat />
+
+    <script>
+      function initReveal() {
+        const targets = document.querySelectorAll("[data-reveal], [data-reveal-group]");
+        if (!targets.length) return;
+
+        if (!("IntersectionObserver" in window)) {
+          targets.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.05, rootMargin: "0px 0px -5% 0px" }
+        );
+
+        targets.forEach((el) => io.observe(el));
+      }
+
+      initReveal();
+      document.addEventListener("astro:page-load", initReveal);
+    </script>
+
+    <script>
+      function hideLoadingScreen() {
+        document.getElementById("loading-screen")?.classList.add("is-hidden");
+      }
+
+      window.addEventListener("load", () => setTimeout(hideLoadingScreen, 350));
+      setTimeout(hideLoadingScreen, 1800);
+
+      function setupBrandTransitions() {
+        const screen = document.getElementById("loading-screen");
+        const logo = document.getElementById("loading-screen-logo") as HTMLImageElement | null;
+        const title = document.getElementById("loading-screen-title");
+        if (!screen || !logo || !title) return;
+
+        const rawBase = screen.dataset.base ?? "/";
+        const base = rawBase.endsWith("/") ? rawBase : rawBase + "/";
+        const objetoPath = base + "objeto";
+
+        function isObjetoHref(href: string) {
+          return href === objetoPath || href.startsWith(objetoPath + "/");
+        }
+
+        const currentIsObjeto = document.body.dataset.brand === "objeto";
+        const proyectoLogo = screen.dataset.proyectoLogo ?? "";
+        const objetoLogo = screen.dataset.objetoLogo ?? "";
+        const proyectoNombre = screen.dataset.proyectoNombre ?? "Proyecto S3";
+        const objetoNombre = screen.dataset.objetoNombre ?? "Objeto S3";
+
+        document.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((link) => {
+          const href = link.getAttribute("href");
+          if (!href || href.startsWith("http") || href.startsWith("#") || link.target === "_blank") return;
+
+          const goingToObjeto = isObjetoHref(href);
+          const isCrossBrand = currentIsObjeto ? !goingToObjeto : goingToObjeto;
+          if (!isCrossBrand) return;
+
+          link.addEventListener("click", (e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            screen.dataset.brand = goingToObjeto ? "objeto" : "proyecto";
+            logo.src = goingToObjeto ? objetoLogo : proyectoLogo;
+            title.textContent = goingToObjeto ? objetoNombre : proyectoNombre;
+            screen.classList.remove("is-hidden");
+            setTimeout(() => {
+              window.location.href = href;
+            }, 450);
+          });
+        });
+      }
+
+      setupBrandTransitions();
+      document.addEventListener("astro:page-load", setupBrandTransitions);
+    </script>
+  </body>
+</html>

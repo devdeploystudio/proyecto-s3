@@ -1,0 +1,113 @@
+---
+import { Image } from "astro:assets";
+import type { Proyecto } from "../data/proyectos";
+import { withBase } from "../data/site";
+
+interface Props {
+  proyecto: Proyecto;
+}
+
+const { proyecto } = Astro.props;
+---
+
+<a class="card" href={withBase(`/proyectos/${proyecto.slug}/`)} data-acento={proyecto.acento}>
+  <div class="card__img">
+    <Image src={proyecto.tarjeta ?? proyecto.cover} alt={`${proyecto.titulo}, ${proyecto.tipo}`} width={640} height={480} />
+  </div>
+  <div class="card__body">
+    <p class="card__tipo">{proyecto.tipo}</p>
+    <h3 class="card__titulo">{proyecto.titulo}</h3>
+    <p class="card__resumen">{proyecto.resumen}</p>
+    <span class="card__cta">Ver proyecto →</span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 10px 30px rgba(35, 21, 15, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .card__img {
+    flex-shrink: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--paper-alt);
+  }
+
+  .card__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.25rem 1.4rem 1.5rem;
+  }
+
+  .card__tipo {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--terracota);
+  }
+
+  .card[data-acento="bordo"] .card__tipo {
+    color: var(--terracota-ink);
+  }
+
+  .card[data-acento="sage"] .card__tipo {
+    color: var(--sage-ink);
+  }
+
+  .card__titulo {
+    font-size: 1.5rem;
+    margin-top: 0.3rem;
+    color: var(--terracota);
+  }
+
+  .card[data-acento="bordo"] .card__titulo {
+    color: var(--terracota-ink);
+  }
+
+  .card[data-acento="sage"] .card__titulo {
+    color: var(--sage-ink);
+  }
+
+  .card__resumen {
+    margin-top: 0.6rem;
+    color: var(--stone);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .card__cta {
+    display: inline-block;
+    margin-top: auto;
+    padding-top: 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  .card:hover .card__cta {
+    color: var(--terracota);
+  }
+</style>

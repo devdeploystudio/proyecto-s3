@@ -1,0 +1,298 @@
+---
+import { Image } from "astro:assets";
+import type { Pieza } from "../data/objeto";
+import { COLORES } from "../data/objeto";
+import { linkWhatsapp } from "../data/site";
+
+interface Props {
+  pieza: Pieza;
+}
+
+const { pieza } = Astro.props;
+const formatoPrecio = new Intl.NumberFormat("es-AR", {
+  style: "currency",
+  currency: "ARS",
+  maximumFractionDigits: 0,
+});
+---
+
+<article class="pieza">
+  <div class="pieza__img">
+    {pieza.foto.map((foto, i) => (
+      <Image
+        src={foto}
+        alt={`${pieza.nombre}, ${pieza.tipo}`}
+        width={640}
+        height={640}
+        class:list={["pieza__slide", pieza.slug === "prisma" && "pieza__slide--recorte", i === 0 && "is-active"]}
+      />
+    ))}
+    {pieza.foto.length > 1 && (
+      <>
+        <button type="button" class="pieza__nav pieza__nav--prev" aria-label={`Foto anterior de ${pieza.nombre}`}>‹</button>
+        <button type="button" class="pieza__nav pieza__nav--next" aria-label={`Foto siguiente de ${pieza.nombre}`}>›</button>
+      </>
+    )}
+  </div>
+  <div class="pieza__body">
+    <p class="pieza__tipo">{pieza.tipo}</p>
+    <h3 class="pieza__nombre">{pieza.nombre}</h3>
+    <p class="pieza__medidas">{pieza.medidas}</p>
+    <p class="pieza__nota">Medida y color ajustables a pedido, según el módulo del material.</p>
+
+    <p class="pieza__colores-label">Colores de cerámica disponibles</p>
+    <ul class="pieza__colores">
+      {COLORES.map((color) => (
+        <li>
+          <button type="button" class="pieza__color" style={`--swatch: ${color.swatch}`} aria-label={color.nombre}>
+            <span class="pieza__color-tooltip" aria-hidden="true">{color.nombre}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <div class="pieza__footer">
+      {pieza.precio && <p class="pieza__precio">{formatoPrecio.format(pieza.precio)}</p>}
+      <a class="btn btn--sage" href={linkWhatsapp(`Hola! Quería consultar por la mesa ${pieza.nombre}.`)} target="_blank" rel="noopener noreferrer">
+        Consultar →
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .pieza {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .pieza__img {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--sage-soft);
+    overflow: hidden;
+  }
+
+  .pieza__img :global(.pieza__slide) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .pieza__img :global(.pieza__slide.is-active) {
+    opacity: 1;
+  }
+
+  .pieza__img :global(.pieza__slide--recorte) {
+    object-position: center 85%;
+  }
+
+  .pieza__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 253, 251, 0.88);
+    color: var(--ink);
+    font-size: 1.3rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .pieza__nav:hover {
+    background: var(--white);
+  }
+
+  .pieza__nav--prev {
+    left: 0.6rem;
+  }
+
+  .pieza__nav--next {
+    right: 0.6rem;
+  }
+
+  .pieza__body {
+    padding: 1.4rem 1.5rem 1.6rem;
+  }
+
+  .pieza__tipo {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--sage-ink);
+  }
+
+  .pieza__nombre {
+    font-size: 1.7rem;
+    margin-top: 0.3rem;
+  }
+
+  .pieza__medidas {
+    margin-top: 0.4rem;
+    color: var(--stone);
+    font-size: 0.95rem;
+  }
+
+  .pieza__nota {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--stone);
+  }
+
+  .pieza__colores-label {
+    margin-top: 0.9rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--stone);
+  }
+
+  .pieza__colores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .pieza__color {
+    --swatch: #fff;
+    position: relative;
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: visible;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+  }
+
+  .pieza__color::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 55%),
+      var(--swatch);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  }
+
+  .pieza__color::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 48px 48px;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+  }
+
+  .pieza__color-tooltip {
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.3rem 0.55rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 2;
+  }
+
+  .pieza__color:hover .pieza__color-tooltip,
+  .pieza__color:focus .pieza__color-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .pieza__footer {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pieza__precio {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+</style>
+
+<script>
+  function initPiezaCarousels() {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    document.querySelectorAll<HTMLElement>(".pieza__img").forEach((container) => {
+      const slides = Array.from(container.querySelectorAll<HTMLElement>(".pieza__slide"));
+      if (slides.length <= 1) return;
+
+      let current = slides.findIndex((s) => s.classList.contains("is-active"));
+      if (current < 0) current = 0;
+      let timer: ReturnType<typeof setInterval> | undefined;
+
+      function show(index: number) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((s, i) => s.classList.toggle("is-active", i === current));
+      }
+
+      function startAuto() {
+        if (reduceMotion) return;
+        stopAuto();
+        timer = setInterval(() => show(current + 1), 4000);
+      }
+
+      function stopAuto() {
+        clearInterval(timer);
+      }
+
+      container.querySelector(".pieza__nav--prev")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        show(current - 1);
+        startAuto();
+      });
+      container.querySelector(".pieza__nav--next")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        show(current + 1);
+        startAuto();
+      });
+
+      container.addEventListener("mouseenter", stopAuto);
+      container.addEventListener("mouseleave", startAuto);
+      startAuto();
+    });
+  }
+
+  initPiezaCarousels();
+  document.addEventListener("astro:page-load", initPiezaCarousels);
+</script>

@@ -1,0 +1,132 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ObjetoCard from "../../components/ObjetoCard.astro";
+import { Image } from "astro:assets";
+import { PIEZAS, TEXTO_OBJETO } from "../../data/objeto";
+import { SITE } from "../../data/site";
+import sillonImg from "../../assets/objeto/sillon-01.jpg";
+---
+
+<Layout
+  title="Objeto"
+  description="Objeto: muebles de diseño hechos a pedido por Proyecto S3. Piezas únicas y personalizables."
+  brand="objeto"
+>
+  <section class="hero-objeto">
+    <div class="wrap hero-objeto__inner">
+      <div class="hero-objeto__media">
+        <Image src={sillonImg} alt="Sillón y mesa Prisma de Objeto" width={800} height={1000} loading="eager" fetchpriority="high" />
+      </div>
+      <div>
+        <p class="eyebrow eyebrow--sage">Objeto</p>
+        <h1>Muebles de diseño, hechos a pedido.</h1>
+        {TEXTO_OBJETO.map((parrafo) => <p class="lead">{parrafo}</p>)}
+        <a class="eyebrow eyebrow--sage ig-link" href={SITE.instagramObjeto} target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="6" width="18" height="14" rx="3"></rect>
+            <circle cx="12" cy="13" r="4"></circle>
+            <path d="M8 6l1.4-2h5.2L16 6"></path>
+          </svg>
+          @object.s3 en Instagram →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section piezas">
+    <div class="wrap">
+      <p class="nota-encargo">
+        Las medidas y el color de cada pieza se pueden ajustar a pedido, dentro del módulo de la
+        materia prima utilizada en su fabricación. No trabajamos con stock: cada mueble se produce
+        por encargo, con contacto directo durante todo el proceso.
+      </p>
+
+      <h2 class="visually-hidden">Piezas disponibles</h2>
+      <div class="grid-objeto" data-reveal-group>
+        {PIEZAS.map((p) => <ObjetoCard pieza={p} />)}
+      </div>
+
+      <div class="proximamente" data-reveal>
+        <p>Nuevas piezas próximamente.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero-objeto {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    background: var(--sage-soft);
+  }
+
+  .hero-objeto__inner {
+    display: grid;
+    grid-template-columns: minmax(220px, 380px) 1fr;
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+
+  .hero-objeto__media {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .hero-objeto__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-objeto h1 {
+    margin-top: 0.75rem;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+  }
+
+  .lead {
+    margin-top: 1.1rem;
+    max-width: 46ch;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+
+  @media (max-width: 720px) {
+    .hero-objeto__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .piezas {
+    background: var(--sage);
+  }
+
+  .nota-encargo {
+    color: var(--paper);
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .ig-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    text-decoration: none;
+  }
+
+  .grid-objeto {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .proximamente {
+    margin-top: 2rem;
+    border: 1px dashed var(--paper);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: var(--paper);
+  }
+</style>

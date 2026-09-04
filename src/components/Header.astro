@@ -1,0 +1,309 @@
+---
+import { Image } from "astro:assets";
+import { SITE, withBase } from "../data/site";
+import proyectoCubo from "../assets/brand/proyecto-cubo.png";
+import objetoCubo from "../assets/brand/objeto-cubo.png";
+
+interface Props {
+  brand?: "proyecto" | "objeto";
+}
+
+const { brand = "proyecto" } = Astro.props;
+
+const navProyecto = [
+  { href: withBase("/"), label: "Inicio" },
+  { href: withBase("/estudio/"), label: "Estudio" },
+  { href: withBase("/proyectos/"), label: "Proyectos" },
+  { href: withBase("/contacto/"), label: "Contacto" },
+];
+
+const navObjeto = [
+  { href: withBase("/objeto/"), label: "Piezas" },
+];
+
+const isObjeto = brand === "objeto";
+const nav = isObjeto ? navObjeto : navProyecto;
+const logo = isObjeto ? objetoCubo : proyectoCubo;
+const nombre = isObjeto ? "Objeto S3" : SITE.nombre;
+const path = Astro.url.pathname;
+---
+
+<header class="header" data-brand={brand}>
+  <div class="wrap header__inner">
+    <a href={isObjeto ? withBase("/objeto/") : withBase("/")} class="logo">
+      <Image src={logo} alt={`Isotipo ${nombre}`} width={50} height={50} class="logo__mark" />
+      <span>{nombre}</span>
+    </a>
+
+    <nav aria-label="Navegación principal" class="nav">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={path === item.href ? "page" : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__side">
+      {!isObjeto && (
+        <a class="btn-crossbrand" href={withBase("/objeto/")}>
+          Conocé Objeto →
+        </a>
+      )}
+      {isObjeto && (
+        <a class="btn-crossbrand" href={withBase("/")}>
+          ← Proyecto S3
+        </a>
+      )}
+
+      <label for="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </label>
+    </div>
+
+    <input type="checkbox" id="menu-toggle" class="menu-toggle-input" />
+
+    <nav aria-label="Navegación móvil" class="nav-mobile">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header[data-brand="proyecto"] {
+    background: var(--terracota);
+    border-bottom-color: var(--terracota-ink);
+  }
+
+  .header[data-brand="objeto"] {
+    background: var(--sage-ink);
+    border-bottom-color: var(--sage-ink);
+  }
+
+  .header__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.9rem;
+    position: relative;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+  }
+
+  .header[data-brand="proyecto"] .logo,
+  .header[data-brand="objeto"] .logo {
+    color: var(--paper);
+  }
+
+  .logo :global(.logo__mark) {
+    border-radius: 3px;
+    display: block;
+  }
+
+  .nav {
+    justify-self: center;
+  }
+
+  .nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 2.5vw, 2.25rem);
+  }
+
+  .nav a {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--ink);
+    position: relative;
+    padding-bottom: 2px;
+  }
+
+  .header[data-brand="proyecto"] .nav a {
+    color: var(--paper);
+  }
+
+  .header[data-brand="proyecto"] .nav a[aria-current="page"],
+  .header[data-brand="proyecto"] .nav a:hover {
+    color: var(--ink);
+  }
+
+  .header[data-brand="objeto"] .nav a {
+    color: var(--paper);
+  }
+
+  .header[data-brand="objeto"] .nav a[aria-current="page"],
+  .header[data-brand="objeto"] .nav a:hover {
+    color: var(--sage-soft);
+  }
+
+  .header__side {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-self: end;
+  }
+
+  .btn-crossbrand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    padding: 0.55rem 1.05rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .header__side :global(.btn__mark) {
+    display: block;
+    border-radius: 2px;
+  }
+
+  .header[data-brand="proyecto"] .btn-crossbrand {
+    border-color: var(--paper);
+    color: var(--paper);
+  }
+
+  .header[data-brand="proyecto"] .btn-crossbrand:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .header[data-brand="objeto"] .btn-crossbrand {
+    border-color: var(--paper);
+    color: var(--paper);
+  }
+
+  .header[data-brand="objeto"] .btn-crossbrand:hover {
+    background: var(--paper);
+    color: var(--sage-ink);
+  }
+
+  .menu-toggle-input {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
+
+  .menu-toggle span {
+    width: 24px;
+    height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .header[data-brand="proyecto"] .menu-toggle span {
+    background: var(--paper);
+  }
+
+  .nav-mobile {
+    display: none;
+  }
+
+  @media (max-width: 720px) {
+    .nav {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    .btn-crossbrand {
+      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-mobile {
+      display: block;
+      max-height: 0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+      background: var(--terracota);
+      border-bottom: 0px solid var(--line);
+      transition: max-height 0.25s ease, border-bottom-width 0.25s ease;
+    }
+
+    .header[data-brand="objeto"] .nav-mobile {
+      background: var(--sage-ink);
+    }
+
+    .menu-toggle-input:checked ~ .nav-mobile {
+      max-height: 480px;
+      border-bottom-width: 1px;
+    }
+
+    .menu-toggle-input:checked ~ .header__side .menu-toggle span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .menu-toggle-input:checked ~ .header__side .menu-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle-input:checked ~ .header__side .menu-toggle span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .nav-mobile ul {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem clamp(1.25rem, 4vw, 2.5rem) 1.5rem;
+    }
+
+    .nav-mobile a {
+      display: block;
+      padding: 0.75rem 0;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 1.05rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header[data-brand="proyecto"] .nav-mobile a {
+      color: var(--paper);
+      border-bottom-color: var(--terracota-ink);
+    }
+  }
+</style>

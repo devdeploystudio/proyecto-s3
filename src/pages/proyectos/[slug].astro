@@ -1,0 +1,368 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Image, getImage } from "astro:assets";
+import { PROYECTOS } from "../../data/proyectos";
+import { linkWhatsapp, withBase } from "../../data/site";
+
+export function getStaticPaths() {
+  return PROYECTOS.map((proyecto) => ({
+    params: { slug: proyecto.slug },
+    props: { proyecto },
+  }));
+}
+
+const { proyecto } = Astro.props;
+
+const galeriaFull = await Promise.all(
+  proyecto.galeria.map((img) => getImage({ src: img, width: 1600 }))
+);
+---
+
+<Layout title={proyecto.titulo} description={proyecto.resumen}>
+  <article>
+    <section class="hero" data-acento={proyecto.acento}>
+      <div class="wrap">
+        <a href={withBase("/proyectos/")} class="volver">← Proyectos</a>
+        <p class="eyebrow" class:list={[proyecto.acento === "sage" && "eyebrow--sage", proyecto.acento === "bordo" && "eyebrow--bordo"]}>{proyecto.tipo}</p>
+        <div class="hero__row">
+          <h1>{proyecto.titulo}</h1>
+          <a class="hero__presentacion" href={withBase(proyecto.presentacion)} target="_blank" rel="noopener noreferrer">
+            Ver presentación →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section concepto">
+      <div class="wrap concepto__inner" data-reveal>
+        <div class="concepto__media">
+          <Image src={proyecto.cover} alt={proyecto.titulo} width={900} height={1000} />
+        </div>
+        <div class="concepto__text">
+          <h2>Concepto</h2>
+          <p>{proyecto.concepto}</p>
+        </div>
+      </div>
+    </section>
+
+    {proyecto.galeria.length > 0 && (
+      <section class="section galeria">
+        <div class="wrap">
+          <div class="galeria__grid" data-reveal-group>
+            {proyecto.galeria.map((img, i) => (
+              <button
+                type="button"
+                class="galeria__item"
+                data-index={i}
+                data-full={galeriaFull[i].src}
+                aria-label={`Ampliar imagen ${i + 1} de ${proyecto.galeria.length}`}
+              >
+                <Image src={img} alt={`${proyecto.titulo}, imagen del proyecto`} width={800} height={600} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {proyecto.galeria.length > 0 && (
+      <div class="lightbox" id="lightbox" hidden>
+        <button type="button" class="lightbox__close" id="lightbox-close" aria-label="Cerrar">✕</button>
+        <button type="button" class="lightbox__arrow lightbox__arrow--prev" id="lightbox-prev" aria-label="Imagen anterior">←</button>
+        <img id="lightbox-img" src="" alt="" />
+        <button type="button" class="lightbox__arrow lightbox__arrow--next" id="lightbox-next" aria-label="Imagen siguiente">→</button>
+        <p class="lightbox__count" id="lightbox-count" aria-live="polite"></p>
+      </div>
+    )}
+
+    <section class="section cta">
+      <Image class="cta__bg" src={proyecto.cover} alt="" width={1920} height={1280} loading="lazy" />
+      <div class="cta__overlay"></div>
+      <div class="wrap cta__inner" data-reveal>
+        <h2>¿Un proyecto en mente?</h2>
+        <a class="btn btn--primary" href={linkWhatsapp(`Hola! Vi el proyecto ${proyecto.titulo} y quería consultar por algo similar.`)} target="_blank" rel="noopener noreferrer">
+          Escribinos por WhatsApp →
+        </a>
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<script>
+  function setupLightbox() {
+    const lightbox = document.getElementById("lightbox");
+    if (!lightbox) return;
+
+    const items = Array.from(document.querySelectorAll<HTMLButtonElement>(".galeria__item"));
+    const img = document.getElementById("lightbox-img") as HTMLImageElement;
+    const count = document.getElementById("lightbox-count");
+    let current = 0;
+
+    function show(index: number) {
+      current = (index + items.length) % items.length;
+      const item = items[current];
+      img.src = item.dataset.full ?? "";
+      img.alt = item.querySelector("img")?.alt ?? "";
+      if (count) count.textContent = `${current + 1} / ${items.length}`;
+    }
+
+    function open(index: number) {
+      show(index);
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function close() {
+      lightbox.hidden = true;
+      document.body.style.overflow = "";
+    }
+
+    items.forEach((item, i) => {
+      item.addEventListener("click", () => open(i));
+    });
+
+    document.getElementById("lightbox-close")?.addEventListener("click", close);
+    document.getElementById("lightbox-prev")?.addEventListener("click", () => show(current - 1));
+    document.getElementById("lightbox-next")?.addEventListener("click", () => show(current + 1));
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (lightbox.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key === "ArrowRight") show(current + 1);
+    });
+  }
+
+  setupLightbox();
+  document.addEventListener("astro:page-load", setupLightbox);
+</script>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 6vw, 3.5rem) 1.5rem;
+    background: var(--blush-soft);
+  }
+
+  .volver {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+    color: var(--stone);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .hero__row {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+  }
+
+  .hero__presentacion {
+    flex-shrink: 0;
+    text-decoration: none;
+    color: var(--terracota);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding-bottom: 2px;
+    border-bottom: 1px solid currentColor;
+    transition: color 0.15s ease;
+  }
+
+  .hero__presentacion:hover {
+    color: var(--terracota-ink);
+  }
+
+  .concepto {
+    overflow-x: clip;
+  }
+
+  .concepto__inner {
+    display: grid;
+    grid-template-columns: minmax(240px, 420px) 1fr;
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+
+  .concepto__media {
+    aspect-ratio: 4 / 3;
+    margin-left: calc(-1 * var(--bleed-left));
+    width: calc(100% + var(--bleed-left));
+    border-radius: 0 var(--radius) var(--radius) 0;
+    overflow: hidden;
+  }
+
+  .concepto__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .concepto h2 {
+    font-size: 1.6rem;
+  }
+
+  .concepto p {
+    margin-top: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  @media (max-width: 720px) {
+    .concepto__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .concepto__media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  .galeria {
+    /* Sin esto, el padding inferior de "concepto" se suma al superior de
+       "galeria" y el espacio queda el doble que arriba, entre el hero y la
+       imagen principal. */
+    padding-top: 0;
+  }
+
+  .galeria__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 1.25rem;
+  }
+
+  .galeria__item {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: zoom-in;
+    aspect-ratio: 4 / 3;
+    display: block;
+    transition: opacity 0.15s ease;
+  }
+
+  .galeria__item:hover {
+    opacity: 0.88;
+  }
+
+  .galeria__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(15, 8, 5, 0.92);
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 5vw, 3rem);
+  }
+
+  .lightbox:not([hidden]) {
+    display: flex;
+  }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+
+  .lightbox__close,
+  .lightbox__arrow {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+  }
+
+  .lightbox__close:hover,
+  .lightbox__arrow:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .lightbox__close {
+    top: clamp(0.75rem, 3vw, 1.5rem);
+    right: clamp(0.75rem, 3vw, 1.5rem);
+  }
+
+  .lightbox__arrow--prev {
+    left: clamp(0.5rem, 3vw, 1.5rem);
+  }
+
+  .lightbox__arrow--next {
+    right: clamp(0.5rem, 3vw, 1.5rem);
+  }
+
+  .lightbox__count {
+    position: absolute;
+    bottom: clamp(0.75rem, 3vw, 1.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--white);
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .cta :global(.cta__bg) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cta__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(20, 12, 8, 0.82), rgba(20, 12, 8, 0.72));
+  }
+
+  .cta__inner {
+    text-align: center;
+  }
+
+  .cta__inner h2 {
+    color: var(--paper);
+  }
+
+  .cta__inner .btn {
+    margin-top: 1.5rem;
+  }
+</style>
