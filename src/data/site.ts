@@ -1,12 +1,18 @@
-// Config central del sitio. Datos de contacto reales pendientes de confirmar con el cliente.
+// Instagram/WhatsApp ahora viven en src/content/config/site.yaml, editable
+// desde /admin. Nombre/descripción del sitio quedan en código (no forman
+// parte del contenido editable por ahora). withBase/linkWhatsapp mantienen
+// exactamente la misma firma de antes para no tocar sus consumidores.
+import { getEntry } from "astro:content";
+
+const config = await getEntry("config", "site");
+
 export const SITE = {
   nombre: "Proyecto S3",
   descripcion:
     "Estudio familiar de arquitectura y construcción, reformas, remodelación, interiorismo y obra.",
-  instagramEstudio: "https://www.instagram.com/proyecto.s3/",
-  instagramObjeto: "https://www.instagram.com/object.s3/",
-  // TODO: pedir a Santino el número real de WhatsApp del estudio antes de publicar.
-  whatsappNumero: "",
+  instagramEstudio: config!.data.instagramEstudio,
+  instagramObjeto: config!.data.instagramObjeto,
+  whatsappNumero: config!.data.whatsappNumero,
 };
 
 export function linkWhatsapp(mensaje: string): string {

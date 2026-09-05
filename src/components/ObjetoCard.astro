@@ -14,17 +14,24 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
   currency: "ARS",
   maximumFractionDigits: 0,
 });
+
+// Solo se muestra un círculo por cada color que esta pieza tiene realmente
+// fotografiado (foto.color en su YAML) — no toda la paleta global.
+const coloresDisponibles = COLORES.filter((color) =>
+  pieza.foto.some((f) => f.color === color.nombre)
+);
 ---
 
 <article class="pieza">
   <div class="pieza__img">
     {pieza.foto.map((foto, i) => (
       <Image
-        src={foto}
-        alt={`${pieza.nombre}, ${pieza.tipo}`}
+        src={foto.imagen}
+        alt={foto.color ? `${pieza.nombre} en color ${foto.color}` : `${pieza.nombre}, ${pieza.tipo}`}
         width={640}
         height={640}
-        class:list={["pieza__slide", pieza.slug === "prisma" && "pieza__slide--recorte", i === 0 && "is-active"]}
+        class:list={["pieza__slide", pieza.slug === "prisma" && !foto.color && "pieza__slide--recorte", i === 0 && "is-active"]}
+        data-color={foto.color}
       />
     ))}
     {pieza.foto.length > 1 && (
@@ -33,6 +40,7 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
         <button type="button" class="pieza__nav pieza__nav--next" aria-label={`Foto siguiente de ${pieza.nombre}`}>›</button>
       </>
     )}
+    <span class="pieza__img-caption" aria-hidden="true" hidden></span>
   </div>
   <div class="pieza__body">
     <p class="pieza__tipo">{pieza.tipo}</p>
@@ -40,16 +48,20 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
     <p class="pieza__medidas">{pieza.medidas}</p>
     <p class="pieza__nota">Medida y color ajustables a pedido, según el módulo del material.</p>
 
-    <p class="pieza__colores-label">Colores de cerámica disponibles</p>
-    <ul class="pieza__colores">
-      {COLORES.map((color) => (
-        <li>
-          <button type="button" class="pieza__color" style={`--swatch: ${color.swatch}`} aria-label={color.nombre}>
-            <span class="pieza__color-tooltip" aria-hidden="true">{color.nombre}</span>
-          </button>
-        </li>
-      ))}
-    </ul>
+    {coloresDisponibles.length > 0 && (
+      <>
+        <p class="pieza__colores-label">Colores de cerámica disponibles</p>
+        <ul class="pieza__colores">
+          {coloresDisponibles.map((color) => (
+            <li>
+              <button type="button" class="pieza__color" style={`--swatch: ${color.swatch}`} data-nombre={color.nombre} aria-label={`Ver ${pieza.nombre} en color ${color.nombre}`}>
+                <span class="pieza__color-tooltip" aria-hidden="true">{color.nombre}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
 
     <div class="pieza__footer">
       {pieza.precio && <p class="pieza__precio">{formatoPrecio.format(pieza.precio)}</p>}
@@ -91,6 +103,23 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
 
   .pieza__img :global(.pieza__slide--recorte) {
     object-position: center 85%;
+  }
+
+  .pieza__img-caption {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    background: rgba(20, 12, 8, 0.72);
+    color: var(--paper);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    z-index: 2;
+  }
+
+  .pieza__img-caption[hidden] {
+    display: none;
   }
 
   .pieza__nav {
@@ -196,17 +225,11 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
       radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 55%),
       var(--swatch);
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+    transition: box-shadow 0.15s ease;
   }
 
-  .pieza__color::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    background-size: 48px 48px;
-    opacity: 0.16;
-    mix-blend-mode: overlay;
+  .pieza__color.is-selected::before {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14), 0 0 0 2px var(--white), 0 0 0 4px var(--sage-ink);
   }
 
   .pieza__color-tooltip {
@@ -228,7 +251,7 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
   }
 
   .pieza__color:hover .pieza__color-tooltip,
-  .pieza__color:focus .pieza__color-tooltip {
+  .pieza__color:focus-visible .pieza__color-tooltip {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
@@ -250,49 +273,87 @@ const formatoPrecio = new Intl.NumberFormat("es-AR", {
 </style>
 
 <script>
-  function initPiezaCarousels() {
+  // Las fotos de color (foto.color en el YAML de la pieza) son fotos reales
+  // de la pieza, mezcladas en el mismo carrusel que el resto — clickear un
+  // color simplemente navega el carrusel a esa foto puntual y lo marca
+  // como seleccionado. Clickear el mismo color de nuevo (o usar las
+  // flechas) retoma el autoplay normal.
+  function initPieza(pieza: HTMLElement) {
+    const img = pieza.querySelector<HTMLElement>(".pieza__img");
+    const caption = pieza.querySelector<HTMLElement>(".pieza__img-caption");
+    const botones = Array.from(pieza.querySelectorAll<HTMLElement>(".pieza__color"));
+    if (!img) return;
+
+    const slides = Array.from(img.querySelectorAll<HTMLElement>(".pieza__slide"));
+    if (!slides.length) return;
+
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let current = Math.max(
+      0,
+      slides.findIndex((s) => s.classList.contains("is-active"))
+    );
+    let timer: ReturnType<typeof setInterval> | undefined;
 
-    document.querySelectorAll<HTMLElement>(".pieza__img").forEach((container) => {
-      const slides = Array.from(container.querySelectorAll<HTMLElement>(".pieza__slide"));
-      if (slides.length <= 1) return;
-
-      let current = slides.findIndex((s) => s.classList.contains("is-active"));
-      if (current < 0) current = 0;
-      let timer: ReturnType<typeof setInterval> | undefined;
-
-      function show(index: number) {
-        current = (index + slides.length) % slides.length;
-        slides.forEach((s, i) => s.classList.toggle("is-active", i === current));
+    function mostrar(index: number, colorSeleccionado: string | null = null) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((s, i) => s.classList.toggle("is-active", i === current));
+      botones.forEach((b) => b.classList.toggle("is-selected", b.dataset.nombre === colorSeleccionado));
+      if (caption) {
+        if (colorSeleccionado) {
+          caption.textContent = colorSeleccionado;
+          caption.hidden = false;
+        } else {
+          caption.hidden = true;
+        }
       }
+    }
 
-      function startAuto() {
-        if (reduceMotion) return;
-        stopAuto();
-        timer = setInterval(() => show(current + 1), 4000);
-      }
+    function startAuto() {
+      if (reduceMotion || slides.length <= 1) return;
+      stopAuto();
+      timer = setInterval(() => mostrar(current + 1), 4000);
+    }
 
-      function stopAuto() {
-        clearInterval(timer);
-      }
+    function stopAuto() {
+      clearInterval(timer);
+    }
 
-      container.querySelector(".pieza__nav--prev")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        show(current - 1);
-        startAuto();
-      });
-      container.querySelector(".pieza__nav--next")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        show(current + 1);
-        startAuto();
-      });
-
-      container.addEventListener("mouseenter", stopAuto);
-      container.addEventListener("mouseleave", startAuto);
+    img.querySelector(".pieza__nav--prev")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      mostrar(current - 1);
       startAuto();
     });
+    img.querySelector(".pieza__nav--next")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      mostrar(current + 1);
+      startAuto();
+    });
+
+    img.addEventListener("mouseenter", stopAuto);
+    img.addEventListener("mouseleave", startAuto);
+
+    botones.forEach((boton) => {
+      boton.addEventListener("click", () => {
+        const nombre = boton.dataset.nombre ?? null;
+        if (boton.classList.contains("is-selected")) {
+          mostrar(current);
+          startAuto();
+          return;
+        }
+        const idx = slides.findIndex((s) => s.dataset.color === nombre);
+        if (idx < 0) return;
+        stopAuto();
+        mostrar(idx, nombre);
+      });
+    });
+
+    startAuto();
   }
 
-  initPiezaCarousels();
-  document.addEventListener("astro:page-load", initPiezaCarousels);
+  function initTodasLasPiezas() {
+    document.querySelectorAll<HTMLElement>(".pieza").forEach(initPieza);
+  }
+
+  initTodasLasPiezas();
+  document.addEventListener("astro:page-load", initTodasLasPiezas);
 </script>

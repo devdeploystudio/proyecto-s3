@@ -1,0 +1,62 @@
+name: Optimizar imágenes subidas
+
+# Corre después de cualquier push a main que toque src/assets (venga del
+# panel /admin o de un push manual) y comprime los archivos que cambiaron
+# en ese push. Si logra achicar algo, lo sube en un commit aparte del bot
+# — por eso el deploy no espera a este workflow, sale con el contenido
+# sin comprimir primero y el commit de optimización dispara otro deploy
+# después con las versiones livianas.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/assets/**/*.png"
+      - "src/assets/**/*.jpg"
+      - "src/assets/**/*.jpeg"
+      - "src/assets/**/*.webp"
+
+permissions:
+  contents: write
+
+jobs:
+  optimizar:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Detectar imágenes cambiadas en este push
+        id: cambios
+        run: |
+          ARCHIVOS=$(git diff --name-only --diff-filter=ACM "${{ github.event.before }}" "${{ github.event.after }}" -- 'src/assets/**/*.png' 'src/assets/**/*.jpg' 'src/assets/**/*.jpeg' 'src/assets/**/*.webp')
+          echo "archivos<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$ARCHIVOS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Comprimir
+        if: steps.cambios.outputs.archivos != ''
+        run: node scripts/compress-images.mjs "${{ steps.cambios.outputs.archivos }}"
+
+      - name: Commitear si algo se achicó
+        if: steps.cambios.outputs.archivos != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- src/assets
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: comprimir imágenes subidas [skip ci]"
+            git push
+          else
+            echo "Nada para comprimir (ya estaban optimizadas)."
+          fi

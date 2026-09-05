@@ -1,0 +1,16 @@
+orden: 5
+titulo: "Heladería DOTA"
+tipo: "Local comercial"
+acento: "sage"
+resumen: "Una heladería pensada como ritual: cada persona arma su helado paso a paso, en un espacio cálido y con identidad propia."
+concepto: "Diseñamos una heladería pensada para que cada persona sea parte activa en la creación de su helado. La propuesta invita a armarlo paso a paso, eligiendo bases, sabores y texturas, convirtiendo el momento en algo único y personal. El espacio acompaña esta idea: cálido, íntimo y con identidad propia. Usamos colores vivos, materiales cálidos y formas simples, buscando un ambiente fresco pero cuidado, donde cada detalle refuerza la experiencia. Más que un local, la heladería se vive como un ritual: un lugar diferente que combina diseño, identidad y lenguaje visual en una propuesta innovadora. En colaboración con @visualbymartina."
+cover: "../../assets/proyectos/dota/01-entrada-clean.jpg"
+galeria:
+  - "../../assets/proyectos/dota/01-entrada.jpg"
+  - "../../assets/proyectos/dota/07-fachada.jpg"
+  - "../../assets/proyectos/dota/08-merchandising.jpg"
+  - "../../assets/proyectos/dota/06-mostrador-ingredientes.jpg"
+  - "../../assets/proyectos/dota/02-concepto.jpg"
+  - "../../assets/proyectos/dota/04-lounge.jpg"
+  - "../../assets/proyectos/dota/05-mostrador.jpg"
+presentacion: "/pdfs/dota.pdf"

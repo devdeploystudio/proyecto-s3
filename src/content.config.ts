@@ -5,6 +5,7 @@ const proyectos = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/proyectos" }),
   schema: ({ image }) =>
     z.object({
+      orden: z.number(),
       titulo: z.string(),
       tipo: z.string(),
       acento: z.enum(["terracota", "bordo", "sage"]),
@@ -24,11 +25,20 @@ const objetoPiezas = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/objeto-piezas" }),
   schema: ({ image }) =>
     z.object({
+      orden: z.number(),
       nombre: z.string(),
       tipo: z.string(),
       medidas: z.string(),
-      precio: z.number().nullable(),
-      foto: z.array(image()),
+      precio: z.number().nullable().optional(),
+      // Cada foto puede llevar un color asociado (uno de los nombres en
+      // coloresObjeto): esa es la muestra real de la pieza en ese color, y
+      // habilita el círculo correspondiente en la ficha del producto.
+      foto: z.array(
+        z.object({
+          imagen: image(),
+          color: z.string().optional(),
+        })
+      ),
     }),
 });
 
@@ -53,6 +63,8 @@ const config = defineCollection({
     whatsappNumero: z.string(),
     textoNosotros: z.array(z.string()),
     textoObjeto: z.array(z.string()),
+    // Nombre y color del círculo. La foto real de cada pieza en ese color
+    // vive en la propia pieza (objeto-piezas/*.yaml → foto[].color).
     coloresObjeto: z.array(
       z.object({
         nombre: z.string(),

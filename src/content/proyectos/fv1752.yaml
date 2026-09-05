@@ -1,0 +1,13 @@
+orden: 4
+titulo: "Reforma FV1752"
+tipo: "Reforma de cocina"
+acento: "sage"
+resumen: "Cocina conectada al comedor, con doble mesada e isla desayunador sobre una arcada antes portante."
+concepto: "Esta cocina tenía una arcada que separaba los ambientes y hacía que todo se sintiera más chico. La propuesta fue abrir ese espacio y conectar cocina y comedor, logrando mayor amplitud y luz. Como la arcada era portante, lo resolvimos con un refuerzo metálico integrado al cielorraso, sin perder altura. En lugar de la clásica cocina en \"L\", diseñamos una doble mesada con isla desayunador. Esto no solo suma superficie de trabajo, sino que convierte la cocina en un lugar de encuentro. También aprovechamos la altura con dobles alacenas y cambiamos la ventana con el fin de liberar pared para generar más espacio de guardado."
+cover: "../../assets/proyectos/fv1752/02-cocina-a-clean.jpg"
+galeria:
+  - "../../assets/proyectos/fv1752/02-cocina-a.jpg"
+  - "../../assets/proyectos/fv1752/03-cocina-b.jpg"
+  - "../../assets/proyectos/fv1752/05-alacena-cocina.jpg"
+  - "../../assets/proyectos/fv1752/06-alacena-pantry.jpg"
+presentacion: "/pdfs/fv1752.pdf"

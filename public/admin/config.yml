@@ -1,0 +1,113 @@
+backend:
+  name: github
+  repo: devdeploystudio/proyecto-s3
+  branch: main
+  # Proxy de login por GitHub OAuth (Cloudflare Worker sveltia-cms-auth).
+  # Completar con la URL del Worker una vez desplegado — sin esto el botón
+  # de "Iniciar sesión con GitHub" no funciona en el sitio publicado.
+  base_url: https://REEMPLAZAR-worker.workers.dev
+
+# Permite probar el panel en local (npm run dev) sin pasar por GitHub:
+# corriendo `npx decap-server` en otra terminal, escribe directo a los
+# archivos locales. No se usa en el sitio publicado (ahí manda `backend`).
+local_backend: true
+
+media_folder: "src/assets"
+public_folder: "src/assets"
+
+collections:
+  - name: "proyectos"
+    label: "Proyectos"
+    label_singular: "Proyecto"
+    folder: "src/content/proyectos"
+    create: true
+    delete: true
+    identifier_field: titulo
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: "Slug (usado en la URL, sin espacios ni tildes)", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
+      - { label: "Orden en el listado", name: "orden", widget: "number", value_type: "int" }
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
+      - label: "Color de acento"
+        name: "acento"
+        widget: "select"
+        options: [{ label: "Terracota", value: "terracota" }, { label: "Bordó", value: "bordo" }, { label: "Sage", value: "sage" }]
+      - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
+      - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
+      - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
+      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
+      - label: "Galería"
+        name: "galeria"
+        widget: "list"
+        field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
+      - { label: "PDF de presentación (ruta en /public/pdfs/)", name: "presentacion", widget: "string" }
+
+  - name: "objeto-piezas"
+    label: "Objeto — Piezas"
+    label_singular: "Pieza"
+    folder: "src/content/objeto-piezas"
+    create: true
+    delete: true
+    identifier_field: nombre
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
+      - { label: "Orden", name: "orden", widget: "number", value_type: "int" }
+      - { label: "Nombre", name: "nombre", widget: "string" }
+      - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
+      - { label: "Medidas", name: "medidas", widget: "string" }
+      - { label: "Precio (vacío = a consultar)", name: "precio", widget: "number", value_type: "int", required: false }
+      - label: "Fotos"
+        name: "foto"
+        widget: "list"
+        summary: "{{fields.color}}"
+        fields:
+          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto", public_folder: "../../assets/objeto" }
+          - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false }
+
+  - name: "equipo"
+    label: "Equipo"
+    label_singular: "Integrante"
+    folder: "src/content/equipo"
+    create: true
+    delete: true
+    identifier_field: nombre
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
+      - { label: "Orden", name: "orden", widget: "number", value_type: "int" }
+      - { label: "Nombre", name: "nombre", widget: "string" }
+      - { label: "Rol", name: "rol", widget: "string" }
+      - { label: "Bio", name: "bio", widget: "text" }
+      - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+
+  - name: "config"
+    label: "Configuración del sitio"
+    files:
+      - name: "site"
+        label: "Config general"
+        file: "src/content/config/site.yaml"
+        fields:
+          - label: "Sitio"
+            name: "site"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "site" }
+              - { label: "Instagram — Estudio (link completo)", name: "instagramEstudio", widget: "string" }
+              - { label: "Instagram — Objeto (link completo)", name: "instagramObjeto", widget: "string" }
+              - { label: "WhatsApp (solo números, con código de país, ej: 5491122334455)", name: "whatsappNumero", widget: "string", required: false }
+              - label: "Texto — El estudio (un párrafo por línea)"
+                name: "textoNosotros"
+                widget: "list"
+                field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - label: "Texto — Objeto (un párrafo por línea)"
+                name: "textoObjeto"
+                widget: "list"
+                field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - label: "Colores disponibles (Objeto)"
+                name: "coloresObjeto"
+                widget: "list"
+                fields:
+                  - { label: "Nombre", name: "nombre", widget: "string" }
+                  - { label: "Color del círculo", name: "swatch", widget: "color" }
