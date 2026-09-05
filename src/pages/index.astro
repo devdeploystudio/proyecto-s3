@@ -57,13 +57,15 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       </div>
       <div class="carousel-proyectos">
         <div class="carousel-proyectos__track" data-reveal-group>
-          <div class="carousel-proyectos__set">
-            {PROYECTOS.map((p) => (
-              <div class="carousel-proyectos__item">
-                <ProyectoCard proyecto={p} />
-              </div>
-            ))}
-          </div>
+          {Array.from({ length: 8 }).map((_, setIndex) => (
+            <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
+              {PROYECTOS.map((p) => (
+                <div class="carousel-proyectos__item">
+                  <ProyectoCard proyecto={p} />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--prev" aria-label="Proyecto anterior">‹</button>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--next" aria-label="Proyecto siguiente">›</button>
@@ -430,24 +432,110 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
 </style>
 
 <script>
-  // Sin autoplay: es scroll horizontal nativo puro, con un solo set de
-  // cards en el DOM. El tope en ambos extremos (primer y último proyecto)
-  // es el límite físico normal del navegador, no algo que dependa de JS.
+  // Desktop (mouse) mantiene el autoplay infinito de siempre, que nunca dio
+  // problema ahí. En touch (celular/tablet) el swipe nativo competía con el
+  // truco de loop y se rompía, así que ahí directamente no hay autoplay: un
+  // solo set visible, con tope real (límite nativo del navegador) en los
+  // dos extremos. La distinción es por tipo de input (hover/pointer), no
+  // por ancho de pantalla, porque el problema es el touch en sí.
   function initCarouselProyectos() {
     const track = document.querySelector<HTMLElement>(".carousel-proyectos__track");
     const container = document.querySelector<HTMLElement>(".carousel-proyectos");
     if (!track || !container) return;
 
-    const items = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__item"));
-    if (items.length <= 1) return;
+    const allSets = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__set"));
+    const firstSet = allSets[0];
+    const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
+    if (!firstSet || items.length <= 1) return;
+
+    const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+    if (isTouchDevice) {
+      // Sacamos las 7 copias de más: el navegador ya no tiene dónde
+      // scrollear más allá del último proyecto real, en ningún sentido.
+      allSets.slice(1).forEach((set) => {
+        set.style.display = "none";
+      });
+
+      function step(dir: 1 | -1) {
+        const amount = items[0].getBoundingClientRect().width + 24;
+        track!.scrollBy({ left: dir * amount, behavior: "smooth" });
+      }
+      container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => step(-1));
+      container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => step(1));
+      return;
+    }
+
+    // --- Desktop: autoplay con loop infinito ---
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let cachedSetWidth = 0;
+    function measure() {
+      cachedSetWidth = firstSet!.getBoundingClientRect().width + 24;
+    }
+    measure();
+    window.addEventListener("load", measure);
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measure, 200);
+    });
+
+    // Intervalo fijo en vez de requestAnimationFrame: no se acelera ni se
+    // frena si el hilo principal está ocupado recalculando estilos :hover
+    // al mover el mouse (esa era la causa de la aceleración original).
+    // 60 pasos/seg (en vez de 20) para que se vea fluido, acumulando en un
+    // float propio: `scrollLeft` redondea a entero al leerlo, así que sumarle
+    // directamente perdía la parte fraccionaria de cada paso chico y se
+    // notaba tosco.
+    const stepMs = 16;
+    const speedPerSec = 24; // px/s
+    const pxPerStep = speedPerSec * (stepMs / 1000);
+
+    let position = 0;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    function tick() {
+      position += pxPerStep;
+      if (position >= cachedSetWidth) {
+        position -= cachedSetWidth;
+      }
+      track!.scrollLeft = position;
+    }
+    function startAuto() {
+      if (reduceMotion || intervalId) return;
+      position = track!.scrollLeft; // resincroniza por si se movió a mano
+      intervalId = setInterval(tick, stepMs);
+    }
+    function stopAuto() {
+      clearInterval(intervalId);
+      intervalId = undefined;
+    }
 
     function step(dir: 1 | -1) {
+      stopAuto();
+      if (dir === -1 && track!.scrollLeft <= 4) {
+        track!.scrollLeft += cachedSetWidth;
+      }
       const amount = items[0].getBoundingClientRect().width + 24;
       track!.scrollBy({ left: dir * amount, behavior: "smooth" });
+      restartAuto(600);
+    }
+
+    let resumeTimer: ReturnType<typeof setTimeout> | undefined;
+    function restartAuto(delay: number) {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(startAuto, delay);
     }
 
     container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => step(-1));
     container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => step(1));
+
+    items.forEach((item) => {
+      item.addEventListener("mouseenter", stopAuto);
+      item.addEventListener("mouseleave", startAuto);
+    });
+
+    startAuto();
   }
 
   initCarouselProyectos();
