@@ -485,24 +485,25 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       intervalId = undefined;
     }
 
-    // Red de seguridad para el swipe manual: si el usuario arrastra más
-    // rápido que el forward-wrap de arriba (o el navegador dispara el
-    // scroll nativo directamente, sin pasar por tick()), esto lo corrige
-    // igual, sin animation-delay ni conversiones de por medio.
+    // Mientras el autoplay está prendido, el tick() de arriba ya hace el
+    // wrap hacia el primer set (loop infinito, invisible porque hay 8
+    // copias iguales). Pero una vez que el usuario toca el carrusel y pasa
+    // a control manual, dejamos de intentar "loopear": hay un tope duro en
+    // el último proyecto real. Así nunca se puede deslizar de más y quedar
+    // mirando el fondo vacío después del último set.
     track.addEventListener(
       "scroll",
       () => {
-        if (track!.scrollLeft >= cachedSetWidth) {
-          track!.scrollLeft -= cachedSetWidth;
+        if (intervalId) return; // autoplay corriendo: lo maneja tick()
+        const max = cachedSetWidth - track!.clientWidth;
+        if (track!.scrollLeft > max) {
+          track!.scrollLeft = max;
         }
       },
       { passive: true }
     );
 
     function step(dir: 1 | -1) {
-      if (dir === -1 && track!.scrollLeft <= 4) {
-        track!.scrollLeft += cachedSetWidth;
-      }
       const amount = items[0].getBoundingClientRect().width + 24;
       track!.scrollBy({ left: dir * amount, behavior: "smooth" });
     }
