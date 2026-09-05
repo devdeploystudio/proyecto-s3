@@ -188,6 +188,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 0.25rem;
@@ -437,7 +438,8 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     if (!track || !container) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const firstSet = track.querySelector<HTMLElement>(".carousel-proyectos__set");
+    const allSets = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__set"));
+    const firstSet = allSets[0];
     const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
     if (!firstSet || items.length <= 1) return;
 
@@ -485,23 +487,22 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       intervalId = undefined;
     }
 
-    // Mientras el autoplay está prendido, el tick() de arriba ya hace el
-    // wrap hacia el primer set (loop infinito, invisible porque hay 8
-    // copias iguales). Pero una vez que el usuario toca el carrusel y pasa
-    // a control manual, dejamos de intentar "loopear": hay un tope duro en
-    // el último proyecto real. Así nunca se puede deslizar de más y quedar
-    // mirando el fondo vacío después del último set.
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (intervalId) return; // autoplay corriendo: lo maneja tick()
-        const max = cachedSetWidth - track!.clientWidth;
-        if (track!.scrollLeft > max) {
-          track!.scrollLeft = max;
-        }
-      },
-      { passive: true }
-    );
+    // Tope duro para el swipe manual: en vez de corregir scrollLeft a mano
+    // en cada evento "scroll" (que en iOS pierde contra el momentum nativo
+    // en pleno vuelo, y ahí es donde se seguía viendo el fondo), sacamos
+    // directamente del layout las 7 copias de más apenas el usuario toca.
+    // El navegador ya no tiene dónde scrollear más allá del último
+    // proyecto real: es su propio límite físico, no algo que el JS tenga
+    // que pelear en cada frame.
+    let manualMode = false;
+    function enterManualMode() {
+      if (manualMode) return;
+      manualMode = true;
+      stopAuto();
+      allSets.slice(1).forEach((set) => {
+        set.style.display = "none";
+      });
+    }
 
     function step(dir: 1 | -1) {
       const amount = items[0].getBoundingClientRect().width + 24;
@@ -533,7 +534,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     // Una vez que el usuario toca el carrusel en mobile, el autoplay no
     // vuelve a arrancar solo: queda 100% bajo control manual (scroll
     // nativo) por el resto de la visita a la página.
-    container.addEventListener("touchstart", stopAuto, { passive: true });
+    container.addEventListener("touchstart", enterManualMode, { passive: true });
 
     startAuto();
   }
