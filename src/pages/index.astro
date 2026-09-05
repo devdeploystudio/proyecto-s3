@@ -5,8 +5,8 @@ import { Image } from "astro:assets";
 import { PROYECTOS } from "../data/proyectos";
 import { TEXTO_NOSOTROS } from "../data/equipo";
 import { SITE, linkWhatsapp, withBase } from "../data/site";
-import heroImg from "../assets/proyectos/ns235/01-06.jpg";
-import ctaImg from "../assets/proyectos/n366/01-06.jpg";
+import heroImg from "../assets/proyectos/ns235/01-06-hero.jpg";
+import ctaImg from "../assets/proyectos/n366/01-06-hero.jpg";
 import objetoCubo from "../assets/brand/objeto-cubo.png";
 import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
 ---
@@ -57,17 +57,15 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       </div>
       <div class="carousel-proyectos">
         <div class="carousel-proyectos__track" data-reveal-group>
-          <div class="carousel-proyectos__marquee">
-            {Array.from({ length: 8 }).map((_, setIndex) => (
-              <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
-                {PROYECTOS.map((p) => (
-                  <div class="carousel-proyectos__item">
-                    <ProyectoCard proyecto={p} />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+          {Array.from({ length: 8 }).map((_, setIndex) => (
+            <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
+              {PROYECTOS.map((p) => (
+                <div class="carousel-proyectos__item">
+                  <ProyectoCard proyecto={p} />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--prev" aria-label="Proyecto anterior">‹</button>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--next" aria-label="Proyecto siguiente">›</button>
@@ -187,6 +185,8 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
   }
 
   .carousel-proyectos__track {
+    display: flex;
+    gap: 1.5rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -195,27 +195,6 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
 
   .carousel-proyectos__track::-webkit-scrollbar {
     display: none;
-  }
-
-  .carousel-proyectos__marquee {
-    display: flex;
-    gap: 1.5rem;
-    width: max-content;
-  }
-
-  .carousel-proyectos__track.is-autoplay .carousel-proyectos__marquee {
-    animation: carousel-marquee linear infinite;
-    animation-duration: var(--carousel-duration, 40s);
-  }
-
-  .carousel-proyectos__marquee.is-paused {
-    animation-play-state: paused;
-  }
-
-  @keyframes carousel-marquee {
-    to {
-      transform: translateX(calc(-1 * var(--carousel-set-width, 0px)));
-    }
   }
 
   .carousel-proyectos__set {
@@ -377,7 +356,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     z-index: -1;
     width: clamp(90px, 14vw, 160px);
     height: auto;
-    opacity: 0.4;
+    opacity: 1;
     animation: objeto-float 7s ease-in-out infinite;
   }
 
@@ -455,32 +434,25 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
   function initCarouselProyectos() {
     const track = document.querySelector<HTMLElement>(".carousel-proyectos__track");
     const container = document.querySelector<HTMLElement>(".carousel-proyectos");
-    const marquee = document.querySelector<HTMLElement>(".carousel-proyectos__marquee");
-    if (!track || !container || !marquee) return;
+    if (!track || !container) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const firstSet = marquee.querySelector<HTMLElement>(".carousel-proyectos__set");
+    const firstSet = track.querySelector<HTMLElement>(".carousel-proyectos__set");
     const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
     if (!firstSet || items.length <= 1) return;
 
-    const speedPerSec = 24; // px/s, misma velocidad que antes
+    // Una sola fuente de verdad para la posición (scrollLeft nativo), tanto
+    // para el autoplay como para el swipe manual. Versiones anteriores
+    // manejaban el autoplay con una animación CSS (transform) que había que
+    // convertir a scrollLeft cada vez que el usuario tocaba la pantalla; en
+    // iOS esa conversión podía perderse contra el scroll táctil nativo y el
+    // carrusel se quedaba pegado. Con un solo valor no hay conversión que
+    // pueda fallar.
     let cachedSetWidth = 0;
-    let durationSeconds = 40;
-
     function measure() {
       cachedSetWidth = firstSet!.getBoundingClientRect().width + 24;
-      durationSeconds = cachedSetWidth / speedPerSec;
-      marquee!.style.setProperty("--carousel-set-width", `${cachedSetWidth}px`);
-      marquee!.style.setProperty("--carousel-duration", `${durationSeconds}s`);
     }
-
     measure();
-    // En un celular real las imágenes de las cards todavía no terminaron de
-    // cargar cuando corre esta primera medición, así que cachedSetWidth queda
-    // corto y se desincroniza del ancho real → eso es lo que hacía que el
-    // salto a autoplay (o el recentrado) no cayera exactamente en la
-    // siguiente card. Volvemos a medir cuando termina de cargar la página y,
-    // por las dudas, también justo antes de cada interacción.
     window.addEventListener("load", measure);
     let resizeTimer: ReturnType<typeof setTimeout> | undefined;
     window.addEventListener("resize", () => {
@@ -488,32 +460,46 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       resizeTimer = setTimeout(measure, 200);
     });
 
-    // El auto-scroll corre como animación CSS (hilo de composición), así que
-    // no se frena si el mouse se mueve y el hilo principal está ocupado.
-    function enterAutoplay() {
-      if (reduceMotion) return;
-      measure();
-      const cycle = ((track!.scrollLeft % cachedSetWidth) + cachedSetWidth) % cachedSetWidth;
-      const progress = cachedSetWidth ? cycle / cachedSetWidth : 0;
-      marquee!.style.animationDelay = `-${(progress * durationSeconds).toFixed(3)}s`;
-      track!.scrollLeft = 0;
-      track!.classList.add("is-autoplay");
+    // El loop no depende de requestAnimationFrame (que corre a 60fps y puede
+    // acelerarse o trabarse si el hilo principal está ocupado, p. ej.
+    // recalculando estilos :hover al mover el mouse). Un intervalo fijo de
+    // pasos chicos es imperceptible como jank y no le importa si algún tick
+    // llega un poco tarde.
+    const stepMs = 50;
+    const speedPerSec = 24; // px/s, la velocidad que ya andaba bien
+    const pxPerStep = speedPerSec * (stepMs / 1000);
+
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    function tick() {
+      track!.scrollLeft += pxPerStep;
+      if (track!.scrollLeft >= cachedSetWidth) {
+        track!.scrollLeft -= cachedSetWidth;
+      }
+    }
+    function startAuto() {
+      if (reduceMotion || intervalId) return;
+      intervalId = setInterval(tick, stepMs);
+    }
+    function stopAuto() {
+      clearInterval(intervalId);
+      intervalId = undefined;
     }
 
-    function exitAutoplay() {
-      if (!track!.classList.contains("is-autoplay")) return;
-      const cs = getComputedStyle(marquee!);
-      let currentX = 0;
-      if (cs.transform && cs.transform !== "none") {
-        const m = new DOMMatrixReadOnly(cs.transform);
-        currentX = -m.m41;
-      }
-      track!.classList.remove("is-autoplay");
-      track!.scrollLeft = ((currentX % cachedSetWidth) + cachedSetWidth) % cachedSetWidth;
-    }
+    // Red de seguridad para el swipe manual: si el usuario arrastra más
+    // rápido que el forward-wrap de arriba (o el navegador dispara el
+    // scroll nativo directamente, sin pasar por tick()), esto lo corrige
+    // igual, sin animation-delay ni conversiones de por medio.
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (track!.scrollLeft >= cachedSetWidth) {
+          track!.scrollLeft -= cachedSetWidth;
+        }
+      },
+      { passive: true }
+    );
 
     function step(dir: 1 | -1) {
-      exitAutoplay();
       if (dir === -1 && track!.scrollLeft <= 4) {
         track!.scrollLeft += cachedSetWidth;
       }
@@ -522,67 +508,33 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     }
 
     let resumeTimer: ReturnType<typeof setTimeout> | undefined;
-    function restartAutoplay(delay: number) {
+    function restartAuto(delay: number) {
       clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(enterAutoplay, delay);
+      resumeTimer = setTimeout(startAuto, delay);
     }
 
     container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => {
+      stopAuto();
       step(-1);
-      restartAutoplay(600);
+      restartAuto(600);
     });
     container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => {
+      stopAuto();
       step(1);
-      restartAutoplay(600);
+      restartAuto(600);
     });
-
-    // El recentrado es solo una red de seguridad para no quedarnos sin
-    // buffer en una sesión de swipes larguísima: con 8 copias del set, un
-    // usuario real nunca lo llega a notar (tendría que deslizar sin pausa
-    // por más de 6 vueltas completas al carrusel). Lo dejamos disparar
-    // recién muy tarde (6x) y bien lejos del final real (8x) para que,
-    // aunque corra en medio de un momentum de iOS, no se note.
-    let settleTimer: ReturnType<typeof setTimeout> | undefined;
-    function recenterIfNeeded() {
-      if (track!.classList.contains("is-autoplay")) return;
-      if (track!.scrollLeft >= 6 * cachedSetWidth) {
-        track!.scrollLeft -= 3 * cachedSetWidth;
-      }
-    }
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (track!.classList.contains("is-autoplay")) return;
-        clearTimeout(settleTimer);
-        settleTimer = setTimeout(recenterIfNeeded, 300);
-      },
-      { passive: true }
-    );
-    track.addEventListener("scrollend", recenterIfNeeded, { passive: true });
 
     items.forEach((item) => {
-      item.addEventListener("mouseenter", () => marquee!.classList.add("is-paused"));
-      item.addEventListener("mouseleave", () => marquee!.classList.remove("is-paused"));
+      item.addEventListener("mouseenter", stopAuto);
+      item.addEventListener("mouseleave", startAuto);
     });
 
-    // Una vez que el usuario toca el carrusel, el autoplay no vuelve a
-    // arrancar solo. Retomarlo significaba reescribir scrollLeft a mano
-    // (con el truco de animationDelay) y eso compite con el scroll táctil
-    // nativo: en iOS el navegador puede tomar la posición vieja como punto
-    // de partida del siguiente swipe antes de que el JS la corrija, y el
-    // carrusel queda pegado. Más simple y confiable: touch una vez, control
-    // manual el resto de la visita a la página.
-    container.addEventListener(
-      "touchstart",
-      () => {
-        clearTimeout(resumeTimer);
-        measure();
-        exitAutoplay();
-      },
-      { passive: true }
-    );
+    // Una vez que el usuario toca el carrusel en mobile, el autoplay no
+    // vuelve a arrancar solo: queda 100% bajo control manual (scroll
+    // nativo) por el resto de la visita a la página.
+    container.addEventListener("touchstart", stopAuto, { passive: true });
 
-    enterAutoplay();
+    startAuto();
   }
 
   initCarouselProyectos();

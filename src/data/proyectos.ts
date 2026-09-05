@@ -2,7 +2,7 @@
 // Texto de concepto verbatim, fotos exportadas directamente de cada PDF de proyecto.
 // No inventar proyectos adicionales sin fuente.
 
-import ns235Tarjeta from "../assets/proyectos/ns235/01-01.jpg";
+import ns235Tarjeta from "../assets/proyectos/ns235/01-01-tarjeta.jpg";
 import ns235Cover from "../assets/proyectos/ns235/01-01-clean.jpg";
 import ns235Img1 from "../assets/proyectos/ns235/01-04.jpg";
 import ns235Img2 from "../assets/proyectos/ns235/01-05.jpg";
@@ -15,7 +15,7 @@ import ns235Plano from "../assets/proyectos/ns235/01-12.jpg";
 import ns235Corte from "../assets/proyectos/ns235/01-13.jpg";
 import ns235Materiales from "../assets/proyectos/ns235/01-15.jpg";
 
-import n366Tarjeta from "../assets/proyectos/n366/01-01.jpg";
+import n366Tarjeta from "../assets/proyectos/n366/01-01-tarjeta.jpg";
 import n366Cover from "../assets/proyectos/n366/01-01-clean.jpg";
 import n366Quincho from "../assets/proyectos/n366/01-06.jpg";
 import n366QuinchoB from "../assets/proyectos/n366/quincho-b.jpg";
@@ -36,7 +36,7 @@ import n366CorteB from "../assets/proyectos/n366/01-20.jpg";
 import n366MaterialidadQuincho from "../assets/proyectos/n366/materialidad-quincho.jpg";
 import n366MaterialidadPileta from "../assets/proyectos/n366/materialidad-pileta.jpg";
 
-import b953Tarjeta from "../assets/proyectos/b953/01-01.jpg";
+import b953Tarjeta from "../assets/proyectos/b953/01-01-tarjeta.jpg";
 import b953Cover from "../assets/proyectos/b953/01-01-clean.jpg";
 import b953LivingA from "../assets/proyectos/b953/living-a.jpg";
 import b953LivingB from "../assets/proyectos/b953/living-b.jpg";
