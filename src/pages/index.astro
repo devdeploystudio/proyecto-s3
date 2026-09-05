@@ -197,6 +197,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
   .carousel-proyectos__track {
     display: flex;
     flex-wrap: nowrap;
+    will-change: transform;
     gap: 1.5rem;
     padding-bottom: 0.25rem;
   }
@@ -520,15 +521,26 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       viewport!.setPointerCapture(e.pointerId);
       viewport!.classList.add("is-dragging");
     });
+    // En touch, pointermove puede disparar más seguido que los frames de
+    // pantalla: escribir el transform en cada evento crudo se sentía
+    // tosco. Se guarda solo la posición del dedo y se aplica una vez por
+    // frame con requestAnimationFrame.
+    let dragRaf: number | undefined;
+    let pendingX = 0;
     viewport.addEventListener("pointermove", (e) => {
       if (!arrastrando) return;
-      const now = performance.now();
-      const dt = now - lastMoveT;
-      if (dt > 0) velX = (lastMoveX - e.clientX) / dt;
-      lastMoveX = e.clientX;
-      lastMoveT = now;
-      pos = clampPos(startPos + (startX - e.clientX));
-      mover();
+      pendingX = e.clientX;
+      if (dragRaf !== undefined) return;
+      dragRaf = requestAnimationFrame(() => {
+        dragRaf = undefined;
+        const now = performance.now();
+        const dt = now - lastMoveT;
+        if (dt > 0) velX = (lastMoveX - pendingX) / dt;
+        lastMoveX = pendingX;
+        lastMoveT = now;
+        pos = clampPos(startPos + (startX - pendingX));
+        mover();
+      });
     });
 
     function inercia() {
@@ -551,6 +563,10 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     function soltar() {
       if (!arrastrando) return;
       arrastrando = false;
+      if (dragRaf !== undefined) {
+        cancelAnimationFrame(dragRaf);
+        dragRaf = undefined;
+      }
       viewport!.classList.remove("is-dragging");
       if (Math.abs(velX) > 0.02) inercia();
       else encima = false;
