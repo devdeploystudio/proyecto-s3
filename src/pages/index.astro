@@ -56,16 +56,14 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
         <a class="btn btn--ghost proyectos-destacados__ver-todos" href={withBase("/proyectos/")}>Ver todos →</a>
       </div>
       <div class="carousel-proyectos">
-        <div class="carousel-proyectos__track" data-reveal-group>
-          {Array.from({ length: 8 }).map((_, setIndex) => (
-            <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
-              {PROYECTOS.map((p) => (
-                <div class="carousel-proyectos__item">
-                  <ProyectoCard proyecto={p} />
-                </div>
-              ))}
-            </div>
-          ))}
+        <div class="carousel-proyectos__viewport">
+          <div class="carousel-proyectos__track" data-reveal-group>
+            {PROYECTOS.map((p) => (
+              <div class="carousel-proyectos__item">
+                <ProyectoCard proyecto={p} />
+              </div>
+            ))}
+          </div>
         </div>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--prev" aria-label="Proyecto anterior">‹</button>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--next" aria-label="Proyecto siguiente">›</button>
@@ -184,28 +182,31 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     margin-top: 2.5rem;
   }
 
+  .carousel-proyectos__viewport {
+    overflow: hidden;
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .carousel-proyectos__viewport.is-dragging {
+    cursor: grabbing;
+  }
+
   .carousel-proyectos__track {
     display: flex;
     gap: 1.5rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
+    width: max-content;
     padding-bottom: 0.25rem;
-  }
-
-  .carousel-proyectos__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .carousel-proyectos__set {
-    display: flex;
-    flex-shrink: 0;
-    gap: 1.5rem;
   }
 
   .carousel-proyectos__item {
     flex: 0 0 min(320px, 85vw);
-    scroll-snap-align: start;
+  }
+
+  .carousel-proyectos__item a {
+    -webkit-user-drag: none;
   }
 
   .carousel-proyectos__nav {
@@ -431,119 +432,144 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
 </style>
 
 <script>
-  // Desktop (mouse) mantiene el autoplay infinito de siempre, que nunca dio
-  // problema ahí. En touch (celular/tablet) el swipe nativo competía con el
-  // truco de loop y se rompía, así que ahí directamente no hay autoplay: un
-  // solo set visible, con tope real (límite nativo del navegador) en los
-  // dos extremos. OJO: la distinción NO se hace con matchMedia("hover"/
-  // "pointer") — esos media features pueden reportar mal en iOS Safari
-  // (hover:hover / pointer:fine en un dispositivo táctil), lo que mandaba
-  // iPhones reales a la rama de desktop con las 8 copias duplicadas y
-  // autoplay infinito: eso era el "sigue scrolleando de largo" real. Se
-  // usa en cambio la presencia de la API de eventos táctiles, que no
-  // depende de esa detección de features de interacción.
+  // Portado tal cual del carrusel "A quién apuntamos" de la referencia
+  // (deploy_), que funciona bien tanto en desktop como en mobile con el
+  // MISMO código (sin ramas por tipo de dispositivo). La diferencia clave
+  // contra los intentos anteriores: la tira NO usa scroll nativo
+  // (overflow-x/scrollLeft) — se mueve con transform: translateX vía JS,
+  // así se evita por completo la familia de bugs de iOS Safari donde el
+  // scrollLeft/contentSize interno no se actualiza bien (que era la causa
+  // real de que se pudiera seguir "scrolleando" de largo). El drag
+  // funciona igual con mouse y con dedo (pointer events + touch-action:
+  // pan-y para dejar pasar el scroll vertical de la página).
   function initCarouselProyectos() {
+    const viewport = document.querySelector<HTMLElement>(".carousel-proyectos__viewport");
     const track = document.querySelector<HTMLElement>(".carousel-proyectos__track");
     const container = document.querySelector<HTMLElement>(".carousel-proyectos");
-    if (!track || !container) return;
+    if (!viewport || !track || !container) return;
+    if (track.dataset.cloned === "true") return; // ya inicializado (astro:page-load)
 
-    const allSets = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__set"));
-    const firstSet = allSets[0];
-    const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
-    if (!firstSet || items.length <= 1) return;
+    const originales = Array.from(track.children) as HTMLElement[];
+    if (originales.length <= 1) return;
 
-    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    track.dataset.cloned = "true";
+    originales.forEach((item) => {
+      const clon = item.cloneNode(true) as HTMLElement;
+      clon.setAttribute("aria-hidden", "true");
+      clon.querySelectorAll("a").forEach((a) => a.setAttribute("tabindex", "-1"));
+      track.appendChild(clon);
+    });
 
-    if (isTouchDevice) {
-      // Sacamos las 7 copias de más DEL DOM (no con display:none): iOS
-      // Safari tiene un bug conocido donde -webkit-overflow-scrolling:touch
-      // no actualiza el contentSize interno del scroll cuando el contenido
-      // se esconde con display:none, y el usuario puede seguir scrolleando
-      // de largo aunque no se vea nada. Sacando los nodos directamente no
-      // queda ninguna métrica vieja de la que colgarse.
-      allSets.slice(1).forEach((set) => {
-        set.remove();
-      });
-
-      function step(dir: 1 | -1) {
-        const amount = items[0].getBoundingClientRect().width + 24;
-        track!.scrollBy({ left: dir * amount, behavior: "smooth" });
-      }
-      container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => step(-1));
-      container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => step(1));
-      return;
-    }
-
-    // --- Desktop: autoplay con loop infinito ---
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const VELOCIDAD = 24; // px/s
 
-    let cachedSetWidth = 0;
-    function measure() {
-      cachedSetWidth = firstSet!.getBoundingClientRect().width + 24;
+    let setW = 0;
+    let paso = 0;
+    let pos = 0;
+    let encima = false;
+    let aLaVista = true;
+
+    function medir() {
+      const gap = parseFloat(getComputedStyle(track!).columnGap) || 0;
+      paso = originales[0].getBoundingClientRect().width + gap;
+      setW = originales.reduce((sum, item) => sum + item.getBoundingClientRect().width + gap, 0);
     }
-    measure();
-    window.addEventListener("load", measure);
-    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(measure, 200);
+    medir();
+    window.addEventListener("resize", medir);
+
+    function mover() {
+      track!.style.transform = `translateX(${-pos}px)`;
+    }
+
+    new IntersectionObserver(
+      ([e]) => {
+        aLaVista = e.isIntersecting;
+      },
+      { threshold: 0.1 }
+    ).observe(viewport);
+
+    (["pointerenter", "focusin"] as const).forEach((ev) => viewport!.addEventListener(ev, () => (encima = true)));
+    (["pointerleave", "focusout"] as const).forEach((ev) => viewport!.addEventListener(ev, () => (encima = false)));
+
+    const clampPos = (p: number) => ((p % setW) + setW) % setW;
+
+    container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => {
+      pos = clampPos(pos - paso);
+      mover();
+    });
+    container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => {
+      pos = clampPos(pos + paso);
+      mover();
     });
 
-    // Intervalo fijo en vez de requestAnimationFrame: no se acelera ni se
-    // frena si el hilo principal está ocupado recalculando estilos :hover
-    // al mover el mouse (esa era la causa de la aceleración original).
-    // 60 pasos/seg (en vez de 20) para que se vea fluido, acumulando en un
-    // float propio: `scrollLeft` redondea a entero al leerlo, así que sumarle
-    // directamente perdía la parte fraccionaria de cada paso chico y se
-    // notaba tosco.
-    const stepMs = 16;
-    const speedPerSec = 24; // px/s
-    const pxPerStep = speedPerSec * (stepMs / 1000);
+    let arrastrando = false;
+    let startX = 0;
+    let startPos = 0;
+    let velX = 0;
+    let lastMoveX = 0;
+    let lastMoveT = 0;
 
-    let position = 0;
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-    function tick() {
-      position += pxPerStep;
-      if (position >= cachedSetWidth) {
-        position -= cachedSetWidth;
-      }
-      track!.scrollLeft = position;
-    }
-    function startAuto() {
-      if (reduceMotion || intervalId) return;
-      position = track!.scrollLeft; // resincroniza por si se movió a mano
-      intervalId = setInterval(tick, stepMs);
-    }
-    function stopAuto() {
-      clearInterval(intervalId);
-      intervalId = undefined;
-    }
-
-    function step(dir: 1 | -1) {
-      stopAuto();
-      if (dir === -1 && track!.scrollLeft <= 4) {
-        track!.scrollLeft += cachedSetWidth;
-      }
-      const amount = items[0].getBoundingClientRect().width + 24;
-      track!.scrollBy({ left: dir * amount, behavior: "smooth" });
-      restartAuto(600);
-    }
-
-    let resumeTimer: ReturnType<typeof setTimeout> | undefined;
-    function restartAuto(delay: number) {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(startAuto, delay);
-    }
-
-    container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => step(-1));
-    container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => step(1));
-
-    items.forEach((item) => {
-      item.addEventListener("mouseenter", stopAuto);
-      item.addEventListener("mouseleave", startAuto);
+    viewport.addEventListener("pointerdown", (e) => {
+      arrastrando = true;
+      encima = true;
+      startX = e.clientX;
+      startPos = pos;
+      lastMoveX = e.clientX;
+      lastMoveT = performance.now();
+      velX = 0;
+      viewport!.setPointerCapture(e.pointerId);
+      viewport!.classList.add("is-dragging");
+    });
+    viewport.addEventListener("pointermove", (e) => {
+      if (!arrastrando) return;
+      const now = performance.now();
+      const dt = now - lastMoveT;
+      if (dt > 0) velX = (lastMoveX - e.clientX) / dt;
+      lastMoveX = e.clientX;
+      lastMoveT = now;
+      pos = clampPos(startPos + (startX - e.clientX));
+      mover();
     });
 
-    startAuto();
+    function inercia() {
+      let v = velX;
+      let last = performance.now();
+      function coast(now: number) {
+        const dt = now - last;
+        last = now;
+        v *= Math.pow(0.94, dt / 16);
+        if (Math.abs(v) < 0.02) {
+          encima = false;
+          return;
+        }
+        pos = clampPos(pos + v * dt);
+        mover();
+        requestAnimationFrame(coast);
+      }
+      coast(last);
+    }
+    function soltar() {
+      if (!arrastrando) return;
+      arrastrando = false;
+      viewport!.classList.remove("is-dragging");
+      if (Math.abs(velX) > 0.02) inercia();
+      else encima = false;
+    }
+    viewport.addEventListener("pointerup", soltar);
+    viewport.addEventListener("pointercancel", soltar);
+
+    if (reduceMotion) return;
+
+    let last = performance.now();
+    requestAnimationFrame(function tick(now) {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!encima && aLaVista) {
+        pos = (pos + VELOCIDAD * dt) % setW;
+        mover();
+      }
+      requestAnimationFrame(tick);
+    });
   }
 
   initCarouselProyectos();
