@@ -57,15 +57,13 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       </div>
       <div class="carousel-proyectos">
         <div class="carousel-proyectos__track" data-reveal-group>
-          {Array.from({ length: 8 }).map((_, setIndex) => (
-            <div class="carousel-proyectos__set" aria-hidden={setIndex > 0 ? "true" : undefined}>
-              {PROYECTOS.map((p) => (
-                <div class="carousel-proyectos__item">
-                  <ProyectoCard proyecto={p} />
-                </div>
-              ))}
-            </div>
-          ))}
+          <div class="carousel-proyectos__set">
+            {PROYECTOS.map((p) => (
+              <div class="carousel-proyectos__item">
+                <ProyectoCard proyecto={p} />
+              </div>
+            ))}
+          </div>
         </div>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--prev" aria-label="Proyecto anterior">‹</button>
         <button type="button" class="carousel-proyectos__nav carousel-proyectos__nav--next" aria-label="Proyecto siguiente">›</button>
@@ -432,111 +430,24 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
 </style>
 
 <script>
+  // Sin autoplay: es scroll horizontal nativo puro, con un solo set de
+  // cards en el DOM. El tope en ambos extremos (primer y último proyecto)
+  // es el límite físico normal del navegador, no algo que dependa de JS.
   function initCarouselProyectos() {
     const track = document.querySelector<HTMLElement>(".carousel-proyectos__track");
     const container = document.querySelector<HTMLElement>(".carousel-proyectos");
     if (!track || !container) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const allSets = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__set"));
-    const firstSet = allSets[0];
-    const items = firstSet ? Array.from(firstSet.querySelectorAll<HTMLElement>(".carousel-proyectos__item")) : [];
-    if (!firstSet || items.length <= 1) return;
-
-    // Una sola fuente de verdad para la posición (scrollLeft nativo), tanto
-    // para el autoplay como para el swipe manual. Versiones anteriores
-    // manejaban el autoplay con una animación CSS (transform) que había que
-    // convertir a scrollLeft cada vez que el usuario tocaba la pantalla; en
-    // iOS esa conversión podía perderse contra el scroll táctil nativo y el
-    // carrusel se quedaba pegado. Con un solo valor no hay conversión que
-    // pueda fallar.
-    let cachedSetWidth = 0;
-    function measure() {
-      cachedSetWidth = firstSet!.getBoundingClientRect().width + 24;
-    }
-    measure();
-    window.addEventListener("load", measure);
-    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(measure, 200);
-    });
-
-    // El loop no depende de requestAnimationFrame (que corre a 60fps y puede
-    // acelerarse o trabarse si el hilo principal está ocupado, p. ej.
-    // recalculando estilos :hover al mover el mouse). Un intervalo fijo de
-    // pasos chicos es imperceptible como jank y no le importa si algún tick
-    // llega un poco tarde.
-    const stepMs = 50;
-    const speedPerSec = 24; // px/s, la velocidad que ya andaba bien
-    const pxPerStep = speedPerSec * (stepMs / 1000);
-
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-    function tick() {
-      track!.scrollLeft += pxPerStep;
-      if (track!.scrollLeft >= cachedSetWidth) {
-        track!.scrollLeft -= cachedSetWidth;
-      }
-    }
-    function startAuto() {
-      if (reduceMotion || intervalId) return;
-      intervalId = setInterval(tick, stepMs);
-    }
-    function stopAuto() {
-      clearInterval(intervalId);
-      intervalId = undefined;
-    }
-
-    // Tope duro para el swipe manual: en vez de corregir scrollLeft a mano
-    // en cada evento "scroll" (que en iOS pierde contra el momentum nativo
-    // en pleno vuelo, y ahí es donde se seguía viendo el fondo), sacamos
-    // directamente del layout las 7 copias de más apenas el usuario toca.
-    // El navegador ya no tiene dónde scrollear más allá del último
-    // proyecto real: es su propio límite físico, no algo que el JS tenga
-    // que pelear en cada frame.
-    let manualMode = false;
-    function enterManualMode() {
-      if (manualMode) return;
-      manualMode = true;
-      stopAuto();
-      allSets.slice(1).forEach((set) => {
-        set.style.display = "none";
-      });
-    }
+    const items = Array.from(track.querySelectorAll<HTMLElement>(".carousel-proyectos__item"));
+    if (items.length <= 1) return;
 
     function step(dir: 1 | -1) {
       const amount = items[0].getBoundingClientRect().width + 24;
       track!.scrollBy({ left: dir * amount, behavior: "smooth" });
     }
 
-    let resumeTimer: ReturnType<typeof setTimeout> | undefined;
-    function restartAuto(delay: number) {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(startAuto, delay);
-    }
-
-    container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => {
-      stopAuto();
-      step(-1);
-      restartAuto(600);
-    });
-    container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => {
-      stopAuto();
-      step(1);
-      restartAuto(600);
-    });
-
-    items.forEach((item) => {
-      item.addEventListener("mouseenter", stopAuto);
-      item.addEventListener("mouseleave", startAuto);
-    });
-
-    // Una vez que el usuario toca el carrusel en mobile, el autoplay no
-    // vuelve a arrancar solo: queda 100% bajo control manual (scroll
-    // nativo) por el resto de la visita a la página.
-    container.addEventListener("touchstart", enterManualMode, { passive: true });
-
-    startAuto();
+    container.querySelector(".carousel-proyectos__nav--prev")?.addEventListener("click", () => step(-1));
+    container.querySelector(".carousel-proyectos__nav--next")?.addEventListener("click", () => step(1));
   }
 
   initCarouselProyectos();
