@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import { EQUIPO, TEXTO_NOSOTROS } from "../data/equipo";
 import { SITE } from "../data/site";
 import ctaImg from "../assets/proyectos/b953/comedor-a.jpg";
+import grupalImg from "../assets/equipo/grupal.jpg";
 ---
 
 <Layout
@@ -11,10 +12,10 @@ import ctaImg from "../assets/proyectos/b953/comedor-a.jpg";
   description="Conocé a Proyecto S3: un estudio familiar de arquitectura y construcción integrado por Santino, Marcelo y Lautaro Schembari."
 >
   <section class="section intro">
+    <div class="intro__media">
+      <Image src={grupalImg} alt="El equipo de Proyecto S3" width={900} height={700} />
+    </div>
     <div class="wrap intro__inner">
-      <div class="intro__media">
-        <p>Foto del equipo, próximamente</p>
-      </div>
       <div class="intro__text">
         <p class="eyebrow">El estudio</p>
         <h1>Un laburo de familia, atravesado por la arquitectura.</h1>
@@ -67,25 +68,46 @@ import ctaImg from "../assets/proyectos/b953/comedor-a.jpg";
 </Layout>
 
 <style>
-  .intro__inner {
-    display: grid;
-    grid-template-columns: minmax(220px, 380px) 1fr;
-    gap: clamp(1.75rem, 4vw, 3.5rem);
-    align-items: center;
+  .intro {
+    position: relative;
+    overflow: hidden;
+    /* Ancho de la foto, medido desde el borde real de la pantalla. */
+    --bleed-w: min(46vw, 700px);
+    /* Cuánto del wrap (centrado, con su propio margen) ya queda "gratis"
+       detrás de la foto — para no contarlo dos veces al correr el texto. */
+    --wrap-inset: calc((100vw - min(100vw, var(--max-w))) / 2 + var(--gutter));
   }
 
+  /* La foto grupal es horizontal (4:3): en vez de recortarla fuerte dentro
+     de una columna angosta, sangra hasta el borde izquierdo real de la
+     pantalla (foto a sangre), y el texto queda en su columna de siempre. */
   .intro__media {
-    aspect-ratio: 4 / 5;
-    border: 1px dashed var(--stone);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--stone);
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--bleed-w);
+    overflow: hidden;
     background: var(--paper-alt);
-    font-size: 0.95rem;
-    text-align: center;
-    padding: 1rem;
+  }
+
+  .intro__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+
+  .intro__inner {
+    padding-block: clamp(2rem, 5vw, 3rem);
+  }
+
+  .intro__text {
+    /* margin-left es relativo al wrap, no a la pantalla — por eso se resta
+       wrap-inset, si no el texto arrancaba mucho más a la derecha de lo
+       que se ve la foto y quedaba angosto. */
+    margin-left: max(0px, calc(var(--bleed-w) - var(--wrap-inset) + 1.5rem));
+    padding-left: clamp(1.25rem, 3vw, 2.5rem);
   }
 
   .intro h1 {
@@ -101,17 +123,17 @@ import ctaImg from "../assets/proyectos/b953/comedor-a.jpg";
   }
 
   @media (max-width: 720px) {
-    .intro__inner {
-      grid-template-columns: 1fr;
-    }
-
     .intro__media {
+      position: static;
+      width: 100%;
       aspect-ratio: 16 / 9;
+      margin-bottom: 1.5rem;
     }
-  }
 
-  .equipo {
-    padding-top: 0;
+    .intro__text {
+      margin-left: 0;
+      padding-left: 0;
+    }
   }
 
   .equipo h2 {

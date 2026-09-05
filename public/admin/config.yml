@@ -63,7 +63,7 @@ collections:
         widget: "list"
         summary: "{{fields.color}}"
         fields:
-          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto", public_folder: "../../assets/objeto" }
+          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{fields.slug}}", public_folder: "../../assets/objeto/{{fields.slug}}" }
           - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false }
 
   - name: "equipo"

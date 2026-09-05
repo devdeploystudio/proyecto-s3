@@ -20,9 +20,13 @@ if (!files.length) {
 
 for (const file of files) {
   try {
-    const before = (await fs.stat(file)).size;
+    const original = await fs.readFile(file);
+    const before = original.length;
     const ext = path.extname(file).toLowerCase();
-    const img = sharp(file);
+    // sharp(rutaDeArchivo) deja el archivo abierto para lectura, y en
+    // Windows eso bloquea la escritura posterior al mismo path — por eso
+    // se le pasa el buffer ya leído, no la ruta.
+    const img = sharp(original);
     let buffer;
 
     if (ext === ".png") {
