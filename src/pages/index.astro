@@ -451,10 +451,14 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
     if (isTouchDevice) {
-      // Sacamos las 7 copias de más: el navegador ya no tiene dónde
-      // scrollear más allá del último proyecto real, en ningún sentido.
+      // Sacamos las 7 copias de más DEL DOM (no con display:none): iOS
+      // Safari tiene un bug conocido donde -webkit-overflow-scrolling:touch
+      // no actualiza el contentSize interno del scroll cuando el contenido
+      // se esconde con display:none, y el usuario puede seguir scrolleando
+      // de largo aunque no se vea nada. Sacando los nodos directamente no
+      // queda ninguna métrica vieja de la que colgarse.
       allSets.slice(1).forEach((set) => {
-        set.style.display = "none";
+        set.remove();
       });
 
       function step(dir: 1 | -1) {
