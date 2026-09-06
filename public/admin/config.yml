@@ -15,16 +15,15 @@ public_folder: "src/assets"
 
 collections:
   - name: "proyectos"
-    label: "Proyectos"
+    label: "📁 Proyectos"
     label_singular: "Proyecto"
+    description: "Aparecen en la página \"Proyectos\" y en el carrusel de la portada (Inicio)."
     folder: "src/content/proyectos"
     create: true
     delete: true
     identifier_field: titulo
-    slug: "{{fields.slug}}"
+    reorder: { key: orden }
     fields:
-      - { label: "Slug (usado en la URL, sin espacios ni tildes)", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
-      - { label: "Orden en el listado", name: "orden", widget: "number", value_type: "int" }
       - { label: "Título", name: "titulo", widget: "string" }
       - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
       - label: "Color de acento"
@@ -33,25 +32,24 @@ collections:
         options: [{ label: "Terracota", value: "terracota" }, { label: "Bordó", value: "bordo" }, { label: "Sage", value: "sage" }]
       - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
       - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
-      - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
-      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
+      - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
       - label: "Galería"
         name: "galeria"
         widget: "list"
-        field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{fields.slug}}", public_folder: "../../assets/proyectos/{{fields.slug}}" }
-      - { label: "PDF de presentación (ruta en /public/pdfs/)", name: "presentacion", widget: "string" }
+        field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - { label: "PDF de presentación", name: "presentacion", widget: "file", media_folder: "/public/pdfs", public_folder: "/pdfs" }
 
   - name: "objeto-piezas"
-    label: "Objeto — Piezas"
+    label: "🪑 Objeto → Piezas"
     label_singular: "Pieza"
+    description: "Las mesas y muebles que aparecen en la página \"Objeto\"."
     folder: "src/content/objeto-piezas"
     create: true
     delete: true
     identifier_field: nombre
-    slug: "{{fields.slug}}"
+    reorder: { key: orden }
     fields:
-      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
-      - { label: "Orden", name: "orden", widget: "number", value_type: "int" }
       - { label: "Nombre", name: "nombre", widget: "string" }
       - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
       - { label: "Medidas", name: "medidas", widget: "string" }
@@ -61,27 +59,27 @@ collections:
         widget: "list"
         summary: "{{fields.color}}"
         fields:
-          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{fields.slug}}", public_folder: "../../assets/objeto/{{fields.slug}}" }
+          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{slug}}", public_folder: "../../assets/objeto/{{slug}}" }
           - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false }
 
   - name: "equipo"
-    label: "Equipo"
+    label: "👥 Estudio → Equipo"
     label_singular: "Integrante"
+    description: "Las personas que aparecen en la página \"Estudio\"."
     folder: "src/content/equipo"
     create: true
     delete: true
     identifier_field: nombre
-    slug: "{{fields.slug}}"
+    reorder: { key: orden }
     fields:
-      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Solo minúsculas, números y guiones"] }
-      - { label: "Orden", name: "orden", widget: "number", value_type: "int" }
       - { label: "Nombre", name: "nombre", widget: "string" }
       - { label: "Rol", name: "rol", widget: "string" }
       - { label: "Bio", name: "bio", widget: "text" }
       - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
 
   - name: "config"
-    label: "Configuración del sitio"
+    label: "⚙️ Configuración general"
+    description: "Instagram, WhatsApp y los textos de las páginas Estudio/Objeto — no pertenece a una sola página."
     files:
       - name: "site"
         label: "Config general"
