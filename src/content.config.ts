@@ -61,7 +61,26 @@ const config = defineCollection({
     instagramEstudio: z.string(),
     instagramObjeto: z.string(),
     whatsappNumero: z.string(),
+  }),
+});
+
+// Texto de la página "Estudio" — colección aparte (no dentro de `equipo`)
+// porque es un bloque único compartido, no algo por persona; queda
+// nombrada igual que `equipo` en el panel para que se vean agrupadas.
+const configEstudio = defineCollection({
+  loader: file("./src/content/config/estudio.yaml"),
+  schema: z.object({
+    id: z.string(),
     textoNosotros: z.array(z.string()),
+  }),
+});
+
+// Ídem para "Objeto": texto de intro + paleta de colores (compartidos por
+// todas las piezas), separado de `objetoPiezas` por la misma razón.
+const configObjeto = defineCollection({
+  loader: file("./src/content/config/objeto.yaml"),
+  schema: z.object({
+    id: z.string(),
     textoObjeto: z.array(z.string()),
     // Nombre y color del círculo. La foto real de cada pieza en ese color
     // vive en la propia pieza (objeto-piezas/*.yaml → foto[].color).
@@ -74,4 +93,4 @@ const config = defineCollection({
   }),
 });
 
-export const collections = { proyectos, objetoPiezas, equipo, config };
+export const collections = { proyectos, objetoPiezas, equipo, config, configEstudio, configObjeto };

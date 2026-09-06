@@ -66,6 +66,30 @@ collections:
           - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{slug}}", public_folder: "../../assets/objeto/{{slug}}" }
           - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false }
 
+  - name: "config-objeto"
+    label: "🪑 Objeto → Texto y colores"
+    description: "El texto de presentación de la página \"Objeto\" y la paleta de colores disponible para las piezas."
+    files:
+      - name: "objeto"
+        label: "Texto y colores de Objeto"
+        file: "src/content/config/objeto.yaml"
+        fields:
+          - label: "Objeto"
+            name: "objeto"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "objeto" }
+              - label: "Texto de presentación (un párrafo por línea)"
+                name: "textoObjeto"
+                widget: "list"
+                field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - label: "Colores disponibles"
+                name: "coloresObjeto"
+                widget: "list"
+                fields:
+                  - { label: "Nombre", name: "nombre", widget: "string" }
+                  - { label: "Color del círculo", name: "swatch", widget: "color" }
+
   - name: "equipo"
     label: "👥 Estudio → Equipo"
     label_singular: "Integrante"
@@ -83,12 +107,30 @@ collections:
       - { label: "Bio", name: "bio", widget: "text" }
       - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
 
+  - name: "config-estudio"
+    label: "👥 Estudio → Texto"
+    description: "El texto de presentación de la página \"Estudio\"."
+    files:
+      - name: "estudio"
+        label: "Texto de Estudio"
+        file: "src/content/config/estudio.yaml"
+        fields:
+          - label: "Estudio"
+            name: "estudio"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "estudio" }
+              - label: "Texto de presentación (un párrafo por línea)"
+                name: "textoNosotros"
+                widget: "list"
+                field: { label: "Párrafo", name: "parrafo", widget: "text" }
+
   - name: "config"
-    label: "⚙️ Configuración general"
-    description: "Instagram, WhatsApp y los textos de las páginas Estudio/Objeto — no pertenece a una sola página."
+    label: "⚙️ General"
+    description: "Instagram y WhatsApp — no pertenece a una sola página."
     files:
       - name: "site"
-        label: "Config general"
+        label: "Configuración general"
         file: "src/content/config/site.yaml"
         fields:
           - label: "Sitio"
@@ -99,17 +141,3 @@ collections:
               - { label: "Instagram — Estudio (link completo)", name: "instagramEstudio", widget: "string" }
               - { label: "Instagram — Objeto (link completo)", name: "instagramObjeto", widget: "string" }
               - { label: "WhatsApp (solo números, con código de país, ej: 5491122334455)", name: "whatsappNumero", widget: "string", required: false }
-              - label: "Texto — El estudio (un párrafo por línea)"
-                name: "textoNosotros"
-                widget: "list"
-                field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - label: "Texto — Objeto (un párrafo por línea)"
-                name: "textoObjeto"
-                widget: "list"
-                field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - label: "Colores disponibles (Objeto)"
-                name: "coloresObjeto"
-                widget: "list"
-                fields:
-                  - { label: "Nombre", name: "nombre", widget: "string" }
-                  - { label: "Color del círculo", name: "swatch", widget: "color" }

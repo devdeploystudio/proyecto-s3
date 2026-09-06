@@ -1,7 +1,7 @@
 // El equipo y el texto de "El estudio" ahora viven como contenido editable
-// (src/content/equipo/*.yaml y el bloque textoNosotros de
-// src/content/config/site.yaml, editables desde /admin). Wrapper delgado:
-// misma forma que antes para no tocar los consumidores existentes.
+// (src/content/equipo/*.yaml y src/content/config/estudio.yaml, editables
+// desde /admin). Wrapper delgado: misma forma que antes para no tocar los
+// consumidores existentes.
 import { getCollection, getEntry } from "astro:content";
 
 export type Persona = {
@@ -13,9 +13,9 @@ export type Persona = {
   foto?: ImageMetadata;
 };
 
-const config = await getEntry("config", "site");
+const configEstudio = await getEntry("configEstudio", "estudio");
 
-export const TEXTO_NOSOTROS: string[] = config!.data.textoNosotros;
+export const TEXTO_NOSOTROS: string[] = configEstudio!.data.textoNosotros;
 
 const entradas = await getCollection("equipo");
 

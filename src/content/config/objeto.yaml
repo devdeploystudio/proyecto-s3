@@ -1,0 +1,23 @@
+objeto:
+  id: "objeto"
+  textoObjeto:
+    - "Objeto S3 nace como una extensión de S3 Proyectos y de nuestra forma de entender el interiorismo."
+    - "Surge con la idea de diseñar y producir piezas que formen parte de los espacios que proyectamos, llevando la arquitectura a una escala más cercana y cotidiana."
+    - "Cada objeto busca combinar diseño, materialidad y funcionalidad, creando piezas con identidad propia pensadas para acompañar y transformar los espacios interiores."
+  coloresObjeto:
+    - nombre: "Azul noche"
+      swatch: "#142c63"
+    - nombre: "Azul petroleo"
+      swatch: "#344d56"
+    - nombre: "Blanco"
+      swatch: "#e3ded8"
+    - nombre: "Negro"
+      swatch: "#272625"
+    - nombre: "Nude"
+      swatch: "#e5ddc7"
+    - nombre: "Rosa"
+      swatch: "#c78270"
+    - nombre: "Terracota"
+      swatch: "#96482d"
+    - nombre: "Verde patagonia"
+      swatch: "#597067"
