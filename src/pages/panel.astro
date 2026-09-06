@@ -1,0 +1,137 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { withBase } from "../data/site";
+
+// Cada link lleva directo a esa colección puntual dentro del panel real
+// (Sveltia CMS, en /admin/). Si no estás logueada todavía, Sveltia pide
+// el login de GitHub primero y después te lleva ahí solo. Esta página
+// es solo un menú más claro para llegar, no maneja nada de eso.
+const grupos = [
+  {
+    emoji: "🏠",
+    nombre: "Inicio",
+    items: [{ label: "Textos e imágenes de la portada", coleccion: "config-inicio" }],
+  },
+  {
+    emoji: "📁",
+    nombre: "Proyectos",
+    items: [{ label: "Ver y editar proyectos", coleccion: "proyectos" }],
+  },
+  {
+    emoji: "🪑",
+    nombre: "Objeto",
+    items: [
+      { label: "Piezas (mesas, precios, fotos)", coleccion: "objeto-piezas" },
+      { label: "Texto y colores disponibles", coleccion: "config-objeto" },
+    ],
+  },
+  {
+    emoji: "👥",
+    nombre: "Estudio",
+    items: [
+      { label: "Equipo", coleccion: "equipo" },
+      { label: "Texto y fotos de la página", coleccion: "config-estudio" },
+    ],
+  },
+  {
+    emoji: "✉️",
+    nombre: "Contacto",
+    items: [{ label: "Textos y foto de la página", coleccion: "config-contacto" }],
+  },
+  {
+    emoji: "⚙️",
+    nombre: "General",
+    items: [{ label: "Instagram, WhatsApp, email", coleccion: "config" }],
+  },
+];
+---
+
+<Layout title="Panel" description="Menú para editar el contenido del sitio.">
+  <section class="section panel">
+    <div class="wrap">
+      <p class="eyebrow">Panel</p>
+      <h1>¿Qué querés editar?</h1>
+      <p class="panel__lead">
+        Elegí abajo qué parte del sitio querés cambiar. La primera vez te va a
+        pedir iniciar sesión con una cuenta de GitHub, algo así como el usuario
+        con el que entrás a cualquier servicio: es gratis y podés crearla en un
+        minuto usando tu mismo Gmail. Una vez que la tengas, siempre vas a
+        entrar con esa misma cuenta. Es lo que protege el sitio, para que solo
+        vos puedas cambiar el contenido.
+      </p>
+
+      <div class="panel__grid">
+        {grupos.map((grupo) => (
+          <article class="panel__card">
+            <p class="panel__card-titulo">
+              <span aria-hidden="true">{grupo.emoji}</span> {grupo.nombre}
+            </p>
+            <div class="panel__card-links">
+              {grupo.items.map((item) => (
+                <a class="panel__link" href={withBase(`admin/#/collections/${item.coleccion}`)}>
+                  {item.label} →
+                </a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .panel h1 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .panel__lead {
+    margin-top: 1rem;
+    color: var(--stone);
+  }
+
+  .panel__grid {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .panel__card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    background: var(--white);
+  }
+
+  .panel__card-titulo {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .panel__card-links {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .panel__link {
+    display: block;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .panel__link:hover {
+    border-color: var(--terracota);
+    background: var(--blush-soft);
+    color: var(--terracota-ink);
+  }
+</style>
