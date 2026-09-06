@@ -13,11 +13,17 @@ export const SITE = {
   instagramEstudio: config!.data.instagramEstudio,
   instagramObjeto: config!.data.instagramObjeto,
   whatsappNumero: config!.data.whatsappNumero,
+  email: config!.data.email,
 };
 
 export function linkWhatsapp(mensaje: string): string {
   const numero = SITE.whatsappNumero || "PENDIENTE-NUMERO-WHATSAPP";
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+}
+
+export function linkEmail(asunto: string): string {
+  const params = new URLSearchParams({ view: "cm", fs: "1", to: SITE.email, su: asunto });
+  return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
 // Antepone el base path del sitio (import.meta.env.BASE_URL) a un link interno,

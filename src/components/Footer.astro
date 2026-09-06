@@ -1,5 +1,5 @@
 ---
-import { SITE, linkWhatsapp, withBase } from "../data/site";
+import { SITE, linkWhatsapp, linkEmail, withBase } from "../data/site";
 
 interface Props {
   brand?: "proyecto" | "objeto";
@@ -32,12 +32,12 @@ const year = new Date().getFullYear();
           </svg>
           <span>+54 9 11 5555-0123</span>
         </a>
-        <a class="footer__social" href="https://mail.google.com/mail/?view=cm&fs=1&to=proyecto.s3object@gmail.com&su=Consulta%20por%20un%20proyecto" target="_blank" rel="noopener noreferrer">
+        <a class="footer__social" href={linkEmail("Consulta por un proyecto")} target="_blank" rel="noopener noreferrer">
           <svg class="footer__social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="5" width="18" height="14" rx="2"></rect>
             <path d="M3.5 6.5 12 13l8.5-6.5"></path>
           </svg>
-          <span>proyecto.s3object@gmail.com</span>
+          <span>{SITE.email}</span>
         </a>
       </div>
     </div>

@@ -1,7 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
-import { SITE, linkWhatsapp, withBase } from "../data/site";
+import { SITE, linkWhatsapp, linkEmail, withBase } from "../data/site";
+import { TEXTO_CONTACTO } from "../data/contacto";
 import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
 ---
 
@@ -13,9 +14,9 @@ import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
     <div class="wrap contacto-layout">
       <div class="contacto">
         <p class="eyebrow">Contacto</p>
-        <h1>Charlemos sobre tu proyecto.</h1>
+        <h1>{TEXTO_CONTACTO.titulo}</h1>
         <p class="lead">
-          Ya sea una reforma o una obra, contanos qué tenés en mente.
+          {TEXTO_CONTACTO.lead}
         </p>
 
         <div class="canales">
@@ -43,7 +44,7 @@ import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
 
           <a
             class="canal"
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=proyecto.s3object@gmail.com&su=Consulta%20por%20un%20proyecto"
+            href={linkEmail("Consulta por un proyecto")}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -54,7 +55,7 @@ import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
               </svg>
               Email
             </span>
-            <span class="canal__valor">proyecto.s3object@gmail.com →</span>
+            <span class="canal__valor">{SITE.email} →</span>
           </a>
         </div>
 

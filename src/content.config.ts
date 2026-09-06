@@ -1,6 +1,17 @@
 import { defineCollection, z } from "astro:content";
 import { glob, file } from "astro/loaders";
 
+// El panel (Sveltia) guarda un campo opcional vacío como "" (string vacío),
+// no como ausente — y "" no es una imagen/número válido, así que romper la
+// validación entera del build. Estos helpers convierten "" a "ausente"
+// ANTES de validar, para cualquier campo opcional (imagen, texto o
+// número), así dejar algo en blanco en el panel nunca puede tirar abajo
+// el sitio entero.
+const sinVacios = <T extends z.ZodType>(schema: T) =>
+  z.preprocess((val) => (val === "" ? undefined : val), schema.optional());
+
+const optionalImage = (image: () => z.ZodType) => sinVacios(image());
+
 const proyectos = defineCollection({
   loader: glob({ pattern: "*.yaml", base: "./src/content/proyectos" }),
   schema: ({ image }) =>
@@ -15,7 +26,7 @@ const proyectos = defineCollection({
       // Miniatura opcional para las cards/carrusel cuando difiere de `cover`
       // (por ej. una carátula de presentación con rótulo, que no debe usarse
       // como imagen de concepto dentro de la página del proyecto).
-      tarjeta: image().optional(),
+      tarjeta: optionalImage(image),
       galeria: z.array(image()),
       presentacion: z.string(),
     }),
@@ -29,14 +40,14 @@ const objetoPiezas = defineCollection({
       nombre: z.string(),
       tipo: z.string(),
       medidas: z.string(),
-      precio: z.number().nullable().optional(),
+      precio: sinVacios(z.number().nullable()),
       // Cada foto puede llevar un color asociado (uno de los nombres en
       // coloresObjeto): esa es la muestra real de la pieza en ese color, y
       // habilita el círculo correspondiente en la ficha del producto.
       foto: z.array(
         z.object({
           imagen: image(),
-          color: z.string().optional(),
+          color: sinVacios(z.string()),
         })
       ),
     }),
@@ -50,7 +61,7 @@ const equipo = defineCollection({
       rol: z.string(),
       bio: z.string(),
       orden: z.number(),
-      foto: image().optional(),
+      foto: optionalImage(image),
     }),
 });
 
@@ -60,7 +71,34 @@ const config = defineCollection({
     id: z.string(),
     instagramEstudio: z.string(),
     instagramObjeto: z.string(),
-    whatsappNumero: z.string(),
+    // El panel lo marca como no-obligatorio, así que el schema tiene que
+    // aceptar que quede vacío (el wrapper en site.ts ya maneja el caso).
+    whatsappNumero: sinVacios(z.string()),
+    email: z.string(),
+  }),
+});
+
+// Textos de la home (hero + los dos teaser de "El estudio"/"Objeto").
+const configInicio = defineCollection({
+  loader: file("./src/content/config/inicio.yaml"),
+  schema: z.object({
+    id: z.string(),
+    heroEyebrow: z.string(),
+    heroTitulo: z.string(),
+    teaserTitulo: z.string(),
+    teaserTexto: z.string(),
+    objetoTitulo: z.string(),
+    objetoTexto: z.string(),
+  }),
+});
+
+// Textos de la página de Contacto.
+const configContacto = defineCollection({
+  loader: file("./src/content/config/contacto.yaml"),
+  schema: z.object({
+    id: z.string(),
+    titulo: z.string(),
+    lead: z.string(),
   }),
 });
 
@@ -93,4 +131,13 @@ const configObjeto = defineCollection({
   }),
 });
 
-export const collections = { proyectos, objetoPiezas, equipo, config, configEstudio, configObjeto };
+export const collections = {
+  proyectos,
+  objetoPiezas,
+  equipo,
+  config,
+  configEstudio,
+  configObjeto,
+  configInicio,
+  configContacto,
+};

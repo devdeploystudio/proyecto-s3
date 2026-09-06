@@ -14,6 +14,26 @@ media_folder: "src/assets"
 public_folder: "src/assets"
 
 collections:
+  - name: "config-inicio"
+    label: "🏠 Inicio → Textos"
+    description: "El título grande de la portada y los dos bloques de \"El estudio\"/\"Objeto\" que aparecen en la home."
+    files:
+      - name: "inicio"
+        label: "Textos de Inicio"
+        file: "src/content/config/inicio.yaml"
+        fields:
+          - label: "Inicio"
+            name: "inicio"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio" }
+              - { label: "Frase corta arriba del título principal", name: "heroEyebrow", widget: "string" }
+              - { label: "Título principal (portada)", name: "heroTitulo", widget: "text" }
+              - { label: "Título del bloque \"El estudio\"", name: "teaserTitulo", widget: "string" }
+              - { label: "Texto del bloque \"El estudio\"", name: "teaserTexto", widget: "text" }
+              - { label: "Título del bloque \"Objeto\"", name: "objetoTitulo", widget: "string" }
+              - { label: "Texto del bloque \"Objeto\"", name: "objetoTexto", widget: "text" }
+
   - name: "proyectos"
     label: "📁 Proyectos"
     label_singular: "Proyecto"
@@ -125,9 +145,25 @@ collections:
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
 
+  - name: "config-contacto"
+    label: "✉️ Contacto → Textos"
+    description: "El título y la bajada de la página \"Contacto\"."
+    files:
+      - name: "contacto"
+        label: "Textos de Contacto"
+        file: "src/content/config/contacto.yaml"
+        fields:
+          - label: "Contacto"
+            name: "contacto"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "contacto" }
+              - { label: "Título", name: "titulo", widget: "string" }
+              - { label: "Bajada", name: "lead", widget: "text" }
+
   - name: "config"
     label: "⚙️ General"
-    description: "Instagram y WhatsApp — no pertenece a una sola página."
+    description: "Instagram, WhatsApp y email — no pertenece a una sola página."
     files:
       - name: "site"
         label: "Configuración general"
@@ -141,3 +177,4 @@ collections:
               - { label: "Instagram — Estudio (link completo)", name: "instagramEstudio", widget: "string" }
               - { label: "Instagram — Objeto (link completo)", name: "instagramObjeto", widget: "string" }
               - { label: "WhatsApp (solo números, con código de país, ej: 5491122334455)", name: "whatsappNumero", widget: "string", required: false }
+              - { label: "Email de contacto", name: "email", widget: "string" }
