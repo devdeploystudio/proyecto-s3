@@ -27,12 +27,14 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio" }
+              - { label: "Imagen de fondo de la portada", name: "heroImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
               - { label: "Frase corta arriba del título principal", name: "heroEyebrow", widget: "string" }
               - { label: "Título principal (portada)", name: "heroTitulo", widget: "text" }
               - { label: "Título del bloque \"El estudio\"", name: "teaserTitulo", widget: "string" }
               - { label: "Texto del bloque \"El estudio\"", name: "teaserTexto", widget: "text" }
               - { label: "Título del bloque \"Objeto\"", name: "objetoTitulo", widget: "string" }
               - { label: "Texto del bloque \"Objeto\"", name: "objetoTexto", widget: "text" }
+              - { label: "Imagen de fondo del bloque final (\"¿Tenés un proyecto en mente?\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
 
   - name: "proyectos"
     label: "📁 Proyectos"
@@ -129,7 +131,7 @@ collections:
 
   - name: "config-estudio"
     label: "👥 Estudio → Texto"
-    description: "El texto de presentación de la página \"Estudio\"."
+    description: "El texto de presentación de la página \"Estudio\", la foto del equipo y el fondo del bloque final."
     files:
       - name: "estudio"
         label: "Texto de Estudio"
@@ -144,10 +146,12 @@ collections:
                 name: "textoNosotros"
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - { label: "Foto del equipo (aparece en Estudio y como adelanto en Inicio)", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+              - { label: "Imagen de fondo del bloque final (\"Seguinos en Instagram\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio" }
 
   - name: "config-contacto"
     label: "✉️ Contacto → Textos"
-    description: "El título y la bajada de la página \"Contacto\"."
+    description: "El título, la bajada y la foto de la página \"Contacto\"."
     files:
       - name: "contacto"
         label: "Textos de Contacto"
@@ -160,6 +164,7 @@ collections:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "contacto" }
               - { label: "Título", name: "titulo", widget: "string" }
               - { label: "Bajada", name: "lead", widget: "text" }
+              - { label: "Foto", name: "imagen", widget: "image", media_folder: "/src/assets/contacto", public_folder: "../../assets/contacto" }
 
   - name: "config"
     label: "⚙️ General"

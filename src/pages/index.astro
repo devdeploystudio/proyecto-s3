@@ -3,14 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import ProyectoCard from "../components/ProyectoCard.astro";
 import { Image } from "astro:assets";
 import { PROYECTOS } from "../data/proyectos";
-import { TEXTO_NOSOTROS } from "../data/equipo";
+import { TEXTO_NOSOTROS, FOTO_EQUIPO } from "../data/equipo";
 import { TEXTO_INICIO } from "../data/inicio";
 import { SITE, linkWhatsapp, withBase } from "../data/site";
-import heroImg from "../assets/proyectos/ns235/01-06-hero.jpg";
-import ctaImg from "../assets/proyectos/n366/01-06-hero.jpg";
 import objetoCubo from "../assets/brand/objeto-cubo.png";
 import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
-import grupalImg from "../assets/equipo/grupal-equipo.jpg";
 ---
 
 <Layout
@@ -18,7 +15,7 @@ import grupalImg from "../assets/equipo/grupal-equipo.jpg";
   description="Estudio familiar de arquitectura y construcción. Reformas, remodelación, interiorismo y obra."
 >
   <section class="hero">
-    <Image class="hero__bg" src={heroImg} alt="" width={1920} height={1280} loading="eager" fetchpriority="high" />
+    <Image class="hero__bg" src={TEXTO_INICIO.heroImagen} alt="" width={1920} height={1280} loading="eager" fetchpriority="high" />
     <div class="hero__overlay"></div>
     <div class="wrap hero__inner">
       <p class="eyebrow eyebrow--light">{TEXTO_INICIO.heroEyebrow}</p>
@@ -37,7 +34,7 @@ import grupalImg from "../assets/equipo/grupal-equipo.jpg";
     <Image class="nosotros-teaser__icon" src={proyectoCubo} alt="" width={200} height={200} aria-hidden="true" />
     <a class="wrap nosotros-teaser__inner" href={withBase("/estudio/")} data-reveal>
       <div class="nosotros-teaser__media">
-        <Image src={grupalImg} alt="El equipo de Proyecto S3" width={400} height={400} />
+        <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={400} height={400} />
       </div>
       <div class="nosotros-teaser__text">
         <p class="eyebrow">El estudio</p>
@@ -86,7 +83,7 @@ import grupalImg from "../assets/equipo/grupal-equipo.jpg";
   </section>
 
   <section class="section cta-final">
-    <Image class="cta-final__bg" src={ctaImg} alt="" width={1920} height={1280} loading="lazy" />
+    <Image class="cta-final__bg" src={TEXTO_INICIO.ctaImagen} alt="" width={1920} height={1280} loading="lazy" />
     <div class="cta-final__overlay"></div>
     <div class="wrap cta-final__inner" data-reveal>
       <h2>¿Tenés un proyecto en mente?</h2>

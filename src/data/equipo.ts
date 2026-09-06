@@ -17,6 +17,11 @@ const configEstudio = await getEntry("configEstudio", "estudio");
 
 export const TEXTO_NOSOTROS: string[] = configEstudio!.data.textoNosotros;
 
+// Foto grupal del equipo (se reusa como teaser en la home) y fondo del CTA
+// final de la página "Estudio".
+export const FOTO_EQUIPO: ImageMetadata = configEstudio!.data.foto;
+export const ESTUDIO_CTA_IMAGEN: ImageMetadata = configEstudio!.data.ctaImagen;
+
 const entradas = await getCollection("equipo");
 
 export const EQUIPO: Persona[] = entradas

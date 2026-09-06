@@ -78,39 +78,51 @@ const config = defineCollection({
   }),
 });
 
-// Textos de la home (hero + los dos teaser de "El estudio"/"Objeto").
+// Textos e imágenes de la home (hero + los dos teaser de "El
+// estudio"/"Objeto"). Los cubos flotantes decorativos NO están acá: son
+// elementos de marca/diseño, no contenido del cliente.
 const configInicio = defineCollection({
   loader: file("./src/content/config/inicio.yaml"),
-  schema: z.object({
-    id: z.string(),
-    heroEyebrow: z.string(),
-    heroTitulo: z.string(),
-    teaserTitulo: z.string(),
-    teaserTexto: z.string(),
-    objetoTitulo: z.string(),
-    objetoTexto: z.string(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
+      heroImagen: image(),
+      heroEyebrow: z.string(),
+      heroTitulo: z.string(),
+      teaserTitulo: z.string(),
+      teaserTexto: z.string(),
+      objetoTitulo: z.string(),
+      objetoTexto: z.string(),
+      ctaImagen: image(),
+    }),
 });
 
-// Textos de la página de Contacto.
+// Textos e imagen de la página de Contacto.
 const configContacto = defineCollection({
   loader: file("./src/content/config/contacto.yaml"),
-  schema: z.object({
-    id: z.string(),
-    titulo: z.string(),
-    lead: z.string(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
+      titulo: z.string(),
+      lead: z.string(),
+      imagen: image(),
+    }),
 });
 
-// Texto de la página "Estudio" — colección aparte (no dentro de `equipo`)
-// porque es un bloque único compartido, no algo por persona; queda
-// nombrada igual que `equipo` en el panel para que se vean agrupadas.
+// Texto/fotos de la página "Estudio" — colección aparte (no dentro de
+// `equipo`) porque son bloques únicos compartidos, no algo por persona;
+// queda nombrada igual que `equipo` en el panel para que se vean
+// agrupadas. `foto` es la foto grupal del equipo (se reusa también como
+// teaser en la home).
 const configEstudio = defineCollection({
   loader: file("./src/content/config/estudio.yaml"),
-  schema: z.object({
-    id: z.string(),
-    textoNosotros: z.array(z.string()),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
+      textoNosotros: z.array(z.string()),
+      foto: image(),
+      ctaImagen: image(),
+    }),
 });
 
 // Ídem para "Objeto": texto de intro + paleta de colores (compartidos por

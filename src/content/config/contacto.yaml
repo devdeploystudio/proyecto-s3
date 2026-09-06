@@ -2,3 +2,4 @@ contacto:
   id: "contacto"
   titulo: "Charlemos sobre tu proyecto."
   lead: "Ya sea una reforma o una obra, contanos qué tenés en mente."
+  imagen: "../../assets/proyectos/n366/01-06-sinborde.jpg"

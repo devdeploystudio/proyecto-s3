@@ -1,10 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
-import { EQUIPO, TEXTO_NOSOTROS } from "../data/equipo";
+import { EQUIPO, TEXTO_NOSOTROS, FOTO_EQUIPO, ESTUDIO_CTA_IMAGEN } from "../data/equipo";
 import { SITE } from "../data/site";
-import ctaImg from "../assets/proyectos/b953/comedor-a.jpg";
-import grupalImg from "../assets/equipo/grupal-equipo.jpg";
 ---
 
 <Layout
@@ -13,7 +11,7 @@ import grupalImg from "../assets/equipo/grupal-equipo.jpg";
 >
   <section class="section intro">
     <div class="intro__media">
-      <Image src={grupalImg} alt="El equipo de Proyecto S3" width={900} height={700} />
+      <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={900} height={700} />
     </div>
     <div class="wrap intro__inner">
       <div class="intro__text">
@@ -50,7 +48,7 @@ import grupalImg from "../assets/equipo/grupal-equipo.jpg";
   </section>
 
   <section class="section cta">
-    <Image class="cta__bg" src={ctaImg} alt="" width={1920} height={1280} loading="lazy" />
+    <Image class="cta__bg" src={ESTUDIO_CTA_IMAGEN} alt="" width={1920} height={1280} loading="lazy" />
     <div class="cta__overlay"></div>
     <div class="wrap cta__inner" data-reveal>
       <h2>Seguinos en Instagram</h2>

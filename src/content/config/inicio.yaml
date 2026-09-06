@@ -1,8 +1,10 @@
 inicio:
   id: "inicio"
+  heroImagen: "../../assets/proyectos/ns235/01-06-hero.jpg"
   heroEyebrow: "Arquitectura + construcción, de padre a hijo"
   heroTitulo: "Transformamos espacios con una mirada que combina diseño y oficio."
   teaserTitulo: "Un laburo de familia, atravesado por la arquitectura."
   teaserTexto: "Santino, Marcelo y Lautaro Schembari: tres generaciones ligadas al oficio de construir."
   objetoTitulo: "También hacemos muebles a medida."
   objetoTexto: "Es otro proyecto del estudio, con su propia identidad."
+  ctaImagen: "../../assets/proyectos/n366/01-06-hero.jpg"

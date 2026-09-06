@@ -3,7 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
 import { SITE, linkWhatsapp, linkEmail, withBase } from "../data/site";
 import { TEXTO_CONTACTO } from "../data/contacto";
-import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
 ---
 
 <Layout
@@ -64,7 +63,7 @@ import bgImg from "../assets/proyectos/n366/01-06-sinborde.jpg";
         </p>
       </div>
       <div class="contacto-media">
-        <Image src={bgImg} alt="" width={800} height={1000} />
+        <Image src={TEXTO_CONTACTO.imagen} alt="" width={800} height={1000} />
       </div>
     </div>
   </section>
