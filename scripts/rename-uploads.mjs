@@ -41,19 +41,24 @@ if (!files.length) {
   process.exit(0);
 }
 
-const contentDir = "src/content";
+// Busca en TODO src/ (menos src/assets, son binarios) — no solo en el YAML
+// de contenido, porque algunas imágenes (heros, fondos de sección) se
+// importan directo en un .astro/.ts en vez de venir de una colección, y si
+// solo miráramos los YAML esas quedaban con el import roto tras renombrar.
+const extensionesAReferenciar = [".yaml", ".yml", ".astro", ".ts", ".tsx", ".js", ".jsx"];
 
-async function listarYamls(dir) {
+async function listarArchivosDeReferencia(dir) {
   const out = [];
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+    if (entry.name === "assets") continue;
     const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...(await listarYamls(p)));
-    else if (entry.name.endsWith(".yaml") || entry.name.endsWith(".yml")) out.push(p);
+    if (entry.isDirectory()) out.push(...(await listarArchivosDeReferencia(p)));
+    else if (extensionesAReferenciar.some((ext) => entry.name.endsWith(ext))) out.push(p);
   }
   return out;
 }
 
-const yamls = await listarYamls(contentDir);
+const archivosDeReferencia = await listarArchivosDeReferencia("src");
 
 for (const file of files) {
   const categoria = categoriaDesdeRuta(file);
@@ -80,18 +85,19 @@ for (const file of files) {
   await fs.rename(file, nuevaRuta);
   console.log(`${file} -> ${nuevaRuta}`);
 
-  // Actualiza la referencia en el YAML que apunte al archivo viejo.
-  for (const yamlPath of yamls) {
+  // Actualiza cualquier referencia (YAML de contenido o import directo en
+  // .astro/.ts) que apunte al nombre viejo del archivo.
+  for (const refPath of archivosDeReferencia) {
     let contenido;
     try {
-      contenido = await fs.readFile(yamlPath, "utf-8");
+      contenido = await fs.readFile(refPath, "utf-8");
     } catch {
       continue;
     }
     if (contenido.includes(path.basename(file))) {
       const actualizado = contenido.split(path.basename(file)).join(nuevoNombre);
-      await fs.writeFile(yamlPath, actualizado, "utf-8");
-      console.log(`  referencia actualizada en ${yamlPath}`);
+      await fs.writeFile(refPath, actualizado, "utf-8");
+      console.log(`  referencia actualizada en ${refPath}`);
     }
   }
 }
