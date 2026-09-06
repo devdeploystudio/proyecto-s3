@@ -21,6 +21,8 @@ collections:
     folder: "src/content/proyectos"
     create: true
     delete: true
+    extension: "yaml"
+    format: "yaml"
     identifier_field: titulo
     reorder: { key: orden }
     fields:
@@ -47,6 +49,8 @@ collections:
     folder: "src/content/objeto-piezas"
     create: true
     delete: true
+    extension: "yaml"
+    format: "yaml"
     identifier_field: nombre
     reorder: { key: orden }
     fields:
@@ -69,6 +73,8 @@ collections:
     folder: "src/content/equipo"
     create: true
     delete: true
+    extension: "yaml"
+    format: "yaml"
     identifier_field: nombre
     reorder: { key: orden }
     fields:
