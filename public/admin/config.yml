@@ -3,9 +3,7 @@ backend:
   repo: devdeploystudio/proyecto-s3
   branch: main
   # Proxy de login por GitHub OAuth (Cloudflare Worker sveltia-cms-auth).
-  # Completar con la URL del Worker una vez desplegado — sin esto el botón
-  # de "Iniciar sesión con GitHub" no funciona en el sitio publicado.
-  base_url: https://REEMPLAZAR-worker.workers.dev
+  base_url: https://sveltia-cms-auth.contact-deploystudio.workers.dev
 
 # Permite probar el panel en local (npm run dev) sin pasar por GitHub:
 # corriendo `npx decap-server` en otra terminal, escribe directo a los
