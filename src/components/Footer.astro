@@ -58,6 +58,11 @@ const year = new Date().getFullYear();
   </div>
   <div class="wrap footer__bottom">
     <p>© {year} {isObjeto ? "Objeto, un proyecto de Proyecto S3" : SITE.nombre}. Todos los derechos reservados.</p>
+    <p class="footer__legal">
+      <a href={withBase("/privacidad/")}>Privacidad</a>
+      <span aria-hidden="true">·</span>
+      <a href={withBase("/terminos/")}>Términos y condiciones</a>
+    </p>
     <p class="footer__credit">
       Sitio realizado por <a class="footer__credit-brand" href="https://deploystudio.com.ar/" target="_blank" rel="noopener noreferrer">/deploy_</a>
     </p>
@@ -171,6 +176,21 @@ const year = new Date().getFullYear();
     border-top: 1px solid var(--line);
     font-size: 0.85rem;
     color: var(--stone);
+  }
+
+  .footer__legal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer__legal a {
+    color: var(--stone);
+    text-decoration: none;
+  }
+
+  .footer__legal a:hover {
+    text-decoration: underline;
   }
 
   .footer__credit-brand {

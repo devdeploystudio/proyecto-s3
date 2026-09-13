@@ -1,0 +1,120 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE } from "../data/site";
+---
+
+<Layout
+  title="Términos y Condiciones"
+  description="Términos y condiciones de uso del sitio de Proyecto S3."
+  noindex={false}
+>
+  <section class="section">
+    <div class="wrap legal">
+      <p class="eyebrow">Legal</p>
+      <h1>Términos y Condiciones</h1>
+      <p class="legal__fecha">Última actualización: 13 de septiembre de 2026.</p>
+
+      <p>
+        Al navegar este sitio (<strong>{SITE.nombre}</strong>, incluyendo
+        su marca de muebles Objeto) aceptás los siguientes términos.
+      </p>
+
+      <h2>Sobre este sitio</h2>
+      <p>
+        Este sitio muestra el portfolio de proyectos de arquitectura y
+        construcción de {SITE.nombre}, y los muebles a medida de Objeto.
+        No es una tienda online: no hay compra ni pago dentro del sitio,
+        todas las consultas y presupuestos se coordinan directamente por
+        WhatsApp, Instagram o email.
+      </p>
+
+      <h2>Precios</h2>
+      <p>
+        Los precios que puedan mostrarse en las piezas de Objeto son
+        orientativos y están sujetos a confirmación según medida, color y
+        material elegidos. El precio final se acuerda directamente con
+        nosotros antes de confirmar un pedido.
+      </p>
+
+      <h2>Propiedad intelectual</h2>
+      <p>
+        Las fotos, textos, diseños y logotipos de este sitio son
+        propiedad de {SITE.nombre} (o se usan con autorización de sus
+        respectivos dueños) y no pueden reproducirse, copiarse o
+        distribuirse sin autorización previa.
+      </p>
+
+      <h2>Enlaces a otros sitios</h2>
+      <p>
+        Este sitio tiene links a WhatsApp, Instagram y Gmail. No somos
+        responsables por el contenido ni las políticas de esos sitios de
+        terceros.
+      </p>
+
+      <h2>Uso permitido</h2>
+      <p>
+        Podés navegar libremente este sitio para conocer nuestro trabajo
+        y contactarnos. No está permitido usar el contenido del sitio
+        con fines comerciales propios, ni intentar vulnerar su
+        funcionamiento.
+      </p>
+
+      <h2>Limitación de responsabilidad</h2>
+      <p>
+        Hacemos lo posible para que la información del sitio esté
+        actualizada y sea correcta, pero no garantizamos que esté libre
+        de errores en todo momento. Cualquier presupuesto o plazo de obra
+        se confirma siempre de forma directa, no a través de este sitio.
+      </p>
+
+      <h2>Cambios a estos términos</h2>
+      <p>
+        Podemos actualizar estos términos en cualquier momento. La fecha
+        de "última actualización" arriba siempre va a reflejar la
+        versión vigente.
+      </p>
+
+      <h2>Ley aplicable</h2>
+      <p>
+        Estos términos se rigen por las leyes de la República Argentina.
+      </p>
+
+      <h2>Contacto</h2>
+      <p>
+        Cualquier consulta sobre estos términos, escribinos a
+        <strong> {SITE.email}</strong>.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal {
+    max-width: 720px;
+  }
+
+  .legal h1 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .legal__fecha {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--stone);
+  }
+
+  .legal > p {
+    margin-top: 1.5rem;
+    color: var(--ink);
+  }
+
+  .legal h2 {
+    margin-top: 2rem;
+    font-size: 1.25rem;
+  }
+
+  .legal h2 + p {
+    margin-top: 0.75rem;
+  }
+</style>
