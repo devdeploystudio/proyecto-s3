@@ -1,10 +1,23 @@
-// Renombra imágenes RECIÉN AGREGADAS bajo src/assets/ para que el nombre
-// diga a qué pertenecen (ej: "img_2384.jpg" subida a la carpeta de "ns235"
-// pasa a "img-2384-ns235.jpg"), y actualiza la referencia en el YAML de
-// contenido que la usa. Solo toca archivos NUEVOS (no ediciones), y solo
-// dentro de carpetas de assets conocidas — no toca nada fuera de eso.
+// Dos cosas con las imágenes que cambian en un push a src/assets/:
+// - Archivo NUEVO (status "A"): se renombra con el sufijo de categoría
+//   según la carpeta donde cayó (ej: subida a "proyectos/ns235/" -> termina
+//   en "-ns235"), para que el nombre diga a qué pertenece.
+// - Archivo REEMPLAZADO en el mismo path (status "M"): el cliente subió una
+//   foto nueva manteniendo el nombre de archivo (Sveltia/Decap no renombra
+//   solo). Se renombra a la próxima versión libre
+//   (foto.jpg -> foto_v02.jpg -> foto_v03.jpg...). En este proyecto las
+//   imágenes del panel pasan por astro:assets (<Image>), que ya les agrega
+//   un hash de contenido al buildear, así que la caché larga de _headers ya
+//   es segura sin esto para esos casos - pero esto protege igual cualquier
+//   archivo servido "tal cual" (ej. los PDF de widget:"file", si en algún
+//   momento se les agrega caché larga también) y deja el repo prolijo con
+//   un historial de versiones en vez de pisar el archivo sin dejar rastro.
+//
+// En ambos casos, actualiza sola la referencia en cualquier YAML de
+// contenido o import directo en .astro/.ts/.tsx/.js/.jsx que la use.
 import fs from "node:fs/promises";
-import path from "node:path";
+import { existsSync, readdirSync } from "node:fs";
+import path from "node:path/posix";
 
 function categoriaDesdeRuta(rutaRelativa) {
   // rutaRelativa viene desde la raíz del repo, ej: "src/assets/proyectos/ns235/foo.jpg"
@@ -31,20 +44,41 @@ function slugify(s) {
     .replace(/^-+|-+$/g, "");
 }
 
-const files = (process.argv[2] ?? "")
-  .split("\n")
-  .map((f) => f.trim())
-  .filter(Boolean);
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-if (!files.length) {
-  console.log("No hay imágenes nuevas para renombrar.");
+function nextVersion(dir, baseName, ext) {
+  const files = existsSync(dir) ? readdirSync(dir) : [];
+  const re = new RegExp(`^${escapeRegExp(baseName)}_v(\\d+)${escapeRegExp(ext)}$`, "i");
+  let max = 1;
+  for (const f of files) {
+    const m = f.match(re);
+    if (m) max = Math.max(max, parseInt(m[1], 10));
+  }
+  return max + 1;
+}
+
+// Formato "STATUS\tpath" por línea (git diff --name-status), pasado por el
+// workflow. El .replace saca un \r final si el runner lo dejara (no debería
+// en Linux, pero es gratis protegerse).
+const entradas = (process.argv[2] ?? "")
+  .split("\n")
+  .map((l) => l.replace(/\r$/, "").trim())
+  .filter(Boolean)
+  .map((l) => {
+    const [status, ...rest] = l.split("\t");
+    return { status: status.trim(), path: rest.join("\t").trim() };
+  });
+
+if (!entradas.length) {
+  console.log("rename-uploads: sin imágenes nuevas ni reemplazos en este push.");
   process.exit(0);
 }
 
-// Busca en TODO src/ (menos src/assets, son binarios) — no solo en el YAML
-// de contenido, porque algunas imágenes (heros, fondos de sección) se
-// importan directo en un .astro/.ts en vez de venir de una colección, y si
-// solo miráramos los YAML esas quedaban con el import roto tras renombrar.
+// Todo src/ menos src/assets (son binarios) - no solo el YAML de contenido,
+// porque algunas imágenes (heros, fondos de sección) se importan directo en
+// un .astro/.ts en vez de venir de una colección.
 const extensionesAReferenciar = [".yaml", ".yml", ".astro", ".ts", ".tsx", ".js", ".jsx"];
 
 async function listarArchivosDeReferencia(dir) {
@@ -60,33 +94,8 @@ async function listarArchivosDeReferencia(dir) {
 
 const archivosDeReferencia = await listarArchivosDeReferencia("src");
 
-for (const file of files) {
-  const categoria = categoriaDesdeRuta(file);
-  if (!categoria) {
-    console.log(`${file}: fuera de una carpeta conocida, no se toca`);
-    continue;
-  }
-
-  const dir = path.dirname(file);
-  const ext = path.extname(file);
-  const base = path.basename(file, ext);
-  const baseSlug = slugify(base);
-
-  if (baseSlug.endsWith(`-${categoria}`)) {
-    console.log(`${file}: ya tiene el sufijo "${categoria}", no se toca`);
-    continue;
-  }
-
-  const nuevoNombre = `${baseSlug}-${categoria}${ext.toLowerCase()}`;
-  const nuevaRuta = path.join(dir, nuevoNombre).replace(/\\/g, "/");
-
-  if (nuevaRuta === file) continue;
-
-  await fs.rename(file, nuevaRuta);
-  console.log(`${file} -> ${nuevaRuta}`);
-
-  // Actualiza cualquier referencia (YAML de contenido o import directo en
-  // .astro/.ts) que apunte al nombre viejo del archivo.
+async function actualizarReferencias(nombreViejo, nombreNuevo) {
+  let touched = 0;
   for (const refPath of archivosDeReferencia) {
     let contenido;
     try {
@@ -94,10 +103,51 @@ for (const file of files) {
     } catch {
       continue;
     }
-    if (contenido.includes(path.basename(file))) {
-      const actualizado = contenido.split(path.basename(file)).join(nuevoNombre);
-      await fs.writeFile(refPath, actualizado, "utf-8");
-      console.log(`  referencia actualizada en ${refPath}`);
+    if (contenido.includes(nombreViejo)) {
+      await fs.writeFile(refPath, contenido.split(nombreViejo).join(nombreNuevo), "utf-8");
+      touched++;
     }
+  }
+  return touched;
+}
+
+for (const { status, path: file } of entradas) {
+  if (!existsSync(file)) continue; // por si un rename previo ya lo movió
+
+  const dir = path.dirname(file);
+  const ext = path.extname(file);
+  const baseName = path.basename(file, ext);
+
+  if (status === "A") {
+    const categoria = categoriaDesdeRuta(file);
+    if (!categoria) {
+      console.log(`${file}: fuera de una carpeta conocida, no se toca`);
+      continue;
+    }
+
+    const baseSlug = slugify(baseName);
+    if (baseSlug.endsWith(`-${categoria}`)) {
+      console.log(`${file}: ya tiene el sufijo "${categoria}", no se toca`);
+      continue;
+    }
+
+    const nuevoNombre = `${baseSlug}-${categoria}${ext.toLowerCase()}`;
+    const nuevaRuta = path.join(dir, nuevoNombre);
+    if (nuevaRuta === file) continue;
+
+    await fs.rename(file, nuevaRuta);
+    const touched = await actualizarReferencias(path.basename(file), nuevoNombre);
+    console.log(`${file} -> ${nuevaRuta} (nuevo, ${touched} referencia(s) actualizada(s))`);
+  } else if (status === "M") {
+    // Ya versionado a mano (alguien subió directo "algo_v03.jpg").
+    if (/_v\d+$/i.test(baseName)) continue;
+
+    const version = nextVersion(dir, baseName, ext);
+    const nuevoNombre = `${baseName}_v${String(version).padStart(2, "0")}${ext}`;
+    const nuevaRuta = path.join(dir, nuevoNombre);
+
+    await fs.rename(file, nuevaRuta);
+    const touched = await actualizarReferencias(path.basename(file), nuevoNombre);
+    console.log(`${file} -> ${nuevaRuta} (reemplazo versionado, ${touched} referencia(s) actualizada(s))`);
   }
 }
