@@ -9,6 +9,7 @@ import geistRegularUrl from "../fonts/Geist-Regular.otf?url";
 import bigShouldersBoldUrl from "../fonts/BigShouldersDisplay-Bold.ttf?url";
 import proyectoLogo from "../assets/brand/proyecto-cubo.png";
 import objetoLogo from "../assets/brand/objeto-cubo.png";
+import { GA_MEASUREMENT_ID } from "../data/analytics";
 
 interface Props {
   title: string;
@@ -63,6 +64,20 @@ const organizacionJsonLd = {
     <link rel="preload" href={bigShouldersBoldUrl} as="font" type="font/ttf" crossorigin />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizacionJsonLd)} />
+
+    {GA_MEASUREMENT_ID && (
+      <Fragment>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+        <script define:vars={{ GA_MEASUREMENT_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", GA_MEASUREMENT_ID);
+        </script>
+      </Fragment>
+    )}
 
     <noscript>
       <style>
@@ -165,6 +180,26 @@ const organizacionJsonLd = {
 
       setupBrandTransitions();
       document.addEventListener("astro:page-load", setupBrandTransitions);
+    </script>
+
+    <script>
+      // Eventos de Analytics: un solo listener delegado en vez de tocar cada
+      // componente. Ver MD de Analytics de Deploy para los nombres exactos.
+      function trackEvent(nombre: string) {
+        const gtag = (window as any).gtag;
+        if (typeof gtag === "function") gtag("event", nombre);
+      }
+
+      document.addEventListener("click", (e) => {
+        const link = (e.target as HTMLElement)?.closest?.("a[href]") as HTMLAnchorElement | null;
+        if (!link) return;
+
+        const href = link.href;
+        if (href.includes("wa.me")) trackEvent("click_whatsapp");
+        else if (href.includes("instagram.com")) trackEvent("click_instagram");
+        else if (href.startsWith("mailto:") || href.includes("mail.google.com/mail")) trackEvent("click_email");
+        else if (link.closest("nav")) trackEvent("navigation_click");
+      });
     </script>
   </body>
 </html>
