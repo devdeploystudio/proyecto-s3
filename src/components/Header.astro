@@ -35,7 +35,7 @@ const path = Astro.url.pathname;
       <span>{nombre}</span>
     </a>
 
-    <nav aria-label="Navegación principal" class="nav">
+    <nav aria-label="Navegación principal" class="nav" data-ubicacion="header">
       <ul>
         {nav.map((item) => (
           <li>
@@ -49,12 +49,12 @@ const path = Astro.url.pathname;
 
     <div class="header__side">
       {!isObjeto && (
-        <a class="btn-crossbrand" href={withBase("/objeto/")}>
+        <a class="btn-crossbrand" href={withBase("/objeto/")} data-ubicacion="cambio_marca">
           Conocé Objeto →
         </a>
       )}
       {isObjeto && (
-        <a class="btn-crossbrand" href={withBase("/")}>
+        <a class="btn-crossbrand" href={withBase("/")} data-ubicacion="cambio_marca">
           ← Proyecto S3
         </a>
       )}
@@ -66,7 +66,7 @@ const path = Astro.url.pathname;
 
     <input type="checkbox" id="menu-toggle" class="menu-toggle-input" />
 
-    <nav aria-label="Navegación móvil" class="nav-mobile">
+    <nav aria-label="Navegación móvil" class="nav-mobile" data-ubicacion="header">
       <ul>
         {nav.map((item) => (
           <li>

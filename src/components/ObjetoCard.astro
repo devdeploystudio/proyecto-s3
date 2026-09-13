@@ -65,7 +65,14 @@ const coloresDisponibles = COLORES.filter((color) =>
 
     <div class="pieza__footer">
       {pieza.precio && <p class="pieza__precio">{formatoPrecio.format(pieza.precio)}</p>}
-      <a class="btn btn--sage" href={linkWhatsapp(`Hola! Quería consultar por la mesa ${pieza.nombre}.`)} target="_blank" rel="noopener noreferrer">
+      <a
+        class="btn btn--sage"
+        href={linkWhatsapp(`Hola! Quería consultar por la mesa ${pieza.nombre}.`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ubicacion="tarjeta_objeto"
+        data-pieza={pieza.nombre}
+      >
         Consultar →
       </a>
     </div>
