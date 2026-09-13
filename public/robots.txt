@@ -1,3 +1,6 @@
-# Sitio en desarrollo. Revisar y quitar el bloqueo antes de producción.
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /panel/
+Disallow: /admin/
+
+Sitemap: https://proyecto-s3.com.ar/sitemap-index.xml

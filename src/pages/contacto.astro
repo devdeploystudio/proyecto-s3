@@ -8,6 +8,7 @@ import { TEXTO_CONTACTO } from "../data/contacto";
 <Layout
   title="Contacto"
   description="Contactate con Proyecto S3 por WhatsApp o Instagram para consultar por tu obra o reforma."
+  noindex={false}
 >
   <section class="section">
     <div class="wrap contacto-layout">
@@ -63,7 +64,12 @@ import { TEXTO_CONTACTO } from "../data/contacto";
         </p>
       </div>
       <div class="contacto-media">
-        <Image src={TEXTO_CONTACTO.imagen} alt="" width={800} height={1000} />
+        <Image
+          src={TEXTO_CONTACTO.imagen}
+          alt="Quincho con pileta elevada de un proyecto de reforma realizado por Proyecto S3"
+          width={800}
+          height={1000}
+        />
       </div>
     </div>
   </section>
