@@ -4,8 +4,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Dominio final: proyecto-s3.com.ar (con dominio propio en GitHub Pages,
-  // el sitio se sirve desde la raíz, sin subcarpeta de base).
+  // Dominio final: proyecto-s3.com.ar. Deploy vía Cloudflare Pages (conectado
+  // directo al repo), se sirve desde la raíz, sin subcarpeta de base.
   site: 'https://proyecto-s3.com.ar',
   integrations: [
     sitemap({
