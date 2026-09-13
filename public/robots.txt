@@ -3,4 +3,4 @@ Allow: /
 Disallow: /panel/
 Disallow: /admin/
 
-Sitemap: https://proyecto-s3.com.ar/sitemap-index.xml
+Sitemap: https://proyecto-s3.com.ar/sitemap.xml
