@@ -5,8 +5,39 @@
 // suban por el panel (fotos, renders, capturas), no solo las ya probadas a
 // mano acá.
 import sharp from "sharp";
-import fs from "node:fs/promises";
+import { existsSync, readdirSync } from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
+
+// Defensivo, no debería activarse en este proyecto: el workflow ya hace
+// `git add -A` (staging el renombre de rename-uploads.mjs) ANTES de armar
+// la lista de archivos a comprimir, así que esta lista ya llega con los
+// nombres finales. Pero si algún día se reordenan los pasos del workflow
+// y esta lista queda desactualizada, un archivo puede haber sido
+// renombrado a "_vNN" por rename-uploads.mjs sin que este script se
+// entere — sin esto, revienta con ENOENT en vez de comprimir igual (bug
+// real encontrado en `santilli-aparts`, ver MD para creacion de panel.md).
+function resolveRenamedPath(file) {
+  if (existsSync(file)) return file;
+
+  const dir = path.dirname(file);
+  const ext = path.extname(file);
+  const baseName = path.basename(file, ext);
+  const escaped = baseName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`^${escaped}_v(\\d+)${ext.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+  const entries = existsSync(dir) ? readdirSync(dir) : [];
+
+  let best = null;
+  let bestVersion = -1;
+  for (const entry of entries) {
+    const m = entry.match(re);
+    if (m && parseInt(m[1], 10) > bestVersion) {
+      bestVersion = parseInt(m[1], 10);
+      best = entry;
+    }
+  }
+  return best ? path.join(dir, best) : null;
+}
 
 const files = (process.argv[2] ?? "")
   .split("\n")
@@ -18,9 +49,14 @@ if (!files.length) {
   process.exit(0);
 }
 
-for (const file of files) {
+for (const fileArg of files) {
+  const file = resolveRenamedPath(fileArg);
+  if (!file) {
+    console.log(`${fileArg}: ya no existe (probablemente eliminado en este mismo push), se salteó`);
+    continue;
+  }
   try {
-    const original = await fs.readFile(file);
+    const original = await fsp.readFile(file);
     const before = original.length;
     const ext = path.extname(file).toLowerCase();
     // sharp(rutaDeArchivo) deja el archivo abierto para lectura, y en
@@ -41,7 +77,7 @@ for (const file of files) {
     }
 
     if (buffer.length < before) {
-      await fs.writeFile(file, buffer);
+      await fsp.writeFile(file, buffer);
       console.log(`${file}: ${(before / 1024).toFixed(0)}KB -> ${(buffer.length / 1024).toFixed(0)}KB`);
     } else {
       console.log(`${file}: ya está optimizada (${(before / 1024).toFixed(0)}KB), sin cambios`);
