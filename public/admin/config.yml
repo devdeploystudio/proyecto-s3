@@ -128,6 +128,7 @@ collections:
       - { label: "Rol", name: "rol", widget: "string" }
       - { label: "Bio", name: "bio", widget: "text" }
       - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+      - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
 
   - name: "config-estudio"
     label: "👥 Estudio → Texto"
@@ -147,6 +148,7 @@ collections:
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
               - { label: "Foto del equipo (aparece en Estudio y como adelanto en Inicio)", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+              - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
               - { label: "Imagen de fondo del bloque final (\"Seguinos en Instagram\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio" }
 
   - name: "config-contacto"

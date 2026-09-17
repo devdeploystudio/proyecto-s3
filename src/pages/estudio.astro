@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
-import { EQUIPO, TEXTO_NOSOTROS, FOTO_EQUIPO, ESTUDIO_CTA_IMAGEN } from "../data/equipo";
+import { EQUIPO, TEXTO_NOSOTROS, FOTO_EQUIPO, FOTO_EQUIPO_COLOR, ESTUDIO_CTA_IMAGEN } from "../data/equipo";
 import { SITE } from "../data/site";
 ---
 
@@ -12,7 +12,7 @@ import { SITE } from "../data/site";
 >
   <section class="section intro">
     <div class="intro__media">
-      <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={900} height={700} />
+      <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={900} height={700} data-color={FOTO_EQUIPO_COLOR || undefined} />
     </div>
     <div class="wrap intro__inner">
       <div class="intro__text">
@@ -34,7 +34,7 @@ import { SITE } from "../data/site";
           <article class="persona">
             <div class="persona__foto" data-vacia={!persona.foto}>
               {persona.foto ? (
-                <Image src={persona.foto} alt={persona.nombre} width={480} height={480} />
+                <Image src={persona.foto} alt={persona.nombre} width={480} height={480} data-color={persona.colorOriginal || undefined} />
               ) : (
                 <span>Foto próximamente</span>
               )}
@@ -95,6 +95,10 @@ import { SITE } from "../data/site";
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
+  }
+
+  .intro__media :global(img[data-color]) {
+    filter: none;
   }
 
   .intro__inner {
@@ -161,6 +165,10 @@ import { SITE } from "../data/site";
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
+  }
+
+  .persona__foto :global(img[data-color]) {
+    filter: none;
   }
 
   .persona__foto[data-vacia="true"] {

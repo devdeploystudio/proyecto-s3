@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import ProyectoCard from "../components/ProyectoCard.astro";
 import { Image } from "astro:assets";
 import { PROYECTOS } from "../data/proyectos";
-import { TEXTO_NOSOTROS, FOTO_EQUIPO } from "../data/equipo";
+import { TEXTO_NOSOTROS, FOTO_EQUIPO, FOTO_EQUIPO_COLOR } from "../data/equipo";
 import { TEXTO_INICIO } from "../data/inicio";
 import { SITE, linkWhatsapp, withBase } from "../data/site";
 import objetoCubo from "../assets/brand/objeto-cubo.png";
@@ -35,7 +35,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     <Image class="nosotros-teaser__icon" src={proyectoCubo} alt="" width={200} height={200} aria-hidden="true" />
     <a class="wrap nosotros-teaser__inner" href={withBase("/estudio/")} data-reveal>
       <div class="nosotros-teaser__media">
-        <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={400} height={400} />
+        <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={400} height={400} data-color={FOTO_EQUIPO_COLOR || undefined} />
       </div>
       <div class="nosotros-teaser__text">
         <p class="eyebrow">El estudio</p>
@@ -289,6 +289,10 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
+  }
+
+  .nosotros-teaser__media :global(img[data-color]) {
+    filter: none;
   }
 
   .nosotros-teaser__inner:hover .nosotros-teaser__cta {

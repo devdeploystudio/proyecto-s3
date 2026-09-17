@@ -62,6 +62,10 @@ const equipo = defineCollection({
       bio: z.string(),
       orden: z.number(),
       foto: optionalImage(image),
+      // Por default las fotos de personas se muestran en blanco y negro
+      // (filtro CSS, ver estudio.astro). Tildar esto muestra esa foto
+      // puntual en color, sin tocar el filtro de las demás.
+      colorOriginal: z.boolean().default(false),
     }),
 });
 
@@ -121,6 +125,9 @@ const configEstudio = defineCollection({
       id: z.string(),
       textoNosotros: z.array(z.string()),
       foto: image(),
+      // Ídem que en `equipo`: por default se muestra en blanco y negro,
+      // tildar para verla en color.
+      colorOriginal: z.boolean().default(false),
       ctaImagen: image(),
     }),
 });
