@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /panel/
+Disallow: /editor/
 Disallow: /admin/
 
 Sitemap: https://proyecto-s3.com.ar/sitemap.xml

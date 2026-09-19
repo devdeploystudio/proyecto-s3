@@ -1,0 +1,226 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { withBase } from "../data/site";
+
+// Cada link lleva directo a esa colección puntual dentro del panel real
+// (Sveltia CMS, en /admin/). Si no estás logueada todavía, Sveltia pide
+// el login de GitHub primero y después te lleva ahí solo. Esta página
+// es solo un menú más claro para llegar, no maneja nada de eso.
+const grupos = [
+  {
+    emoji: "🏠",
+    nombre: "Inicio",
+    items: [{ label: "Textos e imágenes de la portada", coleccion: "config-inicio" }],
+  },
+  {
+    emoji: "📁",
+    nombre: "Proyectos",
+    items: [{ label: "Ver y editar proyectos", coleccion: "proyectos" }],
+  },
+  {
+    emoji: "🪑",
+    nombre: "Objeto",
+    items: [
+      { label: "Piezas (mesas, precios, fotos)", coleccion: "objeto-piezas" },
+      { label: "Texto y colores disponibles", coleccion: "config-objeto" },
+    ],
+  },
+  {
+    emoji: "👥",
+    nombre: "Estudio",
+    items: [
+      { label: "Equipo", coleccion: "equipo" },
+      { label: "Texto y fotos de la página", coleccion: "config-estudio" },
+    ],
+  },
+  {
+    emoji: "✉️",
+    nombre: "Contacto",
+    items: [{ label: "Textos y foto de la página", coleccion: "config-contacto" }],
+  },
+  {
+    emoji: "⚙️",
+    nombre: "General",
+    items: [{ label: "Instagram, WhatsApp, email", coleccion: "config" }],
+  },
+];
+---
+
+<Layout title="Editor" description="Menú para editar el contenido del sitio." tituloConGuion>
+  <section class="section editor">
+    <div class="wrap">
+      {/* Portón de mail: NO es seguridad real (el sitio es 100% estático,
+         no hay backend que valide nada - cualquiera que abra el código
+         fuente ve esta misma lista de mails permitidos). Es solo para que
+         un visitante que llega a /editor de casualidad no vea directo el
+         menú. La seguridad de verdad sigue siendo el login de GitHub de
+         Sveltia en /admin/, que sí es server-side. */}
+      <div id="editor-gate" class="editor__gate">
+        <p class="eyebrow">Editor</p>
+        <h1>Ingresá tu mail</h1>
+        <p class="editor__lead">Esta sección es solo para el equipo de Proyecto S3 y Deploy.</p>
+        <form id="editor-gate-form" class="editor__gate-form">
+          <input type="email" id="editor-gate-email" required placeholder="tu@mail.com" class="editor__gate-input" />
+          <button type="submit" class="btn btn--primary">Continuar</button>
+          <p id="editor-gate-error" class="editor__gate-error" hidden>Ese mail no tiene acceso a esta sección.</p>
+        </form>
+      </div>
+
+      <div id="editor-content" class="editor__content" hidden>
+        <p class="eyebrow">Editor</p>
+        <h1>¿Qué querés editar?</h1>
+        <p class="editor__lead">
+          Elegí abajo qué parte del sitio querés cambiar. La primera vez te va a
+          pedir iniciar sesión con una cuenta de GitHub, algo así como el usuario
+          con el que entrás a cualquier servicio: es gratis y podés crearla en un
+          minuto usando tu mismo Gmail. Una vez que la tengas, siempre vas a
+          entrar con esa misma cuenta. Es lo que protege el sitio, para que solo
+          vos puedas cambiar el contenido.
+        </p>
+
+        <div class="editor__grid">
+          {grupos.map((grupo) => (
+            <article class="editor__card">
+              <p class="editor__card-titulo">
+                <span aria-hidden="true">{grupo.emoji}</span> {grupo.nombre}
+              </p>
+              <div class="editor__card-links">
+                {grupo.items.map((item) => (
+                  <a class="editor__link" href={withBase(`admin/#/collections/${item.coleccion}`)}>
+                    {item.label} →
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Lista de mails permitidos. Solo obscurece el acceso casual, ver el
+  // comentario grande en el JSX del portón más arriba.
+  const MAILS_PERMITIDOS = ["marumungo@gmail.com", "proyecto.s3object@gmail.com"];
+
+  const STORAGE_KEY = "editor-mail-ok";
+
+  const gate = document.getElementById("editor-gate")!;
+  const content = document.getElementById("editor-content")!;
+  const form = document.getElementById("editor-gate-form") as HTMLFormElement;
+  const input = document.getElementById("editor-gate-email") as HTMLInputElement;
+  const error = document.getElementById("editor-gate-error")!;
+
+  function desbloquear() {
+    gate.hidden = true;
+    content.hidden = false;
+  }
+
+  const mailGuardado = localStorage.getItem(STORAGE_KEY);
+  if (mailGuardado && MAILS_PERMITIDOS.includes(mailGuardado)) {
+    desbloquear();
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mail = input.value.trim().toLowerCase();
+    if (MAILS_PERMITIDOS.includes(mail)) {
+      localStorage.setItem(STORAGE_KEY, mail);
+      error.hidden = true;
+      desbloquear();
+    } else {
+      error.hidden = false;
+    }
+  });
+</script>
+
+<style>
+  .editor h1 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .editor__lead {
+    margin-top: 1rem;
+    color: var(--stone);
+  }
+
+  .editor__gate {
+    max-width: 360px;
+    margin-inline: auto;
+    text-align: center;
+    padding-block: clamp(2rem, 8vw, 4rem);
+  }
+
+  .editor__gate-form {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .editor__gate-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--ink);
+    background: var(--white);
+  }
+
+  .editor__gate-input:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .editor__gate-error {
+    font-size: 0.9rem;
+    color: var(--terracota-ink);
+  }
+
+  .editor__grid {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .editor__card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    background: var(--white);
+  }
+
+  .editor__card-titulo {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .editor__card-links {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .editor__link {
+    display: block;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .editor__link:hover {
+    border-color: var(--terracota);
+    background: var(--blush-soft);
+    color: var(--terracota-ink);
+  }
+</style>
