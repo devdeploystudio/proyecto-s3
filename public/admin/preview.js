@@ -145,7 +145,12 @@ CMS.registerPreviewTemplate(
         foto && h("img", { className: "p-foto", src: foto.toString() }),
         h("p", { className: "p-eyebrow" }, data.get("heroEyebrow")),
         h("h1", { className: "p-titulo" }, data.get("heroTitulo")),
-        h("span", { className: "p-nota" }, "Debajo de esto va el primer párrafo del texto de \"Estudio\"."),
+        h("p", { className: "p-texto" }, data.get("heroLead")),
+        h(
+          "span",
+          { className: "p-nota" },
+          `Botones: "${data.get("heroCtaProyectosTexto") ?? ""}" y "${data.get("heroCtaEstudioTexto") ?? ""}".`,
+        ),
       );
     },
   }),
@@ -158,13 +163,21 @@ CMS.registerPreviewTemplate(
     render() {
       const data = this.props.entry.getIn(["data", "inicioEstudio"]);
       if (!data) return null;
+      const foto = this.props.getAsset(data.get("teaserFoto"));
+      const enColor = data.get("teaserFotoColorOriginal");
       return h(
         "div",
         { className: "p-block--proyecto" },
+        foto &&
+          h("img", { className: `p-foto${enColor ? "" : " p-foto--bn"}`, src: foto.toString() }),
         h("p", { className: "p-eyebrow" }, "El estudio"),
         h("h1", { className: "p-titulo" }, data.get("teaserTitulo")),
         h("p", { className: "p-texto" }, data.get("teaserTexto")),
-        h("span", { className: "p-nota" }, "Al lado va la foto del equipo (se edita en \"Estudio → Texto\")."),
+        h(
+          "span",
+          { className: "p-nota" },
+          enColor ? "Esta foto se muestra en color." : "Esta foto se muestra en blanco y negro (tildá \"Mostrar en color\" para verla a color).",
+        ),
       );
     },
   }),
@@ -200,9 +213,9 @@ CMS.registerPreviewTemplate(
         "div",
         {},
         foto && h("img", { className: "p-foto", src: foto.toString() }),
-        h("h1", { className: "p-titulo" }, "¿Tenés un proyecto en mente?"),
-        h("p", { className: "p-texto" }, "Contanos en qué estás pensando y lo charlamos por WhatsApp."),
-        h("span", { className: "p-nota" }, "El título y el texto de este cartel son fijos: acá solo se cambia la foto de fondo."),
+        h("h1", { className: "p-titulo" }, data.get("ctaTitulo")),
+        h("p", { className: "p-texto" }, data.get("ctaTexto")),
+        h("span", { className: "p-nota" }, `Botón: "${data.get("ctaBotonTexto") ?? ""}".`),
       );
     },
   }),
@@ -223,12 +236,33 @@ CMS.registerPreviewTemplate(
         foto &&
           h("img", { className: `p-foto${enColor ? "" : " p-foto--bn"}`, src: foto.toString() }),
         h("p", { className: "p-eyebrow" }, "El estudio"),
+        h("h1", { className: "p-titulo" }, data.get("titulo")),
         h(Parrafos, { items: data.get("textoNosotros") }),
         h(
           "span",
           { className: "p-nota" },
           enColor ? "Esta foto se muestra en color." : "Esta foto se muestra en blanco y negro (tildá \"Mostrar en color\" para verla a color).",
         ),
+      );
+    },
+  }),
+);
+
+// --- Estudio → Bloque final ---
+CMS.registerPreviewTemplate(
+  "estudio-final",
+  createClass({
+    render() {
+      const data = this.props.entry.getIn(["data", "estudioFinal"]);
+      if (!data) return null;
+      const foto = this.props.getAsset(data.get("ctaImagen"));
+      return h(
+        "div",
+        {},
+        foto && h("img", { className: "p-foto", src: foto.toString() }),
+        h("h1", { className: "p-titulo" }, data.get("ctaTitulo")),
+        h("p", { className: "p-texto" }, data.get("ctaTexto")),
+        h("span", { className: "p-nota" }, `Botón: "${data.get("ctaBotonTexto") ?? ""}".`),
       );
     },
   }),
@@ -247,6 +281,7 @@ CMS.registerPreviewTemplate(
         { className: "p-block--objeto" },
         h("p", { className: "p-eyebrow p-eyebrow--sage" }, "Objeto"),
         h(Parrafos, { items: data.get("textoObjeto") }),
+        h("span", { className: "p-nota" }, `Pie de página: "${data.get("footerTagline") ?? ""}".`),
         colores.length > 0 &&
           h(
             "ul",
@@ -280,6 +315,86 @@ CMS.registerPreviewTemplate(
         h("p", { className: "p-eyebrow" }, "Contacto"),
         h("h1", { className: "p-titulo" }, data.get("titulo")),
         h("p", { className: "p-texto" }, data.get("lead")),
+      );
+    },
+  }),
+);
+
+// --- Estudio → Equipo (colección de personas) ---
+CMS.registerPreviewTemplate(
+  "equipo",
+  createClass({
+    render() {
+      const data = this.props.entry.get("data");
+      if (!data) return null;
+      const foto = this.props.getAsset(data.get("foto"));
+      const enColor = data.get("colorOriginal");
+      return h(
+        "div",
+        { className: "p-block--proyecto" },
+        foto &&
+          h("img", {
+            className: `p-foto${enColor ? "" : " p-foto--bn"}`,
+            style: { maxWidth: "14rem", borderRadius: "50%", aspectRatio: "1 / 1", objectFit: "cover" },
+            src: foto.toString(),
+          }),
+        h("p", { className: "p-eyebrow" }, data.get("rol")),
+        h("h1", { className: "p-titulo" }, data.get("nombre")),
+        h("p", { className: "p-texto" }, data.get("bio")),
+        h(
+          "span",
+          { className: "p-nota" },
+          enColor ? "Esta foto se muestra en color." : "Esta foto se muestra en blanco y negro (tildá \"Mostrar en color\" para verla a color).",
+        ),
+      );
+    },
+  }),
+);
+
+// --- Proyectos (colección) ---
+CMS.registerPreviewTemplate(
+  "proyectos",
+  createClass({
+    render() {
+      const data = this.props.entry.get("data");
+      if (!data) return null;
+      const foto = this.props.getAsset(data.get("tarjeta") || data.get("cover"));
+      const acento = data.get("acento") || "#ce491c";
+      return h(
+        "div",
+        { style: { borderLeft: `4px solid ${acento}`, paddingLeft: "1rem" } },
+        foto && h("img", { className: "p-foto", src: foto.toString() }),
+        h("p", { className: "p-eyebrow", style: { color: acento } }, data.get("tipo")),
+        h("h1", { className: "p-titulo", style: { color: acento } }, data.get("titulo")),
+        h("p", { className: "p-texto" }, data.get("resumen")),
+      );
+    },
+  }),
+);
+
+// --- Objeto → Piezas (colección) ---
+CMS.registerPreviewTemplate(
+  "objeto-piezas",
+  createClass({
+    render() {
+      const data = this.props.entry.get("data");
+      if (!data) return null;
+      const fotos = toPlainArray(data.get("foto"));
+      const primera = fotos[0];
+      const foto = primera && this.props.getAsset(campoDe(primera, "imagen"));
+      const precio = data.get("precio");
+      return h(
+        "div",
+        { className: "p-block--objeto" },
+        foto && h("img", { className: "p-foto", src: foto.toString() }),
+        h("p", { className: "p-eyebrow p-eyebrow--sage" }, data.get("tipo")),
+        h("h1", { className: "p-titulo" }, data.get("nombre")),
+        h("p", { className: "p-texto p-texto--muted" }, data.get("medidas")),
+        h(
+          "span",
+          { className: "p-nota" },
+          precio ? `$${precio}` : "Sin precio cargado (se muestra \"a consultar\").",
+        ),
       );
     },
   }),

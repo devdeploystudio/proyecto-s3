@@ -10,7 +10,7 @@ interface Props {
 const { proyecto } = Astro.props;
 ---
 
-<a class="card" href={withBase(`/proyectos/${proyecto.slug}/`)} data-acento={proyecto.acento}>
+<a class="card" href={withBase(`/proyectos/${proyecto.slug}/`)} style={`--acento: ${proyecto.acento}`}>
   <div class="card__img">
     <Image src={proyecto.tarjeta ?? proyecto.cover} alt={`${proyecto.titulo}, ${proyecto.tipo}`} width={640} height={480} />
   </div>
@@ -66,29 +66,13 @@ const { proyecto } = Astro.props;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     font-weight: 600;
-    color: var(--terracota);
-  }
-
-  .card[data-acento="bordo"] .card__tipo {
-    color: var(--terracota-ink);
-  }
-
-  .card[data-acento="sage"] .card__tipo {
-    color: var(--sage-ink);
+    color: var(--acento, var(--terracota));
   }
 
   .card__titulo {
     font-size: 1.5rem;
     margin-top: 0.3rem;
-    color: var(--terracota);
-  }
-
-  .card[data-acento="bordo"] .card__titulo {
-    color: var(--terracota-ink);
-  }
-
-  .card[data-acento="sage"] .card__titulo {
-    color: var(--sage-ink);
+    color: var(--acento, var(--terracota));
   }
 
   .card__resumen {

@@ -162,10 +162,6 @@ button {
   color: var(--sage-ink);
 }
 
-.eyebrow--bordo {
-  color: var(--terracota-ink);
-}
-
 .btn {
   display: inline-flex;
   align-items: center;

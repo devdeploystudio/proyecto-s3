@@ -31,6 +31,7 @@ const configObjeto = await getEntry("configObjeto", "objeto");
 export const COLORES: Color[] = configObjeto!.data.coloresObjeto;
 
 export const TEXTO_OBJETO: string[] = configObjeto!.data.textoObjeto;
+export const TAGLINE_OBJETO: string = configObjeto!.data.footerTagline;
 
 const entradas = await getCollection("objetoPiezas");
 

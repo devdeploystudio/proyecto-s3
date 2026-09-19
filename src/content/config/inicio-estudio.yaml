@@ -2,3 +2,5 @@ inicioEstudio:
   id: "inicio-estudio"
   teaserTitulo: "Un laburo de familia, atravesado por la arquitectura."
   teaserTexto: "Santino, Marcelo y Lautaro Schembari: tres generaciones ligadas al oficio de construir."
+  teaserFoto: "../../assets/equipo/grupal-equipo.jpg"
+  teaserFotoColorOriginal: false

@@ -9,7 +9,7 @@ export type Proyecto = {
   orden: number;
   titulo: string;
   tipo: string;
-  acento: "terracota" | "bordo" | "sage";
+  acento: string;
   resumen: string;
   concepto: string;
   cover: ImageMetadata;

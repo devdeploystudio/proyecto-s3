@@ -20,10 +20,10 @@ const galeriaFull = await Promise.all(
 
 <Layout title={proyecto.titulo} description={proyecto.resumen} noindex={false}>
   <article>
-    <section class="hero" data-acento={proyecto.acento}>
+    <section class="hero" style={`--acento: ${proyecto.acento}`}>
       <div class="wrap">
         <a href={withBase("/proyectos/")} class="volver">← Proyectos</a>
-        <p class="eyebrow" class:list={[proyecto.acento === "sage" && "eyebrow--sage", proyecto.acento === "bordo" && "eyebrow--bordo"]}>{proyecto.tipo}</p>
+        <p class="eyebrow" style="color: var(--acento)">{proyecto.tipo}</p>
         <div class="hero__row">
           <h1>{proyecto.titulo}</h1>
           <a class="hero__presentacion" href={withBase(proyecto.presentacion)} target="_blank" rel="noopener noreferrer">

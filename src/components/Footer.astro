@@ -1,5 +1,6 @@
 ---
 import { SITE, linkWhatsapp, linkEmail, withBase } from "../data/site";
+import { TAGLINE_OBJETO } from "../data/objeto";
 
 interface Props {
   brand?: "proyecto" | "objeto";
@@ -15,7 +16,7 @@ const year = new Date().getFullYear();
     <div class="footer__brand">
       <p class="footer__name">{isObjeto ? "Objeto" : SITE.nombre}</p>
       <p class="footer__tag">
-        {isObjeto ? "Muebles de diseño, hechos a pedido." : "Arquitectura y construcción, de padre a hijo."}
+        {isObjeto ? TAGLINE_OBJETO : "Arquitectura y construcción, de padre a hijo."}
       </p>
       <div class="footer__contact">
         <a class="footer__social" href={isObjeto ? SITE.instagramObjeto : SITE.instagramEstudio} target="_blank" rel="noopener noreferrer" data-ubicacion="footer">

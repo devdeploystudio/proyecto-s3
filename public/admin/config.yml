@@ -43,13 +43,16 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-portada" }
-              - { label: "Imagen de fondo", name: "heroImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
+              - { label: "Imagen de fondo", name: "heroImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio", hint: "Arriba de esta foto va texto blanco. Elegí una imagen más bien oscura (o con esa zona oscura), si no el texto queda difícil de leer." }
               - { label: "Frase corta arriba del título", name: "heroEyebrow", widget: "string" }
               - { label: "Título principal", name: "heroTitulo", widget: "text" }
+              - { label: "Párrafo debajo del título", name: "heroLead", widget: "text" }
+              - { label: "Texto del botón hacia \"Proyectos\"", name: "heroCtaProyectosTexto", widget: "string" }
+              - { label: "Texto del botón hacia \"Estudio\"", name: "heroCtaEstudioTexto", widget: "string" }
 
   - name: "config-inicio-estudio"
     label: "🏠 Inicio → El estudio"
-    description: "El título y el texto del bloque \"El estudio\" en la home (el que invita a conocer el estudio). La foto de ese bloque es la misma foto del equipo, se edita desde \"Estudio → Texto\"."
+    description: "El título, el texto y la foto del bloque \"El estudio\" en la home (el que invita a conocer el estudio). Es independiente de la foto de \"Estudio → Texto\": pueden ser fotos distintas."
     editor: { preview: true }
     files:
       - name: "inicio-estudio"
@@ -63,6 +66,8 @@ collections:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-estudio" }
               - { label: "Título", name: "teaserTitulo", widget: "string" }
               - { label: "Texto", name: "teaserTexto", widget: "text" }
+              - { label: "Foto", name: "teaserFoto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+              - { label: "Mostrar en color", name: "teaserFotoColorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
 
   - name: "config-inicio-objeto"
     label: "🏠 Inicio → Objeto"
@@ -83,7 +88,7 @@ collections:
 
   - name: "config-inicio-final"
     label: "🏠 Inicio → Bloque final"
-    description: "La imagen de fondo del último cartel de la home (\"¿Tenés un proyecto en mente?\")."
+    description: "El título, el texto, el botón y la imagen de fondo del último cartel de la home (\"¿Tenés un proyecto en mente?\")."
     editor: { preview: true }
     files:
       - name: "inicio-final"
@@ -95,12 +100,15 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-final" }
-              - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
+              - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio", hint: "Arriba de esta foto va texto blanco. Elegí una imagen más bien oscura (o con esa zona oscura), si no el texto queda difícil de leer." }
+              - { label: "Título", name: "ctaTitulo", widget: "string" }
+              - { label: "Texto", name: "ctaTexto", widget: "text" }
+              - { label: "Texto del botón de WhatsApp", name: "ctaBotonTexto", widget: "string" }
 
   # --- Estudio (página aparte) ---
   - name: "config-estudio"
     label: "👥 Estudio → Texto"
-    description: "El texto de presentación de la página \"Estudio\" y la foto del equipo (se reusa como adelanto en la home) y el fondo del bloque final. El texto de presentación se puede reordenar y agregar/borrar párrafos arrastrando."
+    description: "Se pueden agregar/borrar/reordenar los párrafos del texto de presentación arrastrando. El título, el texto y la foto de esta página."
     editor: { preview: true }
     files:
       - name: "estudio"
@@ -112,18 +120,38 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "estudio" }
+              - { label: "Título", name: "titulo", widget: "string" }
               - label: "Texto de presentación (un párrafo por línea)"
                 name: "textoNosotros"
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - { label: "Foto del equipo (aparece en Estudio y como adelanto en Inicio)", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
-              - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
-              - { label: "Imagen de fondo del bloque final (\"Seguinos en Instagram\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio" }
+              - { label: "Foto", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+              - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
+
+  - name: "config-estudio-final"
+    label: "👥 Estudio → Bloque final"
+    description: "El título, el texto, el botón y la imagen de fondo del último cartel de la página \"Estudio\" (\"Seguinos en Instagram\")."
+    editor: { preview: true }
+    files:
+      - name: "estudio-final"
+        label: "Bloque final de Estudio"
+        file: "src/content/config/estudio-final.yaml"
+        fields:
+          - label: "Bloque final"
+            name: "estudioFinal"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "estudio-final" }
+              - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio", hint: "Arriba de esta foto va texto blanco. Elegí una imagen más bien oscura (o con esa zona oscura), si no el texto queda difícil de leer." }
+              - { label: "Título", name: "ctaTitulo", widget: "string" }
+              - { label: "Texto", name: "ctaTexto", widget: "text" }
+              - { label: "Texto del botón de Instagram", name: "ctaBotonTexto", widget: "string" }
 
   - name: "equipo"
     label: "👥 Estudio → Equipo"
     label_singular: "Integrante"
-    description: "Las personas que aparecen en la grilla de la página \"Estudio\". Se pueden agregar, borrar y reordenar arrastrando."
+    description: "Se pueden agregar, borrar y reordenar arrastrando. Las personas que aparecen en la grilla de la página \"Estudio\"."
+    editor: { preview: true }
     folder: "src/content/equipo"
     create: true
     delete: true
@@ -136,13 +164,14 @@ collections:
       - { label: "Rol", name: "rol", widget: "string" }
       - { label: "Bio", name: "bio", widget: "text" }
       - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
-      - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
+      - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
 
   # --- Proyectos (página aparte, también aparecen en el carrusel de Inicio) ---
   - name: "proyectos"
     label: "📁 Proyectos"
     label_singular: "Proyecto"
-    description: "Aparecen en la página \"Proyectos\" y en el carrusel de la home. Se pueden agregar, borrar y reordenar arrastrando."
+    description: "Se pueden agregar, borrar y reordenar arrastrando. Aparecen en la página \"Proyectos\" y en el carrusel de la home."
+    editor: { preview: true }
     folder: "src/content/proyectos"
     create: true
     delete: true
@@ -153,11 +182,7 @@ collections:
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
       - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
-      - label: "Color de acento"
-        name: "acento"
-        widget: "select"
-        hint: "Elegí de la lista, así el color siempre queda prolijo."
-        options: [{ label: "Terracota", value: "terracota" }, { label: "Bordó", value: "bordo" }, { label: "Sage", value: "sage" }]
+      - { label: "Color de acento", name: "acento", widget: "color", hint: "Color del título y la etiqueta de este proyecto en las tarjetas y en su página. Elegí un tono con buen contraste sobre fondo claro (evitar colores muy pálidos o muy parecidos al blanco)." }
       - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
       - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
       - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
@@ -172,7 +197,7 @@ collections:
   # --- Objeto (página aparte, con su propio "sitio" de muebles) ---
   - name: "config-objeto"
     label: "🪑 Objeto → Texto y colores"
-    description: "El texto de presentación de la página \"Objeto\" y la paleta de colores disponible para las piezas. El texto y los colores se pueden reordenar y agregar/borrar arrastrando."
+    description: "El texto y los colores se pueden reordenar y agregar/borrar arrastrando. El texto de presentación de la página \"Objeto\", la frase corta del pie de página, y la paleta de colores disponible para las piezas."
     editor: { preview: true }
     files:
       - name: "objeto"
@@ -188,6 +213,7 @@ collections:
                 name: "textoObjeto"
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - { label: "Frase corta del pie de página (debajo de \"Objeto\")", name: "footerTagline", widget: "string" }
               - label: "Colores disponibles"
                 name: "coloresObjeto"
                 widget: "list"
@@ -199,7 +225,8 @@ collections:
   - name: "objeto-piezas"
     label: "🪑 Objeto → Piezas"
     label_singular: "Pieza"
-    description: "Las mesas y muebles que aparecen en la página \"Objeto\". Se pueden agregar, borrar y reordenar arrastrando."
+    description: "Se pueden agregar, borrar y reordenar arrastrando. Las mesas y muebles que aparecen en la página \"Objeto\"."
+    editor: { preview: true }
     folder: "src/content/objeto-piezas"
     create: true
     delete: true

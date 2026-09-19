@@ -3,7 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import ProyectoCard from "../components/ProyectoCard.astro";
 import { Image } from "astro:assets";
 import { PROYECTOS } from "../data/proyectos";
-import { TEXTO_NOSOTROS, FOTO_EQUIPO, FOTO_EQUIPO_COLOR } from "../data/equipo";
 import { TEXTO_INICIO } from "../data/inicio";
 import { SITE, linkWhatsapp, withBase } from "../data/site";
 import objetoCubo from "../assets/brand/objeto-cubo.png";
@@ -23,10 +22,10 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
       <h1 class="hero__title">
         {TEXTO_INICIO.heroTitulo}
       </h1>
-      <p class="hero__lead">{TEXTO_NOSOTROS[0]}</p>
+      <p class="hero__lead">{TEXTO_INICIO.heroLead}</p>
       <div class="hero__ctas">
-        <a class="btn btn--primary" href={withBase("/proyectos/")}>Ver proyectos →</a>
-        <a class="btn btn--ghost btn--on-photo" href={withBase("/estudio/")}>Conocer el estudio</a>
+        <a class="btn btn--primary" href={withBase("/proyectos/")}>{TEXTO_INICIO.heroCtaProyectosTexto}</a>
+        <a class="btn btn--ghost btn--on-photo" href={withBase("/estudio/")}>{TEXTO_INICIO.heroCtaEstudioTexto}</a>
       </div>
     </div>
   </section>
@@ -35,7 +34,7 @@ import proyectoCubo from "../assets/brand/proyecto-cubo-flotante.png";
     <Image class="nosotros-teaser__icon" src={proyectoCubo} alt="" width={200} height={200} aria-hidden="true" />
     <a class="wrap nosotros-teaser__inner" href={withBase("/estudio/")} data-reveal>
       <div class="nosotros-teaser__media">
-        <Image src={FOTO_EQUIPO} alt="El equipo de Proyecto S3" width={400} height={400} data-color={FOTO_EQUIPO_COLOR || undefined} />
+        <Image src={TEXTO_INICIO.teaserFoto} alt="El equipo de Proyecto S3" width={400} height={400} data-color={TEXTO_INICIO.teaserFotoColorOriginal || undefined} />
       </div>
       <div class="nosotros-teaser__text">
         <p class="eyebrow">El estudio</p>

@@ -19,7 +19,10 @@ const proyectos = defineCollection({
       orden: z.number(),
       titulo: z.string(),
       tipo: z.string(),
-      acento: z.enum(["terracota", "bordo", "sage"]),
+      // Color libre (hex, widget "color" en el panel), no un enum cerrado -
+      // ver ProyectoCard.astro/[slug].astro para cómo se aplica como
+      // variable CSS inline.
+      acento: z.string(),
       resumen: z.string(),
       concepto: z.string(),
       cover: image(),
@@ -99,16 +102,28 @@ const configInicioPortada = defineCollection({
       heroImagen: image(),
       heroEyebrow: z.string(),
       heroTitulo: z.string(),
+      // Independiente de textoNosotros[0] de "Estudio" a propósito: antes
+      // compartían el mismo texto, pero se pidió poder editarlos por
+      // separado aunque arranquen diciendo lo mismo.
+      heroLead: z.string(),
+      heroCtaProyectosTexto: z.string(),
+      heroCtaEstudioTexto: z.string(),
     }),
 });
 
 const configInicioEstudio = defineCollection({
   loader: file("./src/content/config/inicio-estudio.yaml"),
-  schema: z.object({
-    id: z.string(),
-    teaserTitulo: z.string(),
-    teaserTexto: z.string(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
+      teaserTitulo: z.string(),
+      teaserTexto: z.string(),
+      // Independiente de la foto de "Estudio → Texto" a propósito: arranca
+      // siendo la misma, pero se pidió poder cambiarla acá sin afectar la
+      // otra página.
+      teaserFoto: image(),
+      teaserFotoColorOriginal: z.boolean().default(false),
+    }),
 });
 
 const configInicioObjeto = defineCollection({
@@ -126,6 +141,9 @@ const configInicioFinal = defineCollection({
     z.object({
       id: z.string(),
       ctaImagen: image(),
+      ctaTitulo: z.string(),
+      ctaTexto: z.string(),
+      ctaBotonTexto: z.string(),
     }),
 });
 
@@ -151,12 +169,26 @@ const configEstudio = defineCollection({
   schema: ({ image }) =>
     z.object({
       id: z.string(),
+      titulo: z.string(),
       textoNosotros: z.array(z.string()),
       foto: image(),
       // Ídem que en `equipo`: por default se muestra en blanco y negro,
       // tildar para verla en color.
       colorOriginal: z.boolean().default(false),
+    }),
+});
+
+// Bloque final de la página "Estudio" ("Seguinos en Instagram") - archivo
+// aparte, mismo patrón que "Inicio → Bloque final".
+const configEstudioFinal = defineCollection({
+  loader: file("./src/content/config/estudio-final.yaml"),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
       ctaImagen: image(),
+      ctaTitulo: z.string(),
+      ctaTexto: z.string(),
+      ctaBotonTexto: z.string(),
     }),
 });
 
@@ -167,6 +199,8 @@ const configObjeto = defineCollection({
   schema: z.object({
     id: z.string(),
     textoObjeto: z.array(z.string()),
+    // Frase corta debajo de "Objeto" en el footer.
+    footerTagline: z.string(),
     // Nombre y color del círculo. La foto real de cada pieza en ese color
     // vive en la propia pieza (objeto-piezas/*.yaml → foto[].color).
     coloresObjeto: z.array(
@@ -184,6 +218,7 @@ export const collections = {
   equipo,
   config,
   configEstudio,
+  configEstudioFinal,
   configObjeto,
   configInicioPortada,
   configInicioEstudio,
