@@ -13,126 +13,95 @@ local_backend: true
 media_folder: "src/assets"
 public_folder: "src/assets"
 
+# Sin esto, Sveltia muestra un panel de vista previa en vivo al lado del
+# formulario y los campos de texto quedan comprimidos a la mitad del ancho
+# de la pantalla. Se prende puntual (`editor: { preview: true }`) solo en
+# las colecciones que sí tienen una plantilla de vista previa registrada
+# (ver preview.js) - el resto se queda con el formulario a todo el ancho.
+editor:
+  preview: false
+
+# El orden de la lista de acá abajo es a propósito el mismo orden en que el
+# cliente encuentra estas cosas: primero cada pantalla de la home, de arriba
+# a abajo tal cual se ve scrolleando; después el resto de las páginas, en el
+# mismo orden en que aparecen en el menú del sitio (Estudio, Proyectos,
+# Objeto, Contacto); General al final. Así el panel nunca obliga a
+# "traducir" mentalmente entre lo que se ve acá y lo que se ve en el sitio.
 collections:
-  - name: "config-inicio"
-    label: "🏠 Inicio → Textos"
-    description: "El título grande de la portada y los dos bloques de \"El estudio\"/\"Objeto\" que aparecen en la home."
+  # --- Inicio (home), un archivo por cada pantalla que se ve scrolleando ---
+  - name: "config-inicio-portada"
+    label: "🏠 Inicio → Portada"
+    description: "La imagen de fondo, la frase corta de arriba y el título grande de la primera pantalla de la home."
+    editor: { preview: true }
     files:
-      - name: "inicio"
-        label: "Textos de Inicio"
-        file: "src/content/config/inicio.yaml"
+      - name: "inicio-portada"
+        label: "Portada"
+        file: "src/content/config/inicio-portada.yaml"
         fields:
-          - label: "Inicio"
-            name: "inicio"
+          - label: "Portada"
+            name: "inicioPortada"
             widget: "object"
             fields:
-              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio" }
-              - { label: "Imagen de fondo de la portada", name: "heroImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
-              - { label: "Frase corta arriba del título principal", name: "heroEyebrow", widget: "string" }
-              - { label: "Título principal (portada)", name: "heroTitulo", widget: "text" }
-              - { label: "Título del bloque \"El estudio\"", name: "teaserTitulo", widget: "string" }
-              - { label: "Texto del bloque \"El estudio\"", name: "teaserTexto", widget: "text" }
-              - { label: "Título del bloque \"Objeto\"", name: "objetoTitulo", widget: "string" }
-              - { label: "Texto del bloque \"Objeto\"", name: "objetoTexto", widget: "text" }
-              - { label: "Imagen de fondo del bloque final (\"¿Tenés un proyecto en mente?\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-portada" }
+              - { label: "Imagen de fondo", name: "heroImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
+              - { label: "Frase corta arriba del título", name: "heroEyebrow", widget: "string" }
+              - { label: "Título principal", name: "heroTitulo", widget: "text" }
 
-  - name: "proyectos"
-    label: "📁 Proyectos"
-    label_singular: "Proyecto"
-    description: "Aparecen en la página \"Proyectos\" y en el carrusel de la portada (Inicio)."
-    folder: "src/content/proyectos"
-    create: true
-    delete: true
-    extension: "yaml"
-    format: "yaml"
-    identifier_field: titulo
-    reorder: { key: orden }
-    fields:
-      - { label: "Título", name: "titulo", widget: "string" }
-      - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
-      - label: "Color de acento"
-        name: "acento"
-        widget: "select"
-        options: [{ label: "Terracota", value: "terracota" }, { label: "Bordó", value: "bordo" }, { label: "Sage", value: "sage" }]
-      - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
-      - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
-      - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
-      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
-      - label: "Galería"
-        name: "galeria"
-        widget: "list"
-        field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
-      - { label: "PDF de presentación", name: "presentacion", widget: "file", media_folder: "/public/pdfs", public_folder: "/pdfs" }
-
-  - name: "objeto-piezas"
-    label: "🪑 Objeto → Piezas"
-    label_singular: "Pieza"
-    description: "Las mesas y muebles que aparecen en la página \"Objeto\"."
-    folder: "src/content/objeto-piezas"
-    create: true
-    delete: true
-    extension: "yaml"
-    format: "yaml"
-    identifier_field: nombre
-    reorder: { key: orden }
-    fields:
-      - { label: "Nombre", name: "nombre", widget: "string" }
-      - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
-      - { label: "Medidas", name: "medidas", widget: "string" }
-      - { label: "Precio (vacío = a consultar)", name: "precio", widget: "number", value_type: "int", required: false }
-      - label: "Fotos"
-        name: "foto"
-        widget: "list"
-        summary: "{{fields.color}}"
-        fields:
-          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{slug}}", public_folder: "../../assets/objeto/{{slug}}" }
-          - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false }
-
-  - name: "config-objeto"
-    label: "🪑 Objeto → Texto y colores"
-    description: "El texto de presentación de la página \"Objeto\" y la paleta de colores disponible para las piezas."
+  - name: "config-inicio-estudio"
+    label: "🏠 Inicio → El estudio"
+    description: "El título y el texto del bloque \"El estudio\" en la home (el que invita a conocer el estudio). La foto de ese bloque es la misma foto del equipo, se edita desde \"Estudio → Texto\"."
+    editor: { preview: true }
     files:
-      - name: "objeto"
-        label: "Texto y colores de Objeto"
-        file: "src/content/config/objeto.yaml"
+      - name: "inicio-estudio"
+        label: "El estudio (adelanto en Inicio)"
+        file: "src/content/config/inicio-estudio.yaml"
+        fields:
+          - label: "El estudio"
+            name: "inicioEstudio"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-estudio" }
+              - { label: "Título", name: "teaserTitulo", widget: "string" }
+              - { label: "Texto", name: "teaserTexto", widget: "text" }
+
+  - name: "config-inicio-objeto"
+    label: "🏠 Inicio → Objeto"
+    description: "El título y el texto del bloque \"Objeto\" en la home (el que invita a conocer los muebles)."
+    editor: { preview: true }
+    files:
+      - name: "inicio-objeto"
+        label: "Objeto (adelanto en Inicio)"
+        file: "src/content/config/inicio-objeto.yaml"
         fields:
           - label: "Objeto"
-            name: "objeto"
+            name: "inicioObjeto"
             widget: "object"
             fields:
-              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "objeto" }
-              - label: "Texto de presentación (un párrafo por línea)"
-                name: "textoObjeto"
-                widget: "list"
-                field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - label: "Colores disponibles"
-                name: "coloresObjeto"
-                widget: "list"
-                fields:
-                  - { label: "Nombre", name: "nombre", widget: "string" }
-                  - { label: "Color del círculo", name: "swatch", widget: "color" }
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-objeto" }
+              - { label: "Título", name: "objetoTitulo", widget: "string" }
+              - { label: "Texto", name: "objetoTexto", widget: "text" }
 
-  - name: "equipo"
-    label: "👥 Estudio → Equipo"
-    label_singular: "Integrante"
-    description: "Las personas que aparecen en la página \"Estudio\"."
-    folder: "src/content/equipo"
-    create: true
-    delete: true
-    extension: "yaml"
-    format: "yaml"
-    identifier_field: nombre
-    reorder: { key: orden }
-    fields:
-      - { label: "Nombre", name: "nombre", widget: "string" }
-      - { label: "Rol", name: "rol", widget: "string" }
-      - { label: "Bio", name: "bio", widget: "text" }
-      - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
-      - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
+  - name: "config-inicio-final"
+    label: "🏠 Inicio → Bloque final"
+    description: "La imagen de fondo del último cartel de la home (\"¿Tenés un proyecto en mente?\")."
+    editor: { preview: true }
+    files:
+      - name: "inicio-final"
+        label: "Bloque final"
+        file: "src/content/config/inicio-final.yaml"
+        fields:
+          - label: "Bloque final"
+            name: "inicioFinal"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-final" }
+              - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio" }
 
+  # --- Estudio (página aparte) ---
   - name: "config-estudio"
     label: "👥 Estudio → Texto"
-    description: "El texto de presentación de la página \"Estudio\", la foto del equipo y el fondo del bloque final."
+    description: "El texto de presentación de la página \"Estudio\" y la foto del equipo (se reusa como adelanto en la home) y el fondo del bloque final. El texto de presentación se puede reordenar y agregar/borrar párrafos arrastrando."
+    editor: { preview: true }
     files:
       - name: "estudio"
         label: "Texto de Estudio"
@@ -151,9 +120,112 @@ collections:
               - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
               - { label: "Imagen de fondo del bloque final (\"Seguinos en Instagram\")", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio" }
 
+  - name: "equipo"
+    label: "👥 Estudio → Equipo"
+    label_singular: "Integrante"
+    description: "Las personas que aparecen en la grilla de la página \"Estudio\". Se pueden agregar, borrar y reordenar arrastrando."
+    folder: "src/content/equipo"
+    create: true
+    delete: true
+    extension: "yaml"
+    format: "yaml"
+    identifier_field: nombre
+    reorder: { key: orden }
+    fields:
+      - { label: "Nombre", name: "nombre", widget: "string" }
+      - { label: "Rol", name: "rol", widget: "string" }
+      - { label: "Bio", name: "bio", widget: "text" }
+      - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+      - { label: "Mostrar en color (por default se ve en blanco y negro)", name: "colorOriginal", widget: "boolean", default: false }
+
+  # --- Proyectos (página aparte, también aparecen en el carrusel de Inicio) ---
+  - name: "proyectos"
+    label: "📁 Proyectos"
+    label_singular: "Proyecto"
+    description: "Aparecen en la página \"Proyectos\" y en el carrusel de la home. Se pueden agregar, borrar y reordenar arrastrando."
+    folder: "src/content/proyectos"
+    create: true
+    delete: true
+    extension: "yaml"
+    format: "yaml"
+    identifier_field: titulo
+    reorder: { key: orden }
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
+      - label: "Color de acento"
+        name: "acento"
+        widget: "select"
+        hint: "Elegí de la lista, así el color siempre queda prolijo."
+        options: [{ label: "Terracota", value: "terracota" }, { label: "Bordó", value: "bordo" }, { label: "Sage", value: "sage" }]
+      - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
+      - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
+      - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - label: "Galería"
+        name: "galeria"
+        widget: "list"
+        hint: "Se pueden agregar, borrar y reordenar arrastrando."
+        field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - { label: "PDF de presentación", name: "presentacion", widget: "file", media_folder: "/public/pdfs", public_folder: "/pdfs" }
+
+  # --- Objeto (página aparte, con su propio "sitio" de muebles) ---
+  - name: "config-objeto"
+    label: "🪑 Objeto → Texto y colores"
+    description: "El texto de presentación de la página \"Objeto\" y la paleta de colores disponible para las piezas. El texto y los colores se pueden reordenar y agregar/borrar arrastrando."
+    editor: { preview: true }
+    files:
+      - name: "objeto"
+        label: "Texto y colores de Objeto"
+        file: "src/content/config/objeto.yaml"
+        fields:
+          - label: "Objeto"
+            name: "objeto"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "objeto" }
+              - label: "Texto de presentación (un párrafo por línea)"
+                name: "textoObjeto"
+                widget: "list"
+                field: { label: "Párrafo", name: "parrafo", widget: "text" }
+              - label: "Colores disponibles"
+                name: "coloresObjeto"
+                widget: "list"
+                summary: "{{fields.nombre}}"
+                fields:
+                  - { label: "Nombre", name: "nombre", widget: "string", hint: "Usá este mismo nombre, tal cual, en el campo \"Color que muestra esta foto\" de cada pieza (en \"Objeto → Piezas\") para que el círculo de esa foto quede vinculado." }
+                  - { label: "Color del círculo", name: "swatch", widget: "color" }
+
+  - name: "objeto-piezas"
+    label: "🪑 Objeto → Piezas"
+    label_singular: "Pieza"
+    description: "Las mesas y muebles que aparecen en la página \"Objeto\". Se pueden agregar, borrar y reordenar arrastrando."
+    folder: "src/content/objeto-piezas"
+    create: true
+    delete: true
+    extension: "yaml"
+    format: "yaml"
+    identifier_field: nombre
+    reorder: { key: orden }
+    fields:
+      - { label: "Nombre", name: "nombre", widget: "string" }
+      - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
+      - { label: "Medidas", name: "medidas", widget: "string" }
+      - { label: "Precio (vacío = a consultar)", name: "precio", widget: "number", value_type: "int", required: false }
+      - label: "Fotos"
+        name: "foto"
+        widget: "list"
+        hint: "Se pueden agregar, borrar y reordenar arrastrando."
+        summary: "{{fields.color}}"
+        fields:
+          - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{slug}}", public_folder: "../../assets/objeto/{{slug}}" }
+          - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false, hint: "Tiene que decir EXACTAMENTE igual que uno de los nombres cargados en \"Objeto → Texto y colores\" (ej: \"Azul noche\"), si no el círculo de ese color no va a aparecer en esta pieza." }
+
+  # --- Contacto (página aparte) ---
   - name: "config-contacto"
     label: "✉️ Contacto → Textos"
     description: "El título, la bajada y la foto de la página \"Contacto\"."
+    editor: { preview: true }
     files:
       - name: "contacto"
         label: "Textos de Contacto"
@@ -168,9 +240,10 @@ collections:
               - { label: "Bajada", name: "lead", widget: "text" }
               - { label: "Foto", name: "imagen", widget: "image", media_folder: "/src/assets/contacto", public_folder: "../../assets/contacto" }
 
+  # --- General (no pertenece a una sola página) ---
   - name: "config"
     label: "⚙️ General"
-    description: "Instagram, WhatsApp y email — no pertenece a una sola página."
+    description: "Instagram, WhatsApp y email: se usan en botones de contacto de todo el sitio, no pertenecen a una sola página."
     files:
       - name: "site"
         label: "Configuración general"

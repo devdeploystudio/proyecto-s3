@@ -82,21 +82,49 @@ const config = defineCollection({
   }),
 });
 
-// Textos e imágenes de la home (hero + los dos teaser de "El
-// estudio"/"Objeto"). Los cubos flotantes decorativos NO están acá: son
-// elementos de marca/diseño, no contenido del cliente.
-const configInicio = defineCollection({
-  loader: file("./src/content/config/inicio.yaml"),
+// La home tenía un solo "inicio.yaml" con 4 bloques visuales bien
+// distintos mezclados en una sola pantalla del panel (portada, el teaser de
+// "El estudio", el teaser de "Objeto" y la imagen del bloque final). Ahora
+// cada bloque es su propio archivo/colección, uno por unidad visual que el
+// visitante ve separada al scrollear la home - así editar el título de la
+// portada nunca mezcla en la misma pantalla el teaser de Objeto ni el resto.
+// Los cubos flotantes decorativos NO están en ninguna: son elementos de
+// marca/diseño, no contenido del cliente.
+
+const configInicioPortada = defineCollection({
+  loader: file("./src/content/config/inicio-portada.yaml"),
   schema: ({ image }) =>
     z.object({
       id: z.string(),
       heroImagen: image(),
       heroEyebrow: z.string(),
       heroTitulo: z.string(),
-      teaserTitulo: z.string(),
-      teaserTexto: z.string(),
-      objetoTitulo: z.string(),
-      objetoTexto: z.string(),
+    }),
+});
+
+const configInicioEstudio = defineCollection({
+  loader: file("./src/content/config/inicio-estudio.yaml"),
+  schema: z.object({
+    id: z.string(),
+    teaserTitulo: z.string(),
+    teaserTexto: z.string(),
+  }),
+});
+
+const configInicioObjeto = defineCollection({
+  loader: file("./src/content/config/inicio-objeto.yaml"),
+  schema: z.object({
+    id: z.string(),
+    objetoTitulo: z.string(),
+    objetoTexto: z.string(),
+  }),
+});
+
+const configInicioFinal = defineCollection({
+  loader: file("./src/content/config/inicio-final.yaml"),
+  schema: ({ image }) =>
+    z.object({
+      id: z.string(),
       ctaImagen: image(),
     }),
 });
@@ -157,6 +185,9 @@ export const collections = {
   config,
   configEstudio,
   configObjeto,
-  configInicio,
+  configInicioPortada,
+  configInicioEstudio,
+  configInicioObjeto,
+  configInicioFinal,
   configContacto,
 };

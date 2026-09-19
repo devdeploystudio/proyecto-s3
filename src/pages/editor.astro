@@ -6,11 +6,28 @@ import { withBase } from "../data/site";
 // (Sveltia CMS, en /admin/). Si no estás logueada todavía, Sveltia pide
 // el login de GitHub primero y después te lleva ahí solo. Esta página
 // es solo un menú más claro para llegar, no maneja nada de eso.
+// Mismo orden que el panel real (config.yml): primero cada pantalla de la
+// home, de arriba a abajo tal cual se ve scrolleando, después el resto de
+// las páginas en el mismo orden del menú del sitio (Estudio, Proyectos,
+// Objeto, Contacto), General al final.
 const grupos = [
   {
     emoji: "🏠",
     nombre: "Inicio",
-    items: [{ label: "Textos e imágenes de la portada", coleccion: "config-inicio" }],
+    items: [
+      { label: "Portada", coleccion: "config-inicio-portada" },
+      { label: "El estudio (adelanto)", coleccion: "config-inicio-estudio" },
+      { label: "Objeto (adelanto)", coleccion: "config-inicio-objeto" },
+      { label: "Bloque final", coleccion: "config-inicio-final" },
+    ],
+  },
+  {
+    emoji: "👥",
+    nombre: "Estudio",
+    items: [
+      { label: "Texto y fotos de la página", coleccion: "config-estudio" },
+      { label: "Equipo", coleccion: "equipo" },
+    ],
   },
   {
     emoji: "📁",
@@ -21,16 +38,8 @@ const grupos = [
     emoji: "🪑",
     nombre: "Objeto",
     items: [
-      { label: "Piezas (mesas, precios, fotos)", coleccion: "objeto-piezas" },
       { label: "Texto y colores disponibles", coleccion: "config-objeto" },
-    ],
-  },
-  {
-    emoji: "👥",
-    nombre: "Estudio",
-    items: [
-      { label: "Equipo", coleccion: "equipo" },
-      { label: "Texto y fotos de la página", coleccion: "config-estudio" },
+      { label: "Piezas (mesas, precios, fotos)", coleccion: "objeto-piezas" },
     ],
   },
   {
@@ -58,7 +67,7 @@ const grupos = [
       <div id="editor-gate" class="editor__gate">
         <p class="eyebrow">Editor</p>
         <h1>Ingresá tu mail</h1>
-        <p class="editor__lead">Esta sección es solo para el equipo de Proyecto S3 y Deploy.</p>
+        <p class="editor__lead">Esta sección es solo para el equipo de Proyecto S3.</p>
         <form id="editor-gate-form" class="editor__gate-form">
           <input type="email" id="editor-gate-email" required placeholder="tu@mail.com" class="editor__gate-input" />
           <button type="submit" class="btn btn--primary">Continuar</button>
@@ -102,7 +111,7 @@ const grupos = [
 <script>
   // Lista de mails permitidos. Solo obscurece el acceso casual, ver el
   // comentario grande en el JSX del portón más arriba.
-  const MAILS_PERMITIDOS = ["marumungo@gmail.com", "proyecto.s3object@gmail.com"];
+  const MAILS_PERMITIDOS = ["marumungo@gmail.com", "proyecto.s3object@gmail.com", "contact.deploystudio@gmail.com"];
 
   const STORAGE_KEY = "editor-mail-ok";
 
