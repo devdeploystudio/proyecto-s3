@@ -170,14 +170,34 @@ CMS.registerPreviewTemplate(
         { className: "p-block--proyecto" },
         foto &&
           h("img", { className: `p-foto${enColor ? "" : " p-foto--bn"}`, src: foto.toString() }),
-        h("p", { className: "p-eyebrow" }, "El estudio"),
+        h("p", { className: "p-eyebrow" }, data.get("teaserEyebrow")),
         h("h1", { className: "p-titulo" }, data.get("teaserTitulo")),
         h("p", { className: "p-texto" }, data.get("teaserTexto")),
+        h("span", { className: "p-nota" }, `Botón: "${data.get("teaserBotonTexto") ?? ""}".`),
+        h("br", {}),
         h(
           "span",
           { className: "p-nota" },
           enColor ? "Esta foto se muestra en color." : "Esta foto se muestra en blanco y negro (tildá \"Mostrar en color\" para verla a color).",
         ),
+      );
+    },
+  }),
+);
+
+// --- Inicio → Proyectos (carrusel) ---
+CMS.registerPreviewTemplate(
+  "inicio-proyectos",
+  createClass({
+    render() {
+      const data = this.props.entry.getIn(["data", "inicioProyectos"]);
+      if (!data) return null;
+      return h(
+        "div",
+        { className: "p-block--proyecto" },
+        h("p", { className: "p-eyebrow" }, data.get("proyectosEyebrow")),
+        h("h1", { className: "p-titulo" }, data.get("proyectosTitulo")),
+        h("span", { className: "p-nota" }, `Botón: "${data.get("proyectosBotonTexto") ?? ""}".`),
       );
     },
   }),
@@ -193,9 +213,10 @@ CMS.registerPreviewTemplate(
       return h(
         "div",
         { className: "p-block--objeto" },
-        h("p", { className: "p-eyebrow p-eyebrow--sage" }, "Objeto"),
+        h("p", { className: "p-eyebrow p-eyebrow--sage" }, data.get("objetoEyebrow")),
         h("h1", { className: "p-titulo" }, data.get("objetoTitulo")),
         h("p", { className: "p-texto" }, data.get("objetoTexto")),
+        h("span", { className: "p-nota" }, `Botón: "${data.get("objetoBotonTexto") ?? ""}".`),
       );
     },
   }),
@@ -235,9 +256,11 @@ CMS.registerPreviewTemplate(
         { className: "p-block--proyecto" },
         foto &&
           h("img", { className: `p-foto${enColor ? "" : " p-foto--bn"}`, src: foto.toString() }),
-        h("p", { className: "p-eyebrow" }, "El estudio"),
+        h("p", { className: "p-eyebrow" }, data.get("eyebrow")),
         h("h1", { className: "p-titulo" }, data.get("titulo")),
         h(Parrafos, { items: data.get("textoNosotros") }),
+        h("p", { className: "p-eyebrow" }, data.get("equipoEyebrow")),
+        h("h2", { className: "p-titulo" }, data.get("equipoTitulo")),
         h(
           "span",
           { className: "p-nota" },
@@ -279,8 +302,13 @@ CMS.registerPreviewTemplate(
       return h(
         "div",
         { className: "p-block--objeto" },
-        h("p", { className: "p-eyebrow p-eyebrow--sage" }, "Objeto"),
+        h("p", { className: "p-eyebrow p-eyebrow--sage" }, data.get("heroEyebrow")),
+        h("h1", { className: "p-titulo" }, data.get("heroTitulo")),
         h(Parrafos, { items: data.get("textoObjeto") }),
+        h("p", { className: "p-eyebrow p-eyebrow--sage" }, data.get("instagramTexto")),
+        h("p", { className: "p-texto p-texto--muted" }, data.get("notaEncargo")),
+        h("span", { className: "p-nota" }, `Botón de cada pieza: "${data.get("tarjetaBotonTexto") ?? ""}".`),
+        h("br", {}),
         h("span", { className: "p-nota" }, `Pie de página: "${data.get("footerTagline") ?? ""}".`),
         colores.length > 0 &&
           h(
@@ -312,9 +340,40 @@ CMS.registerPreviewTemplate(
         "div",
         {},
         foto && h("img", { className: "p-foto", src: foto.toString() }),
-        h("p", { className: "p-eyebrow" }, "Contacto"),
+        h("p", { className: "p-eyebrow" }, data.get("eyebrow")),
         h("h1", { className: "p-titulo" }, data.get("titulo")),
         h("p", { className: "p-texto" }, data.get("lead")),
+        h(
+          "span",
+          { className: "p-nota" },
+          `Botones: "${data.get("whatsappTexto") ?? ""}" y "${data.get("instagramTexto") ?? ""}".`,
+        ),
+        h("p", { className: "p-texto" }, `${data.get("objetoPregunta") ?? ""} ${data.get("objetoBotonTexto") ?? ""}`),
+      );
+    },
+  }),
+);
+
+// --- Proyectos → Textos de las páginas ---
+CMS.registerPreviewTemplate(
+  "proyectos-textos",
+  createClass({
+    render() {
+      const data = this.props.entry.getIn(["data", "proyectosTextos"]);
+      if (!data) return null;
+      return h(
+        "div",
+        { className: "p-block--proyecto" },
+        h("p", { className: "p-eyebrow" }, data.get("listadoEyebrow")),
+        h("h1", { className: "p-titulo" }, data.get("listadoTitulo")),
+        h("p", { className: "p-texto" }, data.get("listadoLead")),
+        h("span", { className: "p-nota" }, `Botón de cada tarjeta: "${data.get("tarjetaBotonTexto") ?? ""}".`),
+        h("hr", {}),
+        h("p", { className: "p-eyebrow" }, data.get("volverTexto")),
+        h("span", { className: "p-nota" }, `Botón de la presentación: "${data.get("presentacionBotonTexto") ?? ""}".`),
+        h("h2", { className: "p-titulo" }, data.get("conceptoTitulo")),
+        h("h2", { className: "p-titulo" }, data.get("ctaTitulo")),
+        h("span", { className: "p-nota" }, `Botón de WhatsApp: "${data.get("ctaBotonTexto") ?? ""}".`),
       );
     },
   }),

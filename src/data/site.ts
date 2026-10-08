@@ -5,6 +5,12 @@
 import { getEntry } from "astro:content";
 
 const config = await getEntry("config", "site");
+const menu = await getEntry("configMenu", "menu");
+const error404 = await getEntry("configError404", "error404");
+
+// Textos del menú superior y de la página 404, editables desde el panel.
+export const MENU = menu!.data;
+export const TEXTO_404 = error404!.data;
 
 export const SITE = {
   nombre: "Proyecto S3",

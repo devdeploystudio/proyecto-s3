@@ -116,22 +116,38 @@ const configInicioEstudio = defineCollection({
   schema: ({ image }) =>
     z.object({
       id: z.string(),
-      teaserTitulo: z.string(),
-      teaserTexto: z.string(),
       // Independiente de la foto de "Estudio → Texto" a propósito: arranca
       // siendo la misma, pero se pidió poder cambiarla acá sin afectar la
       // otra página.
       teaserFoto: image(),
       teaserFotoColorOriginal: z.boolean().default(false),
+      teaserEyebrow: z.string(),
+      teaserTitulo: z.string(),
+      teaserTexto: z.string(),
+      teaserBotonTexto: z.string(),
     }),
+});
+
+// Bloque "Proyectos" de la home (el carrusel): solo sus textos. Los
+// proyectos del carrusel salen de la colección `proyectos`.
+const configInicioProyectos = defineCollection({
+  loader: file("./src/content/config/inicio-proyectos.yaml"),
+  schema: z.object({
+    id: z.string(),
+    proyectosEyebrow: z.string(),
+    proyectosTitulo: z.string(),
+    proyectosBotonTexto: z.string(),
+  }),
 });
 
 const configInicioObjeto = defineCollection({
   loader: file("./src/content/config/inicio-objeto.yaml"),
   schema: z.object({
     id: z.string(),
+    objetoEyebrow: z.string(),
     objetoTitulo: z.string(),
     objetoTexto: z.string(),
+    objetoBotonTexto: z.string(),
   }),
 });
 
@@ -153,8 +169,13 @@ const configContacto = defineCollection({
   schema: ({ image }) =>
     z.object({
       id: z.string(),
+      eyebrow: z.string(),
       titulo: z.string(),
       lead: z.string(),
+      whatsappTexto: z.string(),
+      instagramTexto: z.string(),
+      objetoPregunta: z.string(),
+      objetoBotonTexto: z.string(),
       imagen: image(),
     }),
 });
@@ -169,12 +190,18 @@ const configEstudio = defineCollection({
   schema: ({ image }) =>
     z.object({
       id: z.string(),
-      titulo: z.string(),
-      textoNosotros: z.array(z.string()),
       foto: image(),
       // Ídem que en `equipo`: por default se muestra en blanco y negro,
       // tildar para verla en color.
       colorOriginal: z.boolean().default(false),
+      eyebrow: z.string(),
+      titulo: z.string(),
+      textoNosotros: z.array(z.string()),
+      // Títulos de la sección "El equipo" (la grilla de personas) y texto
+      // que se muestra si una persona no tiene foto cargada.
+      equipoEyebrow: z.string(),
+      equipoTitulo: z.string(),
+      fotoVacia: z.string(),
     }),
 });
 
@@ -198,9 +225,14 @@ const configObjeto = defineCollection({
   loader: file("./src/content/config/objeto.yaml"),
   schema: z.object({
     id: z.string(),
+    heroEyebrow: z.string(),
+    heroTitulo: z.string(),
     textoObjeto: z.array(z.string()),
-    // Frase corta debajo de "Objeto" en el footer.
-    footerTagline: z.string(),
+    instagramTexto: z.string(),
+    notaEncargo: z.string(),
+    // Textos que se repiten en cada ficha de pieza.
+    tarjetaNota: z.string(),
+    tarjetaColoresTitulo: z.string(),
     // Nombre y color del círculo. La foto real de cada pieza en ese color
     // vive en la propia pieza (objeto-piezas/*.yaml → foto[].color).
     coloresObjeto: z.array(
@@ -209,6 +241,54 @@ const configObjeto = defineCollection({
         swatch: z.string(),
       })
     ),
+    tarjetaBotonTexto: z.string(),
+    proximamenteTexto: z.string(),
+    // Frase corta debajo de "Objeto" en el footer.
+    footerTagline: z.string(),
+  }),
+});
+
+// Textos fijos de las páginas de Proyectos: el listado, las tarjetas y la
+// página individual de cada proyecto (los mismos para todos los proyectos).
+const configProyectosTextos = defineCollection({
+  loader: file("./src/content/config/proyectos-textos.yaml"),
+  schema: z.object({
+    id: z.string(),
+    listadoEyebrow: z.string(),
+    listadoTitulo: z.string(),
+    listadoLead: z.string(),
+    tarjetaBotonTexto: z.string(),
+    volverTexto: z.string(),
+    presentacionBotonTexto: z.string(),
+    conceptoTitulo: z.string(),
+    ctaTitulo: z.string(),
+    ctaBotonTexto: z.string(),
+  }),
+});
+
+// Textos del menú superior (Header). El footer NO es editable a propósito.
+const configMenu = defineCollection({
+  loader: file("./src/content/config/menu.yaml"),
+  schema: z.object({
+    id: z.string(),
+    inicio: z.string(),
+    estudio: z.string(),
+    proyectos: z.string(),
+    contacto: z.string(),
+    botonObjeto: z.string(),
+    objetoPiezas: z.string(),
+    botonProyecto: z.string(),
+  }),
+});
+
+const configError404 = defineCollection({
+  loader: file("./src/content/config/error-404.yaml"),
+  schema: z.object({
+    id: z.string(),
+    eyebrow: z.string(),
+    titulo: z.string(),
+    texto: z.string(),
+    botonTexto: z.string(),
   }),
 });
 
@@ -222,7 +302,11 @@ export const collections = {
   configObjeto,
   configInicioPortada,
   configInicioEstudio,
+  configInicioProyectos,
   configInicioObjeto,
   configInicioFinal,
   configContacto,
+  configProyectosTextos,
+  configMenu,
+  configError404,
 };

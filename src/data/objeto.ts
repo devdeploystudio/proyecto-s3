@@ -30,6 +30,9 @@ const configObjeto = await getEntry("configObjeto", "objeto");
 // Los valores son una referencia visual de la cerámica, no un color plano.
 export const COLORES: Color[] = configObjeto!.data.coloresObjeto;
 
+// Todos los textos fijos de la página Objeto y de la ficha de cada pieza.
+export const TEXTOS_OBJETO = configObjeto!.data;
+
 export const TEXTO_OBJETO: string[] = configObjeto!.data.textoObjeto;
 export const TAGLINE_OBJETO: string = configObjeto!.data.footerTagline;
 

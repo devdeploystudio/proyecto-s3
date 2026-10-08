@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import ObjetoCard from "../../components/ObjetoCard.astro";
 import { Image } from "astro:assets";
-import { PIEZAS, TEXTO_OBJETO } from "../../data/objeto";
+import { PIEZAS, TEXTO_OBJETO, TEXTOS_OBJETO } from "../../data/objeto";
 import { SITE } from "../../data/site";
 import sillonImg from "../../assets/objeto/sillon-01.jpg";
 ---
@@ -19,8 +19,8 @@ import sillonImg from "../../assets/objeto/sillon-01.jpg";
         <Image src={sillonImg} alt="Sillón y mesa Prisma de Objeto" width={800} height={1000} loading="eager" fetchpriority="high" />
       </div>
       <div>
-        <p class="eyebrow eyebrow--sage">Objeto</p>
-        <h1>Muebles de diseño, hechos a pedido.</h1>
+        <p class="eyebrow eyebrow--sage">{TEXTOS_OBJETO.heroEyebrow}</p>
+        <h1>{TEXTOS_OBJETO.heroTitulo}</h1>
         {TEXTO_OBJETO.map((parrafo) => <p class="lead">{parrafo}</p>)}
         <a class="eyebrow eyebrow--sage ig-link" href={SITE.instagramObjeto} target="_blank" rel="noopener noreferrer">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -28,7 +28,7 @@ import sillonImg from "../../assets/objeto/sillon-01.jpg";
             <circle cx="12" cy="13" r="4"></circle>
             <path d="M8 6l1.4-2h5.2L16 6"></path>
           </svg>
-          @object.s3 en Instagram →
+          {TEXTOS_OBJETO.instagramTexto}
         </a>
       </div>
     </div>
@@ -36,11 +36,7 @@ import sillonImg from "../../assets/objeto/sillon-01.jpg";
 
   <section class="section piezas">
     <div class="wrap">
-      <p class="nota-encargo">
-        Las medidas y el color de cada pieza se pueden ajustar a pedido, dentro del módulo de la
-        materia prima utilizada en su fabricación. No trabajamos con stock: cada mueble se produce
-        por encargo, con contacto directo durante todo el proceso.
-      </p>
+      <p class="nota-encargo">{TEXTOS_OBJETO.notaEncargo}</p>
 
       <h2 class="visually-hidden">Piezas disponibles</h2>
       <div class="grid-objeto" data-reveal-group>
@@ -48,7 +44,7 @@ import sillonImg from "../../assets/objeto/sillon-01.jpg";
       </div>
 
       <div class="proximamente" data-reveal>
-        <p>Nuevas piezas próximamente.</p>
+        <p>{TEXTOS_OBJETO.proximamenteTexto}</p>
       </div>
     </div>
   </section>

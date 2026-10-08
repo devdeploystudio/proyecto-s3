@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { Image, getImage } from "astro:assets";
-import { PROYECTOS } from "../../data/proyectos";
+import { PROYECTOS, TEXTOS_PROYECTOS } from "../../data/proyectos";
 import { linkWhatsapp, withBase } from "../../data/site";
 
 export function getStaticPaths() {
@@ -22,12 +22,12 @@ const galeriaFull = await Promise.all(
   <article>
     <section class="hero" style={`--acento: ${proyecto.acento}`}>
       <div class="wrap">
-        <a href={withBase("/proyectos/")} class="volver">← Proyectos</a>
+        <a href={withBase("/proyectos/")} class="volver">{TEXTOS_PROYECTOS.volverTexto}</a>
         <p class="eyebrow" style="color: var(--acento)">{proyecto.tipo}</p>
         <div class="hero__row">
           <h1>{proyecto.titulo}</h1>
           <a class="hero__presentacion" href={withBase(proyecto.presentacion)} target="_blank" rel="noopener noreferrer">
-            Ver presentación →
+            {TEXTOS_PROYECTOS.presentacionBotonTexto}
           </a>
         </div>
       </div>
@@ -39,7 +39,7 @@ const galeriaFull = await Promise.all(
           <Image src={proyecto.cover} alt={proyecto.titulo} width={900} height={1000} />
         </div>
         <div class="concepto__text">
-          <h2>Concepto</h2>
+          <h2>{TEXTOS_PROYECTOS.conceptoTitulo}</h2>
           <p>{proyecto.concepto}</p>
         </div>
       </div>
@@ -79,9 +79,9 @@ const galeriaFull = await Promise.all(
       <Image class="cta__bg" src={proyecto.cover} alt="" width={1920} height={1280} loading="lazy" />
       <div class="cta__overlay"></div>
       <div class="wrap cta__inner" data-reveal>
-        <h2>¿Un proyecto en mente?</h2>
+        <h2>{TEXTOS_PROYECTOS.ctaTitulo}</h2>
         <a class="btn btn--primary" href={linkWhatsapp(`Hola! Vi el proyecto ${proyecto.titulo} y quería consultar por algo similar.`)} target="_blank" rel="noopener noreferrer">
-          Escribinos por WhatsApp →
+          {TEXTOS_PROYECTOS.ctaBotonTexto}
         </a>
       </div>
     </section>

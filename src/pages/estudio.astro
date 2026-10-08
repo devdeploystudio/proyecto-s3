@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
 import {
   EQUIPO,
+  TEXTOS_ESTUDIO,
   TEXTO_ESTUDIO_TITULO,
   TEXTO_NOSOTROS,
   FOTO_EQUIPO,
@@ -26,7 +27,7 @@ import { SITE } from "../data/site";
     </div>
     <div class="wrap intro__inner">
       <div class="intro__text">
-        <p class="eyebrow">El estudio</p>
+        <p class="eyebrow">{TEXTOS_ESTUDIO.eyebrow}</p>
         <h1>{TEXTO_ESTUDIO_TITULO}</h1>
         {TEXTO_NOSOTROS.map((parrafo) => <p class="intro__p">{parrafo}</p>)}
       </div>
@@ -36,8 +37,8 @@ import { SITE } from "../data/site";
   <section class="section equipo">
     <div class="wrap">
       <div data-reveal>
-        <p class="eyebrow">Quiénes somos</p>
-        <h2>El equipo</h2>
+        <p class="eyebrow">{TEXTOS_ESTUDIO.equipoEyebrow}</p>
+        <h2>{TEXTOS_ESTUDIO.equipoTitulo}</h2>
       </div>
       <div class="equipo__grid" data-reveal-group>
         {EQUIPO.map((persona) => (
@@ -46,7 +47,7 @@ import { SITE } from "../data/site";
               {persona.foto ? (
                 <Image src={persona.foto} alt={persona.nombre} width={480} height={480} data-color={persona.colorOriginal || undefined} />
               ) : (
-                <span>Foto próximamente</span>
+                <span>{TEXTOS_ESTUDIO.fotoVacia}</span>
               )}
             </div>
             <h3 class="persona__nombre">{persona.nombre}</h3>

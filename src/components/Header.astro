@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { SITE, withBase } from "../data/site";
+import { SITE, MENU, withBase } from "../data/site";
 import proyectoCubo from "../assets/brand/proyecto-cubo.png";
 import objetoCubo from "../assets/brand/objeto-cubo.png";
 
@@ -11,14 +11,14 @@ interface Props {
 const { brand = "proyecto" } = Astro.props;
 
 const navProyecto = [
-  { href: withBase("/"), label: "Inicio" },
-  { href: withBase("/estudio/"), label: "Estudio" },
-  { href: withBase("/proyectos/"), label: "Proyectos" },
-  { href: withBase("/contacto/"), label: "Contacto" },
+  { href: withBase("/"), label: MENU.inicio },
+  { href: withBase("/estudio/"), label: MENU.estudio },
+  { href: withBase("/proyectos/"), label: MENU.proyectos },
+  { href: withBase("/contacto/"), label: MENU.contacto },
 ];
 
 const navObjeto = [
-  { href: withBase("/objeto/"), label: "Piezas" },
+  { href: withBase("/objeto/"), label: MENU.objetoPiezas },
 ];
 
 const isObjeto = brand === "objeto";
@@ -50,12 +50,12 @@ const path = Astro.url.pathname;
     <div class="header__side">
       {!isObjeto && (
         <a class="btn-crossbrand" href={withBase("/objeto/")} data-ubicacion="cambio_marca">
-          Conocé Objeto →
+          {MENU.botonObjeto}
         </a>
       )}
       {isObjeto && (
         <a class="btn-crossbrand" href={withBase("/")} data-ubicacion="cambio_marca">
-          ← Proyecto S3
+          {MENU.botonProyecto}
         </a>
       )}
 

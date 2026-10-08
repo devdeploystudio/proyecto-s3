@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { Proyecto } from "../data/proyectos";
 import { withBase } from "../data/site";
+import { TEXTOS_PROYECTOS } from "../data/proyectos";
 
 interface Props {
   proyecto: Proyecto;
@@ -18,7 +19,7 @@ const { proyecto } = Astro.props;
     <p class="card__tipo">{proyecto.tipo}</p>
     <h3 class="card__titulo">{proyecto.titulo}</h3>
     <p class="card__resumen">{proyecto.resumen}</p>
-    <span class="card__cta">Ver proyecto →</span>
+    <span class="card__cta">{TEXTOS_PROYECTOS.tarjetaBotonTexto}</span>
   </div>
 </a>
 

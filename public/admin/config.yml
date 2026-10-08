@@ -47,12 +47,12 @@ collections:
               - { label: "Frase corta arriba del título", name: "heroEyebrow", widget: "string" }
               - { label: "Título principal", name: "heroTitulo", widget: "text" }
               - { label: "Párrafo debajo del título", name: "heroLead", widget: "text" }
-              - { label: "Texto del botón hacia \"Proyectos\"", name: "heroCtaProyectosTexto", widget: "string" }
-              - { label: "Texto del botón hacia \"Estudio\"", name: "heroCtaEstudioTexto", widget: "string" }
+              - { label: "Texto del botón hacia \"Proyectos\"", name: "heroCtaProyectosTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+              - { label: "Texto del botón hacia \"Estudio\"", name: "heroCtaEstudioTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
 
   - name: "config-inicio-estudio"
     label: "🏠 Inicio → El estudio"
-    description: "El título, el texto y la foto del bloque \"El estudio\" en la home (el que invita a conocer el estudio). Es independiente de la foto de \"Estudio → Texto\": pueden ser fotos distintas."
+    description: "La foto, el título, el texto y el botón del bloque \"El estudio\" en la home (el que invita a conocer el estudio). Es independiente de la foto de \"Estudio → Texto\": pueden ser fotos distintas."
     editor: { preview: true }
     files:
       - name: "inicio-estudio"
@@ -64,14 +64,34 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-estudio" }
-              - { label: "Título", name: "teaserTitulo", widget: "string" }
-              - { label: "Texto", name: "teaserTexto", widget: "text" }
               - { label: "Foto", name: "teaserFoto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
               - { label: "Mostrar en color", name: "teaserFotoColorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
+              - { label: "Frase corta arriba del título", name: "teaserEyebrow", widget: "string" }
+              - { label: "Título", name: "teaserTitulo", widget: "string" }
+              - { label: "Texto", name: "teaserTexto", widget: "text" }
+              - { label: "Texto del botón hacia \"Estudio\"", name: "teaserBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+
+  - name: "config-inicio-proyectos"
+    label: "🏠 Inicio → Proyectos"
+    description: "La frase corta, el título y el botón del bloque de proyectos de la home (el carrusel). Los proyectos que se muestran en el carrusel se editan en \"Proyectos\"."
+    editor: { preview: true }
+    files:
+      - name: "inicio-proyectos"
+        label: "Proyectos (carrusel en Inicio)"
+        file: "src/content/config/inicio-proyectos.yaml"
+        fields:
+          - label: "Proyectos"
+            name: "inicioProyectos"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-proyectos" }
+              - { label: "Frase corta arriba del título", name: "proyectosEyebrow", widget: "string" }
+              - { label: "Título", name: "proyectosTitulo", widget: "string" }
+              - { label: "Texto del botón hacia \"Proyectos\"", name: "proyectosBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
 
   - name: "config-inicio-objeto"
     label: "🏠 Inicio → Objeto"
-    description: "El título y el texto del bloque \"Objeto\" en la home (el que invita a conocer los muebles)."
+    description: "La frase corta, el título, el texto y el botón del bloque \"Objeto\" en la home (el que invita a conocer los muebles)."
     editor: { preview: true }
     files:
       - name: "inicio-objeto"
@@ -83,8 +103,10 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "inicio-objeto" }
+              - { label: "Frase corta arriba del título", name: "objetoEyebrow", widget: "string" }
               - { label: "Título", name: "objetoTitulo", widget: "string" }
               - { label: "Texto", name: "objetoTexto", widget: "text" }
+              - { label: "Texto del botón hacia \"Objeto\"", name: "objetoBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
 
   - name: "config-inicio-final"
     label: "🏠 Inicio → Bloque final"
@@ -103,12 +125,12 @@ collections:
               - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/inicio", public_folder: "../../assets/inicio", hint: "Arriba de esta foto va texto blanco. Elegí una imagen más bien oscura (o con esa zona oscura), si no el texto queda difícil de leer." }
               - { label: "Título", name: "ctaTitulo", widget: "string" }
               - { label: "Texto", name: "ctaTexto", widget: "text" }
-              - { label: "Texto del botón de WhatsApp", name: "ctaBotonTexto", widget: "string" }
+              - { label: "Texto del botón de WhatsApp", name: "ctaBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
 
   # --- Estudio (página aparte) ---
   - name: "config-estudio"
     label: "👥 Estudio → Texto"
-    description: "Se pueden agregar/borrar/reordenar los párrafos del texto de presentación arrastrando. El título, el texto y la foto de esta página."
+    description: "Se pueden agregar/borrar/reordenar los párrafos del texto de presentación arrastrando. La foto, el título y el texto de la página \"Estudio\", y los títulos de la sección del equipo."
     editor: { preview: true }
     files:
       - name: "estudio"
@@ -120,13 +142,17 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "estudio" }
+              - { label: "Foto", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+              - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
+              - { label: "Frase corta arriba del título", name: "eyebrow", widget: "string" }
               - { label: "Título", name: "titulo", widget: "string" }
               - label: "Texto de presentación (un párrafo por línea)"
                 name: "textoNosotros"
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - { label: "Foto", name: "foto", widget: "image", media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
-              - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
+              - { label: "Sección del equipo: frase corta arriba del título", name: "equipoEyebrow", widget: "string", hint: "Es el texto chico que aparece arriba del título de la grilla de personas (después del texto de presentación)." }
+              - { label: "Sección del equipo: título", name: "equipoTitulo", widget: "string" }
+              - { label: "Texto cuando una persona no tiene foto", name: "fotoVacia", widget: "string", hint: "Se muestra en lugar de la foto de un integrante que todavía no tiene foto cargada." }
 
   - name: "config-estudio-final"
     label: "👥 Estudio → Bloque final"
@@ -145,7 +171,7 @@ collections:
               - { label: "Imagen de fondo", name: "ctaImagen", widget: "image", media_folder: "/src/assets/estudio", public_folder: "../../assets/estudio", hint: "Arriba de esta foto va texto blanco. Elegí una imagen más bien oscura (o con esa zona oscura), si no el texto queda difícil de leer." }
               - { label: "Título", name: "ctaTitulo", widget: "string" }
               - { label: "Texto", name: "ctaTexto", widget: "text" }
-              - { label: "Texto del botón de Instagram", name: "ctaBotonTexto", widget: "string" }
+              - { label: "Texto del botón de Instagram", name: "ctaBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
 
   - name: "equipo"
     label: "👥 Estudio → Equipo"
@@ -160,13 +186,37 @@ collections:
     identifier_field: nombre
     reorder: { key: orden }
     fields:
+      - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
+      - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
       - { label: "Nombre", name: "nombre", widget: "string" }
       - { label: "Rol", name: "rol", widget: "string" }
       - { label: "Bio", name: "bio", widget: "text" }
-      - { label: "Foto", name: "foto", widget: "image", required: false, media_folder: "/src/assets/equipo", public_folder: "../../assets/equipo" }
-      - { label: "Mostrar en color", name: "colorOriginal", widget: "boolean", default: false, hint: "Las fotos de personas del sitio se muestran en blanco y negro por default (es la estética del sitio). Tildá esto solo si querés que ESTA foto puntual se vea en color." }
 
   # --- Proyectos (página aparte, también aparecen en el carrusel de Inicio) ---
+  - name: "config-proyectos-textos"
+    label: "📁 Proyectos → Textos de las páginas"
+    description: "Los textos fijos de la página \"Proyectos\" (el listado) y de la página individual de cada proyecto. Son los mismos para todos los proyectos: lo que cambia de uno a otro (título, tipo, concepto, fotos) se edita en \"Proyectos\"."
+    editor: { preview: true }
+    files:
+      - name: "proyectos-textos"
+        label: "Textos de las páginas de Proyectos"
+        file: "src/content/config/proyectos-textos.yaml"
+        fields:
+          - label: "Proyectos"
+            name: "proyectosTextos"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "proyectos-textos" }
+              - { label: "Listado: frase corta arriba del título", name: "listadoEyebrow", widget: "string", hint: "Es el texto chico de arriba de la página \"Proyectos\" (la que lista todos los proyectos)." }
+              - { label: "Listado: título", name: "listadoTitulo", widget: "string" }
+              - { label: "Listado: bajada", name: "listadoLead", widget: "text" }
+              - { label: "Texto del botón de cada tarjeta", name: "tarjetaBotonTexto", widget: "string", hint: "Aparece al pie de cada tarjeta de proyecto, tanto en el listado como en el carrusel de la home. La flecha (→) forma parte del texto." }
+              - { label: "Página de cada proyecto: link para volver", name: "volverTexto", widget: "string", hint: "Es el link chico de arriba de la página de un proyecto, que lleva de vuelta al listado." }
+              - { label: "Página de cada proyecto: texto del botón de la presentación", name: "presentacionBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+              - { label: "Página de cada proyecto: título del concepto", name: "conceptoTitulo", widget: "string", hint: "Es el título que aparece arriba del texto del concepto de cada proyecto." }
+              - { label: "Página de cada proyecto: título del bloque final", name: "ctaTitulo", widget: "string" }
+              - { label: "Página de cada proyecto: texto del botón de WhatsApp", name: "ctaBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+
   - name: "proyectos"
     label: "📁 Proyectos"
     label_singular: "Proyecto"
@@ -180,24 +230,24 @@ collections:
     identifier_field: titulo
     reorder: { key: orden }
     fields:
-      - { label: "Título", name: "titulo", widget: "string" }
       - { label: "Tipo de proyecto", name: "tipo", widget: "string" }
+      - { label: "Título", name: "titulo", widget: "string" }
       - { label: "Color de acento", name: "acento", widget: "color", hint: "Color del título y la etiqueta de este proyecto en las tarjetas y en su página. Elegí un tono con buen contraste sobre fondo claro (evitar colores muy pálidos o muy parecidos al blanco)." }
-      - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
-      - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
+      - { label: "PDF de presentación", name: "presentacion", widget: "file", media_folder: "/public/pdfs", public_folder: "/pdfs" }
       - { label: "Portada", name: "cover", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
-      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
+      - { label: "Concepto (texto largo de la página del proyecto)", name: "concepto", widget: "text" }
       - label: "Galería"
         name: "galeria"
         widget: "list"
         hint: "Se pueden agregar, borrar y reordenar arrastrando."
         field: { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}" }
-      - { label: "PDF de presentación", name: "presentacion", widget: "file", media_folder: "/public/pdfs", public_folder: "/pdfs" }
+      - { label: "Tarjeta (opcional, si difiere de la portada)", name: "tarjeta", widget: "image", required: false, media_folder: "/src/assets/proyectos/{{slug}}", public_folder: "../../assets/proyectos/{{slug}}", hint: "Solo para las tarjetas del listado y del carrusel. Si la dejás vacía, las tarjetas usan la portada." }
+      - { label: "Resumen (tarjetas y listado)", name: "resumen", widget: "text" }
 
   # --- Objeto (página aparte, con su propio "sitio" de muebles) ---
   - name: "config-objeto"
     label: "🪑 Objeto → Texto y colores"
-    description: "El texto y los colores se pueden reordenar y agregar/borrar arrastrando. El texto de presentación de la página \"Objeto\", la frase corta del pie de página, y la paleta de colores disponible para las piezas."
+    description: "El texto y los colores se pueden reordenar y agregar/borrar arrastrando. Los textos de la página \"Objeto\", los textos que se repiten en cada pieza, la paleta de colores disponible y la frase corta del pie de página."
     editor: { preview: true }
     files:
       - name: "objeto"
@@ -209,11 +259,16 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "objeto" }
+              - { label: "Frase corta arriba del título", name: "heroEyebrow", widget: "string" }
+              - { label: "Título principal", name: "heroTitulo", widget: "string" }
               - label: "Texto de presentación (un párrafo por línea)"
                 name: "textoObjeto"
                 widget: "list"
                 field: { label: "Párrafo", name: "parrafo", widget: "text" }
-              - { label: "Frase corta del pie de página (debajo de \"Objeto\")", name: "footerTagline", widget: "string" }
+              - { label: "Texto del link a Instagram", name: "instagramTexto", widget: "string", hint: "Es el link que aparece debajo del texto de presentación. La flecha (→) forma parte del texto." }
+              - { label: "Nota sobre encargos y medidas", name: "notaEncargo", widget: "text", hint: "Es el párrafo que aparece arriba de la lista de piezas." }
+              - { label: "Cada pieza: nota debajo de las medidas", name: "tarjetaNota", widget: "string", hint: "Se repite igual en todas las piezas." }
+              - { label: "Cada pieza: título de los colores", name: "tarjetaColoresTitulo", widget: "string", hint: "Es el título que aparece arriba de los círculos de colores de cada pieza." }
               - label: "Colores disponibles"
                 name: "coloresObjeto"
                 widget: "list"
@@ -221,6 +276,9 @@ collections:
                 fields:
                   - { label: "Nombre", name: "nombre", widget: "string", hint: "Usá este mismo nombre, tal cual, en el campo \"Color que muestra esta foto\" de cada pieza (en \"Objeto → Piezas\") para que el círculo de esa foto quede vinculado." }
                   - { label: "Color del círculo", name: "swatch", widget: "color" }
+              - { label: "Cada pieza: texto del botón de consulta", name: "tarjetaBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+              - { label: "Texto de \"nuevas piezas\"", name: "proximamenteTexto", widget: "string", hint: "Es la frase que aparece al final de la lista de piezas." }
+              - { label: "Frase corta del pie de página (debajo de \"Objeto\")", name: "footerTagline", widget: "string" }
 
   - name: "objeto-piezas"
     label: "🪑 Objeto → Piezas"
@@ -235,10 +293,6 @@ collections:
     identifier_field: nombre
     reorder: { key: orden }
     fields:
-      - { label: "Nombre", name: "nombre", widget: "string" }
-      - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
-      - { label: "Medidas", name: "medidas", widget: "string" }
-      - { label: "Precio (vacío = a consultar)", name: "precio", widget: "number", value_type: "int", required: false }
       - label: "Fotos"
         name: "foto"
         widget: "list"
@@ -247,11 +301,15 @@ collections:
         fields:
           - { label: "Imagen", name: "imagen", widget: "image", media_folder: "/src/assets/objeto/{{slug}}", public_folder: "../../assets/objeto/{{slug}}" }
           - { label: "Color que muestra esta foto (dejar vacío si es una foto general, sin color asociado)", name: "color", widget: "string", required: false, hint: "Tiene que decir EXACTAMENTE igual que uno de los nombres cargados en \"Objeto → Texto y colores\" (ej: \"Azul noche\"), si no el círculo de ese color no va a aparecer en esta pieza." }
+      - { label: "Tipo (ej: mesa auxiliar)", name: "tipo", widget: "string" }
+      - { label: "Nombre", name: "nombre", widget: "string" }
+      - { label: "Medidas", name: "medidas", widget: "string" }
+      - { label: "Precio (vacío = a consultar)", name: "precio", widget: "number", value_type: "int", required: false }
 
   # --- Contacto (página aparte) ---
   - name: "config-contacto"
     label: "✉️ Contacto → Textos"
-    description: "El título, la bajada y la foto de la página \"Contacto\"."
+    description: "Los textos de la página \"Contacto\" (títulos, botones y el link a Objeto) y su foto."
     editor: { preview: true }
     files:
       - name: "contacto"
@@ -263,14 +321,19 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "contacto" }
+              - { label: "Frase corta arriba del título", name: "eyebrow", widget: "string" }
               - { label: "Título", name: "titulo", widget: "string" }
               - { label: "Bajada", name: "lead", widget: "text" }
+              - { label: "Texto del botón de WhatsApp", name: "whatsappTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+              - { label: "Texto del botón de Instagram", name: "instagramTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
+              - { label: "Pregunta sobre Objeto (debajo de los botones)", name: "objetoPregunta", widget: "string", hint: "Es la frase chica que aparece debajo de los botones de contacto, antes del link a Objeto." }
+              - { label: "Texto del link a Objeto", name: "objetoBotonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }
               - { label: "Foto", name: "imagen", widget: "image", media_folder: "/src/assets/contacto", public_folder: "../../assets/contacto" }
 
   # --- General (no pertenece a una sola página) ---
   - name: "config"
     label: "⚙️ General"
-    description: "Instagram, WhatsApp y email: se usan en botones de contacto de todo el sitio, no pertenecen a una sola página."
+    description: "Instagram, WhatsApp y email (se usan en botones de contacto de todo el sitio), el menú superior y la página de error 404: no pertenecen a una sola página."
     files:
       - name: "site"
         label: "Configuración general"
@@ -281,7 +344,37 @@ collections:
             widget: "object"
             fields:
               - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "site" }
-              - { label: "Instagram — Estudio (link completo)", name: "instagramEstudio", widget: "string" }
-              - { label: "Instagram — Objeto (link completo)", name: "instagramObjeto", widget: "string" }
+              - { label: "Instagram: Estudio (link completo)", name: "instagramEstudio", widget: "string" }
+              - { label: "Instagram: Objeto (link completo)", name: "instagramObjeto", widget: "string" }
               - { label: "WhatsApp (solo números, con código de país, ej: 5491122334455)", name: "whatsappNumero", widget: "string", required: false }
               - { label: "Email de contacto", name: "email", widget: "string" }
+      - name: "menu"
+        label: "Menú superior"
+        file: "src/content/config/menu.yaml"
+        fields:
+          - label: "Menú superior"
+            name: "menu"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "menu" }
+              - { label: "Link a Inicio", name: "inicio", widget: "string", hint: "Los links del menú aparecen arriba de todas las páginas de Proyecto S3 (y en el menú del celular)." }
+              - { label: "Link a Estudio", name: "estudio", widget: "string" }
+              - { label: "Link a Proyectos", name: "proyectos", widget: "string" }
+              - { label: "Link a Contacto", name: "contacto", widget: "string" }
+              - { label: "Botón para ir a Objeto", name: "botonObjeto", widget: "string", hint: "Es el botón de la derecha del menú cuando estás en las páginas de Proyecto S3. La flecha (→) forma parte del texto." }
+              - { label: "Objeto: link a las piezas", name: "objetoPiezas", widget: "string", hint: "Es el único link del menú cuando estás en la página de Objeto." }
+              - { label: "Objeto: botón para volver a Proyecto S3", name: "botonProyecto", widget: "string", hint: "Es el botón de la derecha del menú cuando estás en la página de Objeto. La flecha (←) forma parte del texto." }
+
+      - name: "error-404"
+        label: "Página de error (404)"
+        file: "src/content/config/error-404.yaml"
+        fields:
+          - label: "Página de error"
+            name: "error404"
+            widget: "object"
+            fields:
+              - { label: "ID (no tocar)", name: "id", widget: "hidden", default: "error-404" }
+              - { label: "Frase corta arriba del título", name: "eyebrow", widget: "string", hint: "Es la página que ve alguien que entra a un link roto o que ya no existe." }
+              - { label: "Título", name: "titulo", widget: "string" }
+              - { label: "Texto", name: "texto", widget: "text" }
+              - { label: "Texto del botón", name: "botonTexto", widget: "string", hint: "Es lo que se lee escrito dentro del botón. La flecha (→) forma parte del texto: dejala si querés que se vea." }

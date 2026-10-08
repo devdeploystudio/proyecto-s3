@@ -1,4 +1,6 @@
 inicioObjeto:
   id: "inicio-objeto"
+  objetoEyebrow: "Objeto"
   objetoTitulo: "También hacemos muebles a medida."
   objetoTexto: "Es otro proyecto del estudio, con su propia identidad."
+  objetoBotonTexto: "Conocer Objeto →"

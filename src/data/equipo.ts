@@ -17,6 +17,9 @@ export type Persona = {
 const configEstudio = await getEntry("configEstudio", "estudio");
 const configEstudioFinal = await getEntry("configEstudioFinal", "estudioFinal");
 
+// Textos fijos de la página "Estudio" (etiquetas y títulos de sección).
+export const TEXTOS_ESTUDIO = configEstudio!.data;
+
 export const TEXTO_ESTUDIO_TITULO: string = configEstudio!.data.titulo;
 export const TEXTO_NOSOTROS: string[] = configEstudio!.data.textoNosotros;
 

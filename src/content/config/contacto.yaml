@@ -1,5 +1,10 @@
 contacto:
   id: "contacto"
+  eyebrow: "Contacto"
   titulo: "Charlemos sobre tu proyecto."
   lead: "Ya sea una reforma o una obra, contanos qué tenés en mente."
+  whatsappTexto: "Escribinos directamente →"
+  instagramTexto: "@proyecto.s3 →"
+  objetoPregunta: "¿Buscabas los muebles?"
+  objetoBotonTexto: "Conocé Objeto →"
   imagen: "../../assets/proyectos/n366/01-06-sinborde.jpg"

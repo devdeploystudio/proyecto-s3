@@ -13,7 +13,7 @@ import { TEXTO_CONTACTO } from "../data/contacto";
   <section class="section">
     <div class="wrap contacto-layout">
       <div class="contacto">
-        <p class="eyebrow">Contacto</p>
+        <p class="eyebrow">{TEXTO_CONTACTO.eyebrow}</p>
         <h1>{TEXTO_CONTACTO.titulo}</h1>
         <p class="lead">
           {TEXTO_CONTACTO.lead}
@@ -27,7 +27,7 @@ import { TEXTO_CONTACTO } from "../data/contacto";
               </svg>
               WhatsApp
             </span>
-            <span class="canal__valor">Escribinos directamente →</span>
+            <span class="canal__valor">{TEXTO_CONTACTO.whatsappTexto}</span>
           </a>
 
           <a class="canal" href={SITE.instagramEstudio} target="_blank" rel="noopener noreferrer">
@@ -39,7 +39,7 @@ import { TEXTO_CONTACTO } from "../data/contacto";
               </svg>
               Instagram
             </span>
-            <span class="canal__valor">@proyecto.s3 →</span>
+            <span class="canal__valor">{TEXTO_CONTACTO.instagramTexto}</span>
           </a>
 
           <a
@@ -60,7 +60,7 @@ import { TEXTO_CONTACTO } from "../data/contacto";
         </div>
 
         <p class="objeto-link">
-          ¿Buscabas los muebles? <a href={withBase("/objeto/")}>Conocé Objeto →</a>
+          {TEXTO_CONTACTO.objetoPregunta} <a href={withBase("/objeto/")}>{TEXTO_CONTACTO.objetoBotonTexto}</a>
         </p>
       </div>
       <div class="contacto-media">

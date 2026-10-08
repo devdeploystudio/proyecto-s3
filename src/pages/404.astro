@@ -1,15 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { withBase } from "../data/site";
+import { withBase, TEXTO_404 } from "../data/site";
 ---
 
 <Layout title="Página no encontrada" description="La página que buscás no existe.">
   <section class="section error">
     <div class="wrap error__inner">
-      <p class="eyebrow">404</p>
-      <h1>Esta página no existe.</h1>
-      <p>Puede que el link esté roto o que la página se haya movido.</p>
-      <a class="btn btn--primary" href={withBase("/")}>Volver al inicio →</a>
+      <p class="eyebrow">{TEXTO_404.eyebrow}</p>
+      <h1>{TEXTO_404.titulo}</h1>
+      <p>{TEXTO_404.texto}</p>
+      <a class="btn btn--primary" href={withBase("/")}>{TEXTO_404.botonTexto}</a>
     </div>
   </section>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { Pieza } from "../data/objeto";
-import { COLORES } from "../data/objeto";
+import { COLORES, TEXTOS_OBJETO } from "../data/objeto";
 import { linkWhatsapp } from "../data/site";
 
 interface Props {
@@ -46,11 +46,11 @@ const coloresDisponibles = COLORES.filter((color) =>
     <p class="pieza__tipo">{pieza.tipo}</p>
     <h3 class="pieza__nombre">{pieza.nombre}</h3>
     <p class="pieza__medidas">{pieza.medidas}</p>
-    <p class="pieza__nota">Medida y color ajustables a pedido, según el módulo del material.</p>
+    <p class="pieza__nota">{TEXTOS_OBJETO.tarjetaNota}</p>
 
     {coloresDisponibles.length > 0 && (
       <>
-        <p class="pieza__colores-label">Colores de cerámica disponibles</p>
+        <p class="pieza__colores-label">{TEXTOS_OBJETO.tarjetaColoresTitulo}</p>
         <ul class="pieza__colores">
           {coloresDisponibles.map((color) => (
             <li>
@@ -73,7 +73,7 @@ const coloresDisponibles = COLORES.filter((color) =>
         data-ubicacion="tarjeta_objeto"
         data-pieza={pieza.nombre}
       >
-        Consultar →
+        {TEXTOS_OBJETO.tarjetaBotonTexto}
       </a>
     </div>
   </div>

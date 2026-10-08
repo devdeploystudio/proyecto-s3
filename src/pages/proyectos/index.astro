@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import ProyectoCard from "../../components/ProyectoCard.astro";
-import { PROYECTOS } from "../../data/proyectos";
+import { PROYECTOS, TEXTOS_PROYECTOS } from "../../data/proyectos";
 ---
 
 <Layout
@@ -11,12 +11,9 @@ import { PROYECTOS } from "../../data/proyectos";
 >
   <section class="section">
     <div class="wrap">
-      <p class="eyebrow">Proyectos</p>
-      <h1>Reformas y obras con identidad propia</h1>
-      <p class="lead">
-        Cada proyecto parte de la identidad original del espacio y se resuelve con una mirada que
-        combina diseño y experiencia constructiva.
-      </p>
+      <p class="eyebrow">{TEXTOS_PROYECTOS.listadoEyebrow}</p>
+      <h1>{TEXTOS_PROYECTOS.listadoTitulo}</h1>
+      <p class="lead">{TEXTOS_PROYECTOS.listadoLead}</p>
       <h2 class="visually-hidden">Listado de proyectos</h2>
       <div class="grid-proyectos" data-reveal-group>
         {PROYECTOS.map((p) => <ProyectoCard proyecto={p} />)}

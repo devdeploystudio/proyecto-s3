@@ -1,0 +1,9 @@
+menu:
+  id: "menu"
+  inicio: "Inicio"
+  estudio: "Estudio"
+  proyectos: "Proyectos"
+  contacto: "Contacto"
+  botonObjeto: "Conocé Objeto →"
+  objetoPiezas: "Piezas"
+  botonProyecto: "← Proyecto S3"

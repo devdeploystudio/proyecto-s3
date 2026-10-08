@@ -1,10 +1,15 @@
 objeto:
   id: "objeto"
+  heroEyebrow: "Objeto"
+  heroTitulo: "Muebles de diseño, hechos a pedido."
   textoObjeto:
     - "Objeto S3 nace como una extensión de S3 Proyectos y de nuestra forma de entender el interiorismo."
     - "Surge con la idea de diseñar y producir piezas que formen parte de los espacios que proyectamos, llevando la arquitectura a una escala más cercana y cotidiana."
     - "Cada objeto busca combinar diseño, materialidad y funcionalidad, creando piezas con identidad propia pensadas para acompañar y transformar los espacios interiores."
-  footerTagline: "Muebles de diseño, hechos a pedido."
+  instagramTexto: "@object.s3 en Instagram →"
+  notaEncargo: "Las medidas y el color de cada pieza se pueden ajustar a pedido, dentro del módulo de la materia prima utilizada en su fabricación. No trabajamos con stock: cada mueble se produce por encargo, con contacto directo durante todo el proceso."
+  tarjetaNota: "Medida y color ajustables a pedido, según el módulo del material."
+  tarjetaColoresTitulo: "Colores de cerámica disponibles"
   coloresObjeto:
     - nombre: "Azul noche"
       swatch: "#142c63"
@@ -22,3 +27,6 @@ objeto:
       swatch: "#96482d"
     - nombre: "Verde patagonia"
       swatch: "#597067"
+  tarjetaBotonTexto: "Consultar →"
+  proximamenteTexto: "Nuevas piezas próximamente."
+  footerTagline: "Muebles de diseño, hechos a pedido."
